@@ -1,0 +1,11 @@
+{
+  "identities": [
+    {
+      "name": "video-rag-app",
+      "credentials": [
+        { "accessKey": "video_rag", "secretKey": "video_rag_secret" }
+      ],
+      "actions": ["Admin", "Read", "Write", "List", "Tagging"]
+    }
+  ]
+}

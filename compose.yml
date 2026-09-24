@@ -1,0 +1,198 @@
+# Container-specific overrides shared by every service that runs our Python code.
+x-app-env: &app-env
+  POSTGRES_DATABASE_URL: postgresql+psycopg2://video_rag:video_rag_password@postgres:5432/video_rag
+  REDIS_URL: redis://redis:6379/0
+  CELERY_BROKER_URL: redis://redis:6379/1
+  CELERY_RESULT_BACKEND: redis://redis:6379/2
+  S3_ENDPOINT_URL: http://seaweedfs:8333
+  S3_PUBLIC_ENDPOINT_URL: http://localhost:8333
+  OPENSEARCH_HOST: http://opensearch:9200
+  OLLAMA_HOST: http://ollama:11434
+
+services:
+  api:
+    build: .
+    container_name: video-rag-api
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      opensearch:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      seaweedfs:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/ping')\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    env_file:
+      - .env
+    environment: *app-env
+    restart: unless-stopped
+    networks:
+      - rag-network
+
+  # Background worker for video ingestion/processing (same image as the API).
+  worker:
+    build: .
+    container_name: video-rag-worker
+    command: ["celery", "-A", "src.worker.celery_app", "worker", "--loglevel=INFO", "--concurrency=2"]
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      seaweedfs:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A src.worker.celery_app inspect ping -d celery@$$HOSTNAME --timeout 5"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 30s
+    env_file:
+      - .env
+    environment: *app-env
+    restart: unless-stopped
+    networks:
+      - rag-network
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: video-rag-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - rag-network
+
+  # S3-compatible object storage for raw videos, frames and clips.
+  # (MinIO no longer publishes community container images; the app only speaks S3, so any
+  # S3-compatible store or AWS S3 itself can replace this.)
+  seaweedfs:
+    image: chrislusf/seaweedfs:4.47
+    container_name: video-rag-seaweedfs
+    command: ["server", "-dir=/data", "-s3", "-s3.port=8333", "-s3.config=/etc/seaweedfs/s3.json"]
+    ports:
+      - "8333:8333"
+    volumes:
+      - seaweedfs_data:/data
+      - ./infra/seaweedfs/s3.json:/etc/seaweedfs/s3.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8333/healthz >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+    networks:
+      - rag-network
+
+  opensearch:
+    image: opensearchproject/opensearch:2.19.0
+    container_name: video-rag-opensearch
+    environment:
+      - discovery.type=single-node
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      - DISABLE_SECURITY_PLUGIN=true
+      - bootstrap.memory_lock=true
+    ports:
+      - "9200:9200"
+      - "9600:9600"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+    networks:
+      - rag-network
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.19.0
+    container_name: video-rag-dashboards
+    ports:
+      - "5601:5601"
+    environment:
+      - OPENSEARCH_HOSTS=http://video-rag-opensearch:9200
+      - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
+    depends_on:
+      - opensearch
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5601/api/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - rag-network
+
+  ollama:
+    image: ollama/ollama:0.11.2
+    container_name: video-rag-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - rag-network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: video-rag-postgres
+    environment:
+      - POSTGRES_DB=video_rag
+      - POSTGRES_USER=video_rag
+      - POSTGRES_PASSWORD=video_rag_password
+      - POSTGRES_HOST_AUTH_METHOD=password
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U video_rag -d video_rag"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - rag-network
+
+volumes:
+  postgres_data:
+  opensearch_data:
+  ollama_data:
+  redis_data:
+  seaweedfs_data:
+
+networks:
+  rag-network:
+    driver: bridge
