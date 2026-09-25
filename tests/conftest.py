@@ -79,12 +79,15 @@ def fake_services(settings, database, storage):
     db_mock.get_session = database.get_session
     cache = MagicMock()
     cache.health_check = _healthy("redis ok")
+    opensearch = MagicMock()
+    opensearch.health_check = _healthy("opensearch ok")
     return {
         "settings": settings,
         "database": db_mock,
         "cache_client": cache,
         "storage_client": storage,
         "pexels_client": MagicMock(),
+        "opensearch_service": opensearch,
     }
 
 

@@ -8,7 +8,9 @@ from src.config import Settings
 from src.db.interfaces.base import BaseDatabase
 from src.services.cache import CacheClient
 from src.services.ingestion import IngestionService
+from src.services.opensearch import OpenSearchService
 from src.services.pexels import PexelsClient
+from src.services.search import SearchService
 from src.services.storage import StorageClient
 
 
@@ -40,6 +42,20 @@ def get_pexels_client(request: Request) -> PexelsClient:
     return client
 
 
+def get_opensearch_service(request: Request) -> OpenSearchService:
+    service = getattr(request.app.state, "opensearch_service", None)
+    if service is None:
+        raise HTTPException(status_code=503, detail="Search is not available (OpenSearch not initialised)")
+    return service
+
+
+def get_search_service(
+    opensearch: Annotated[OpenSearchService, Depends(get_opensearch_service)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> SearchService:
+    return SearchService(opensearch, settings)
+
+
 def _enqueue_process(video_id: str) -> str:
     from src.worker.tasks import process_video
 
@@ -67,3 +83,5 @@ CacheDep = Annotated[CacheClient, Depends(get_cache_client)]
 StorageDep = Annotated[StorageClient, Depends(get_storage_client)]
 PexelsDep = Annotated[PexelsClient, Depends(get_pexels_client)]
 IngestionDep = Annotated[IngestionService, Depends(get_ingestion_service)]
+OpenSearchDep = Annotated[OpenSearchService, Depends(get_opensearch_service)]
+SearchDep = Annotated[SearchService, Depends(get_search_service)]

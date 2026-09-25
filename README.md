@@ -51,6 +51,20 @@ Worker pipeline (`video.process`): ffprobe → ffmpeg scene detection → shots 
 16 kHz audio → faster-whisper with word timestamps → overlapping speech windows → `segments` in Postgres.
 Pexels videos first go through `video.download_pexels` (best mp4 ≤ 720p, max 60 s).
 
+## Search (Week 3)
+
+| Endpoint | Purpose |
+|---|---|
+| `POST /api/v1/search` `{query, video_id?, kind?, source?, size?, group_by_video?}` | quoted text → phrase search with exact word times; otherwise BM25 keyword search |
+| `POST /api/v1/admin/reindex` `{video_id?}` | rebuild the search index from Postgres (all ready videos, or one) |
+| `GET /api/v1/admin/jobs/{job_id}` | state/result of any Celery job |
+
+- Index: alias `video_segments` → `video_segments_v1`, one document per segment (Postgres stays the source of truth).
+  Transcripts are indexed twice: `text` (exact, for quotes) and `text.stemmed` (English, for keywords).
+- Quotes (`‘…’ “…” '…' "…"`) search speech with a cascade: exact phrase → phrase with slop → fuzzy. Each hit
+  reports `match_start_sec`/`match_end_sec` from word timestamps and a `play_url` (`…#t=start,end`).
+- The pipeline's last stage is `indexing`: a video is `ready` once it is searchable.
+
 Requires `PEXELS_API_KEY` in `.env` (free at https://www.pexels.com/api/). Attribution (author, page URL) is stored per video.
 
 ## Local development
@@ -82,7 +96,11 @@ src/
   services/processing/ # ffmpeg, segmentation, faster-whisper, VideoPipeline (Phase 2)
   models/, repositories/  # SQLAlchemy models (videos, segments) + data access
   routers/videos.py    # /videos endpoints
-  worker/              # Celery app + tasks (video.download_pexels, video.process)
+  routers/search.py, routers/admin.py  # /search, /admin/reindex, /admin/jobs
+  services/opensearch/ # index definition (alias + versioned index), indexing, search, health
+  services/indexing/   # Postgres rows -> OpenSearch documents; index_video()
+  services/search/     # quote parsing, query builder, phrase locator (word times), SearchService
+  worker/              # Celery app + tasks (video.download_pexels, video.process, index.rebuild)
 airflow/dags/          # pexels_ingestion DAG
 infra/airflow/start.sh # creates the airflow metadata DB, runs `airflow standalone`
 infra/seaweedfs/s3.json  # local S3 credentials (dev only; must match .env)

@@ -4,11 +4,13 @@ from contextlib import asynccontextmanager
 
 from botocore.exceptions import BotoCoreError, ClientError
 from fastapi import FastAPI
+from opensearchpy.exceptions import OpenSearchException
 
 from src.config import get_settings
 from src.db.factory import make_database
-from src.routers import ping, videos
+from src.routers import admin, ping, search, videos
 from src.services.cache import make_cache_client
+from src.services.opensearch import make_opensearch_service
 from src.services.pexels import make_pexels_client
 from src.services.storage import make_storage_client
 
@@ -39,8 +41,14 @@ async def lifespan(app: FastAPI):
     if app.state.pexels_client is None:
         logger.warning("PEXELS_API_KEY not set: Pexels ingestion endpoints will return 503")
 
-    # Placeholders for later weeks
-    app.state.opensearch_service = None
+    app.state.opensearch_service = make_opensearch_service(settings)
+    try:
+        app.state.opensearch_service.ensure_index()
+        logger.info("Search index alias '%s' ready", settings.opensearch_index)
+    except OpenSearchException as exc:
+        logger.warning("OpenSearch unavailable during startup: %s", exc)
+
+    # Placeholder for later weeks
     app.state.llm_service = None
 
     logger.info("API ready")
@@ -48,6 +56,7 @@ async def lifespan(app: FastAPI):
 
     logger.info("Shutting down Video RAG API...")
     app.state.cache_client.close()
+    app.state.opensearch_service.close()
     if app.state.pexels_client is not None:
         app.state.pexels_client.close()
     app.state.database.teardown()
@@ -63,6 +72,8 @@ app = FastAPI(
 
 app.include_router(ping.router, prefix=API_PREFIX)
 app.include_router(videos.router, prefix=API_PREFIX)
+app.include_router(search.router, prefix=API_PREFIX)
+app.include_router(admin.router, prefix=API_PREFIX)
 
 
 @app.get("/", include_in_schema=False)

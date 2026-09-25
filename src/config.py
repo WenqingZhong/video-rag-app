@@ -73,7 +73,12 @@ class Settings(DefaultSettings):
 
     # OpenSearch configuration
     opensearch_host: str = "http://localhost:9200"
-    opensearch_index: str = "video_clips"
+    opensearch_index: str = "video_segments"  # an ALIAS; it points at a versioned index (video_segments_v1)
+
+    # Search
+    search_phrase_slop: int = 2  # words the phrase may be stretched by (ASR inserting/dropping filler words)
+    search_fuzzy_min_match: str = "75%"  # share of quote words that must (fuzzily) match in the last-resort strategy
+    search_max_size: int = 50
 
     # Ollama configuration
     ollama_host: str = "http://localhost:11434"

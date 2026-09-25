@@ -22,19 +22,25 @@ def frames_prefix(video_id: str) -> str:
 
 
 class VideoPipeline:
-    """download → probe → scenes → keyframes → transcript → segments.
+    """download → probe → scenes → keyframes → transcript → segments → search index.
 
     Idempotent: re-running for the same video deletes its old frames and replaces its segments,
     so Celery redeliveries (acks_late) and manual re-processing are safe.
     """
 
     def __init__(
-        self, database: BaseDatabase, storage: StorageClient, settings: Settings, transcriber_factory: Callable[[], Transcriber]
+        self,
+        database: BaseDatabase,
+        storage: StorageClient,
+        settings: Settings,
+        transcriber_factory: Callable[[], Transcriber],
+        indexer: Callable[[str], int] | None = None,
     ):
         self.database = database
         self.storage = storage
         self.settings = settings
         self._transcriber_factory = transcriber_factory
+        self._indexer = indexer  # video_id -> documents indexed; None = skip (e.g. tests)
 
     def _set_stage(self, video_id: str, stage: str) -> None:
         with self.database.get_session() as session:
@@ -109,7 +115,17 @@ class VideoPipeline:
             repo = VideoRepository(session)
             count = repo.replace_segments(video_id, visual_segments + speech_segments)
             repo.update(video_id, language=language)
-            repo.set_status(video_id, VideoStatus.READY)
+            session.commit()
+
+        # "ready" means searchable: index before flipping the status. Postgres stays the source of truth,
+        # so if indexing fails the video is marked failed and a retry/reprocess/rebuild repairs it.
+        indexed = 0
+        if self._indexer is not None:
+            self._set_stage(video_id, "indexing")
+            indexed = self._indexer(video_id)
+
+        with self.database.get_session() as session:
+            VideoRepository(session).set_status(video_id, VideoStatus.READY)
             session.commit()
 
         summary = {
@@ -118,6 +134,7 @@ class VideoPipeline:
             "visual_segments": len(visual_segments),
             "speech_segments": len(speech_segments),
             "segments": count,
+            "indexed": indexed,
         }
         logger.info("video %s ready: %s", video_id, summary)
         return summary
