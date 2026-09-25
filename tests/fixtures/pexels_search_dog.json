@@ -1,0 +1,23 @@
+{
+  "page": 1, "per_page": 3, "total_results": 3, "next_page": null, "url": "https://www.pexels.com/search/videos/dog/",
+  "videos": [
+    {"id": 5340598, "width": 1920, "height": 1080, "duration": 14, "full_res": null, "tags": [], "avg_color": null,
+     "url": "https://www.pexels.com/video/dogs-with-their-tongues-out-5340598/",
+     "image": "https://images.pexels.com/videos/5340598/dogs-full-hd-5340598.jpeg",
+     "user": {"id": 3505176, "name": "Dimitri Baret", "url": "https://www.pexels.com/@dimitri-baret-3505176"},
+     "video_files": [
+       {"id": 9673700, "quality": "sd", "file_type": "video/mp4", "width": 426, "height": 240, "fps": 30.0, "size": 574024, "link": "https://videos.pexels.com/video-files/5340598/sd_426_240.mp4"},
+       {"id": 9673742, "quality": "hd", "file_type": "video/mp4", "width": 1280, "height": 720, "fps": 30.0, "size": 4290708, "link": "https://videos.pexels.com/video-files/5340598/hd_1280_720.mp4"},
+       {"id": 9673895, "quality": "hd", "file_type": "video/mp4", "width": 1920, "height": 1080, "fps": 30.0, "size": 9934733, "link": "https://videos.pexels.com/video-files/5340598/hd_1920_1080.mp4"}
+     ], "video_pictures": []},
+    {"id": 1111111, "width": 1920, "height": 1080, "duration": 240, "tags": [],
+     "url": "https://www.pexels.com/video/a-very-long-dog-walk-1111111/",
+     "user": {"id": 1, "name": "Someone", "url": "https://www.pexels.com/@someone"},
+     "video_files": [{"id": 1, "quality": "hd", "file_type": "video/mp4", "width": 1280, "height": 720, "fps": 25.0, "size": 1, "link": "https://videos.pexels.com/long.mp4"}]},
+    {"id": 2222222, "width": 3840, "height": 2160, "duration": 9, "tags": ["dog", "beach"],
+     "url": "https://www.pexels.com/video/dog-running-on-the-beach-2222222/",
+     "user": {"id": 2, "name": "Other", "url": "https://www.pexels.com/@other"},
+     "video_files": [{"id": 2, "quality": "uhd", "file_type": "video/mp4", "width": 3840, "height": 2160, "fps": 30.0, "size": 9, "link": "https://videos.pexels.com/4k.mp4"},
+                     {"id": 3, "quality": "hd", "file_type": "video/mp4", "width": 2560, "height": 1440, "fps": 30.0, "size": 5, "link": "https://videos.pexels.com/1440.mp4"}]}
+  ]
+}

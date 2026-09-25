@@ -13,6 +13,9 @@ COPY src /app/src
 
 FROM python:3.12.8-slim AS final
 
+# ffmpeg/ffprobe: scene detection, keyframes and audio extraction in the worker
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*
+
 EXPOSE 8000
 
 ENV PYTHONUNBUFFERED=1

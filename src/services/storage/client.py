@@ -58,6 +58,16 @@ class StorageClient:
                 return False
             raise
 
+    def delete_prefix(self, prefix: str) -> int:
+        """Delete every object under `prefix` (e.g. stale frames before re-processing a video)."""
+        deleted = 0
+        for page in self.s3.get_paginator("list_objects_v2").paginate(Bucket=self.bucket, Prefix=prefix):
+            keys = [{"Key": obj["Key"]} for obj in page.get("Contents", [])]
+            if keys:
+                self.s3.delete_objects(Bucket=self.bucket, Delete={"Objects": keys, "Quiet": True})
+                deleted += len(keys)
+        return deleted
+
     def presigned_url(self, key: str, expires_in: int | None = None) -> str:
         return self.presign_s3.generate_presigned_url(
             "get_object",

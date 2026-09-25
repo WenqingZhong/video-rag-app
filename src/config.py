@@ -48,6 +48,29 @@ class Settings(DefaultSettings):
     s3_bucket: str = "video-rag"
     s3_presigned_url_ttl: int = 3600
 
+    # Uploads
+    upload_max_mb: int = 500
+
+    # Pexels (https://www.pexels.com/api/documentation/)
+    pexels_api_key: str = ""
+    pexels_base_url: str = "https://api.pexels.com"
+    pexels_max_duration_sec: int = 60  # keep stock clips short: processing cost scales with duration
+    pexels_max_height: int = 720  # download the best rendition at or below this height
+
+    # Video processing (worker)
+    scene_threshold: float = 0.3  # ffmpeg scene-change score (0-1); lower = more cuts
+    visual_min_segment_sec: float = 1.0  # shots shorter than this merge into the previous one
+    visual_max_segment_sec: float = 10.0  # longer shots are split so each segment has a representative keyframe
+    frame_width: int = 640
+    speech_window_sec: float = 15.0
+    speech_stride_sec: float = 10.0  # window - stride = overlap, so a quote spanning a boundary is in one window
+
+    # Speech-to-text (faster-whisper, runs in the worker)
+    whisper_model: str = "small"
+    whisper_device: str = "cpu"
+    whisper_compute_type: str = "int8"
+    whisper_beam_size: int = 5
+
     # OpenSearch configuration
     opensearch_host: str = "http://localhost:9200"
     opensearch_index: str = "video_clips"

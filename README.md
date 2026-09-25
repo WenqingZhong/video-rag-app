@@ -16,6 +16,7 @@ multimodal retrieval approach follows the multimodal-agents-course.
 | `seaweedfs` | S3-compatible object storage for raw videos, frames and clips | 8333 |
 | `opensearch` / `opensearch-dashboards` | Hybrid (BM25 + vector) segment index | 9200 / 5601 |
 | `ollama` | Local LLM | 11434 |
+| `airflow` | Scheduler: daily Pexels ingestion DAG (calls the API) | 8080 |
 
 Object storage is accessed purely through the S3 API (boto3). MinIO no longer publishes community
 container images, so SeaweedFS is used locally; point `S3_ENDPOINT_URL` at any S3-compatible store,
@@ -33,6 +34,24 @@ make health         # GET /api/v1/health -> every dependency's status
 - `GET /api/v1/ping`: liveness (process is up)
 - `GET /api/v1/health`: readiness (`ok`, or `degraded` with per-service details)
 - Docs: http://localhost:8000/docs
+- Airflow: http://localhost:8080 (local dev: no login; DAGs start paused)
+
+## Ingestion (Week 2)
+
+| Endpoint | Purpose |
+|---|---|
+| `POST /api/v1/videos` | upload a file (multipart) → 202, processed in the background |
+| `POST /api/v1/videos/pexels` `{query, count}` | queue `count` new Pexels videos (idempotent) |
+| `GET /api/v1/videos[?status=&source=]` | list videos |
+| `GET /api/v1/videos/{id}` | status / stage / error + metadata + presigned video URL (poll this) |
+| `GET /api/v1/videos/{id}/segments[?kind=speech\|visual]` | segments with word timestamps / keyframe URLs |
+| `POST /api/v1/videos/{id}/reprocess` | re-run the (idempotent) pipeline, e.g. after `failed` |
+
+Worker pipeline (`video.process`): ffprobe → ffmpeg scene detection → shots → keyframes (S3 `frames/`) →
+16 kHz audio → faster-whisper with word timestamps → overlapping speech windows → `segments` in Postgres.
+Pexels videos first go through `video.download_pexels` (best mp4 ≤ 720p, max 60 s).
+
+Requires `PEXELS_API_KEY` in `.env` (free at https://www.pexels.com/api/). Attribution (author, page URL) is stored per video.
 
 ## Local development
 
@@ -58,7 +77,14 @@ src/
   db/                  # PostgreSQL interface + factory
   services/cache/      # Redis client
   services/storage/    # S3 client (raw/, frames/, clips/ prefixes)
-  worker/              # Celery app + tasks
+  services/pexels/     # Pexels API client + response models
+  services/ingestion/  # upload / Pexels ingestion (Phase 1: store + enqueue)
+  services/processing/ # ffmpeg, segmentation, faster-whisper, VideoPipeline (Phase 2)
+  models/, repositories/  # SQLAlchemy models (videos, segments) + data access
+  routers/videos.py    # /videos endpoints
+  worker/              # Celery app + tasks (video.download_pexels, video.process)
+airflow/dags/          # pexels_ingestion DAG
+infra/airflow/start.sh # creates the airflow metadata DB, runs `airflow standalone`
 infra/seaweedfs/s3.json  # local S3 credentials (dev only; must match .env)
 tests/
 ```

@@ -21,6 +21,7 @@ logs: ## Tail service logs
 
 health: ## Check API readiness (all dependencies)
 	@curl -s http://localhost:8000/api/v1/health | python3 -m json.tool || echo "API not responding"
+	@curl -s http://localhost:8080/api/v2/monitor/health | python3 -m json.tool || echo "Airflow not responding"
 
 # Local development (run against the dockerised infra)
 setup: ## Install Python dependencies
@@ -30,7 +31,7 @@ run: ## Run the API locally with reload
 	uv run uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 
 worker: ## Run a Celery worker locally
-	uv run celery -A src.worker.celery_app worker --loglevel=INFO --concurrency=2
+	uv run celery -A src.worker.celery_app worker --loglevel=INFO --concurrency=1
 
 format: ## Format code
 	uv run ruff format src tests

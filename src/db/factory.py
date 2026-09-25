@@ -1,3 +1,4 @@
+import src.models  # noqa: F401 - register ORM models on Base.metadata before create_all
 from src.config import get_settings
 from src.db.interfaces.base import BaseDatabase
 from src.db.interfaces.postgresql import PostgreSQLDatabase, PostgreSQLSettings

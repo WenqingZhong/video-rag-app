@@ -29,6 +29,8 @@ class PostgreSQLSettings(BaseSettings):
 
 Base = declarative_base()
 
+SCHEMA_LOCK_KEY = 7_311_2024  # arbitrary app-wide id for pg_advisory_xact_lock
+
 
 class PostgreSQLDatabase(BaseDatabase):
     """PostgreSQL database implementation."""
@@ -65,7 +67,11 @@ class PostgreSQLDatabase(BaseDatabase):
             inspector = inspect(self.engine)
             existing_tables = inspector.get_table_names()
 
-            Base.metadata.create_all(bind=self.engine)
+            # Several processes (uvicorn workers, Celery workers) start at once; serialise DDL so they
+            # don't race to create the same tables. (Schema migrations with Alembic replace this later.)
+            with self.engine.begin() as conn:
+                conn.execute(text("SELECT pg_advisory_xact_lock(:key)"), {"key": SCHEMA_LOCK_KEY})
+                Base.metadata.create_all(bind=conn)
 
             updated_tables = inspector.get_table_names()
             new_tables = set(updated_tables) - set(existing_tables)
