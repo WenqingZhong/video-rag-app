@@ -1,0 +1,746 @@
+{
+  "experiment": "caption embeddings as a third retriever (docs/decisions/0001-no-caption-embeddings.md)",
+  "run_at": "2026-09-27T04:42:46+00:00",
+  "library": {
+    "pexels_videos": 23,
+    "captioned_keyframes": 54
+  },
+  "models": {
+    "clip": "ViT-B-32/laion2b_s34b_b79k",
+    "caption": "qwen2.5vl:3b",
+    "caption_text_embedding": "BAAI/bge-small-en-v1.5"
+  },
+  "method": {
+    "k": 5,
+    "retriever_depth": 30,
+    "fusion": "RRF, k=60",
+    "relevance": "per video (Pexels id)"
+  },
+  "queries": {
+    "total": 36,
+    "by_category": {
+      "basic": 16,
+      "color": 2,
+      "count": 4,
+      "detail": 6,
+      "negation": 1,
+      "style": 3,
+      "synonym": 4
+    }
+  },
+  "systems": {
+    "keyword": {
+      "all": {
+        "recall@5": 0.717,
+        "mrr": 0.722
+      },
+      "hard": {
+        "recall@5": 0.65,
+        "mrr": 0.625
+      },
+      "mrr_by_category": {
+        "basic": 0.844,
+        "color": 0.5,
+        "count": 1.0,
+        "detail": 1.0,
+        "negation": 0.5,
+        "style": 0.333,
+        "synonym": 0.0
+      }
+    },
+    "clip_image": {
+      "all": {
+        "recall@5": 0.989,
+        "mrr": 0.926
+      },
+      "hard": {
+        "recall@5": 0.99,
+        "mrr": 0.9
+      },
+      "mrr_by_category": {
+        "basic": 0.958,
+        "color": 0.75,
+        "count": 1.0,
+        "detail": 0.833,
+        "negation": 0.5,
+        "style": 1.0,
+        "synonym": 1.0
+      }
+    },
+    "caption_bge": {
+      "all": {
+        "recall@5": 0.933,
+        "mrr": 0.892
+      },
+      "hard": {
+        "recall@5": 0.89,
+        "mrr": 0.831
+      },
+      "mrr_by_category": {
+        "basic": 0.969,
+        "color": 0.583,
+        "count": 1.0,
+        "detail": 1.0,
+        "negation": 0.5,
+        "style": 0.486,
+        "synonym": 0.875
+      }
+    },
+    "caption_clip": {
+      "all": {
+        "recall@5": 0.793,
+        "mrr": 0.799
+      },
+      "hard": {
+        "recall@5": 0.767,
+        "mrr": 0.716
+      },
+      "mrr_by_category": {
+        "basic": 0.902,
+        "color": 0.75,
+        "count": 1.0,
+        "detail": 0.833,
+        "negation": 0.5,
+        "style": 0.375,
+        "synonym": 0.548
+      }
+    },
+    "keyword+clip (current hybrid)": {
+      "all": {
+        "recall@5": 0.989,
+        "mrr": 0.94
+      },
+      "hard": {
+        "recall@5": 0.99,
+        "mrr": 0.917
+      },
+      "mrr_by_category": {
+        "basic": 0.969,
+        "color": 0.667,
+        "count": 1.0,
+        "detail": 1.0,
+        "negation": 0.5,
+        "style": 0.833,
+        "synonym": 1.0
+      }
+    },
+    "keyword+caption_bge": {
+      "all": {
+        "recall@5": 0.933,
+        "mrr": 0.878
+      },
+      "hard": {
+        "recall@5": 0.89,
+        "mrr": 0.831
+      },
+      "mrr_by_category": {
+        "basic": 0.938,
+        "color": 0.583,
+        "count": 1.0,
+        "detail": 1.0,
+        "negation": 0.5,
+        "style": 0.481,
+        "synonym": 0.875
+      }
+    },
+    "clip+caption_bge": {
+      "all": {
+        "recall@5": 0.989,
+        "mrr": 0.945
+      },
+      "hard": {
+        "recall@5": 0.99,
+        "mrr": 0.902
+      },
+      "mrr_by_category": {
+        "basic": 1.0,
+        "color": 0.667,
+        "count": 1.0,
+        "detail": 1.0,
+        "negation": 0.5,
+        "style": 0.733,
+        "synonym": 1.0
+      }
+    },
+    "keyword+clip+caption_bge": {
+      "all": {
+        "recall@5": 0.989,
+        "mrr": 0.945
+      },
+      "hard": {
+        "recall@5": 0.99,
+        "mrr": 0.902
+      },
+      "mrr_by_category": {
+        "basic": 1.0,
+        "color": 0.667,
+        "count": 1.0,
+        "detail": 1.0,
+        "negation": 0.5,
+        "style": 0.733,
+        "synonym": 1.0
+      }
+    },
+    "keyword+clip+caption_clip": {
+      "all": {
+        "recall@5": 0.932,
+        "mrr": 0.879
+      },
+      "hard": {
+        "recall@5": 0.898,
+        "mrr": 0.807
+      },
+      "mrr_by_category": {
+        "basic": 0.969,
+        "color": 0.667,
+        "count": 1.0,
+        "detail": 1.0,
+        "negation": 0.5,
+        "style": 0.437,
+        "synonym": 0.75
+      }
+    }
+  },
+  "per_query": [
+    {
+      "query": "give me a clip of a dog",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 2,
+        "caption_clip": 10,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "puppies",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 3,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "a kitten resting",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "ocean waves",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "sandy beach",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "birds in the sky",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "a colourful parrot-like bird",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": 2,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 3,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 2,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 2
+      }
+    },
+    {
+      "query": "busy city streets at night",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "cars on a road",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "someone chopping vegetables",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "cooking food in a pan",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "people having a meeting",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": null,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 2,
+        "keyword+caption_bge": 2,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "sunlight in the woods",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "animals",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": null,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "car dashboard with navigation",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "sea water",
+      "category": "basic",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "a bird's-eye view of a city at night",
+      "category": "style",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "drone footage above the coast",
+      "category": "style",
+      "first_relevant_rank": {
+        "keyword": null,
+        "clip_image": 1,
+        "caption_bge": 8,
+        "caption_clip": 8,
+        "keyword+clip (current hybrid)": 2,
+        "keyword+caption_bge": 9,
+        "clip+caption_bge": 5,
+        "keyword+clip+caption_bge": 5,
+        "keyword+clip+caption_clip": 5
+      }
+    },
+    {
+      "query": "wintry weather",
+      "category": "style",
+      "first_relevant_rank": {
+        "keyword": null,
+        "clip_image": 1,
+        "caption_bge": 3,
+        "caption_clip": null,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 3,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 9
+      }
+    },
+    {
+      "query": "several young dogs in a cardboard box",
+      "category": "count",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "two dogs lying next to each other",
+      "category": "count",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "a single dog looking at the camera",
+      "category": "count",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "three people talking",
+      "category": "count",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "a dog under a metal structure",
+      "category": "detail",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 2,
+        "caption_bge": 1,
+        "caption_clip": 2,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "a cat wrapped in a blanket",
+      "category": "detail",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "someone pouring milk",
+      "category": "detail",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "a bird eating from a metal bowl",
+      "category": "detail",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 2,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "a phone mounted on the dashboard",
+      "category": "detail",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "a red traffic light",
+      "category": "detail",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 2,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "an orange car",
+      "category": "color",
+      "first_relevant_rank": {
+        "keyword": 1,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "turquoise water",
+      "category": "color",
+      "first_relevant_rank": {
+        "keyword": null,
+        "clip_image": 2,
+        "caption_bge": 6,
+        "caption_clip": 2,
+        "keyword+clip (current hybrid)": 3,
+        "keyword+caption_bge": 6,
+        "clip+caption_bge": 3,
+        "keyword+clip+caption_bge": 3,
+        "keyword+clip+caption_clip": 3
+      }
+    },
+    {
+      "query": "canine",
+      "category": "synonym",
+      "first_relevant_rank": {
+        "keyword": null,
+        "clip_image": 1,
+        "caption_bge": 2,
+        "caption_clip": 10,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 2,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 2
+      }
+    },
+    {
+      "query": "feline",
+      "category": "synonym",
+      "first_relevant_rank": {
+        "keyword": null,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 11,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 2
+      }
+    },
+    {
+      "query": "seashore",
+      "category": "synonym",
+      "first_relevant_rank": {
+        "keyword": null,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "automobiles",
+      "category": "synonym",
+      "first_relevant_rank": {
+        "keyword": null,
+        "clip_image": 1,
+        "caption_bge": 1,
+        "caption_clip": 1,
+        "keyword+clip (current hybrid)": 1,
+        "keyword+caption_bge": 1,
+        "clip+caption_bge": 1,
+        "keyword+clip+caption_bge": 1,
+        "keyword+clip+caption_clip": 1
+      }
+    },
+    {
+      "query": "a beach with no people",
+      "category": "negation",
+      "first_relevant_rank": {
+        "keyword": 2,
+        "clip_image": 2,
+        "caption_bge": 2,
+        "caption_clip": 2,
+        "keyword+clip (current hybrid)": 2,
+        "keyword+caption_bge": 2,
+        "clip+caption_bge": 2,
+        "keyword+clip+caption_bge": 2,
+        "keyword+clip+caption_clip": 2
+      }
+    }
+  ]
+}

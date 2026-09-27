@@ -1,4 +1,4 @@
-.PHONY: help start stop restart status logs health setup run worker format lint test test-cov clean
+.PHONY: help start stop restart status logs health setup run worker format lint eval experiment-captions test test-cov clean
 
 help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
@@ -38,6 +38,12 @@ format: ## Format code
 
 lint: ## Lint code
 	uv run ruff check --fix src tests
+
+eval: ## Measure search quality (keyword vs vector vs hybrid) on eval/queries.json
+	uv run python scripts/evaluate_search.py
+
+experiment-captions: ## Re-run the caption-embedding experiment (see docs/decisions/0001-no-caption-embeddings.md)
+	uv run --with sentence-transformers python scripts/experiment_caption_embeddings.py --save eval/results/caption_embeddings.json
 
 test: ## Run tests
 	uv run pytest

@@ -5,7 +5,7 @@ import httpx
 from fastapi import APIRouter
 
 from src.config import Settings
-from src.dependencies import CacheDep, DatabaseDep, OpenSearchDep, SettingsDep, StorageDep
+from src.dependencies import CacheDep, CaptionerDep, DatabaseDep, EmbedderDep, OpenSearchDep, SettingsDep, StorageDep
 from src.schemas.api.health import HealthResponse, ServiceStatus
 from src.worker.celery_app import celery_app
 
@@ -38,24 +38,34 @@ def _check_worker() -> dict[str, Any]:
     return {"status": "healthy", "message": "Celery worker responding"}
 
 
-def _checks(settings: Settings, database, cache, storage, opensearch) -> dict[str, Callable[[], dict[str, Any]]]:
+def _checks(
+    settings: Settings, database, cache, storage, opensearch, embedder, captioner
+) -> dict[str, Callable[[], dict[str, Any]]]:
     return {
         "database": database.healthcheck,
         "redis": cache.health_check,
         "object_storage": storage.health_check,
         "opensearch": opensearch.health_check,
-        "ollama": lambda: _check_http(f"{settings.ollama_host}/api/version", "Ollama"),
+        "embedder": embedder.health_check if embedder else lambda: {"status": "unhealthy", "message": "not configured"},
+        # Ollama must be up AND have the caption model pulled
+        "ollama": captioner.health_check if captioner else lambda: _check_http(f"{settings.ollama_host}/api/version", "Ollama"),
         "worker": _check_worker,
     }
 
 
 @router.get("/health", response_model=HealthResponse)
 def health_check(
-    settings: SettingsDep, database: DatabaseDep, cache: CacheDep, storage: StorageDep, opensearch: OpenSearchDep
+    settings: SettingsDep,
+    database: DatabaseDep,
+    cache: CacheDep,
+    storage: StorageDep,
+    opensearch: OpenSearchDep,
+    embedder: EmbedderDep,
+    captioner: CaptionerDep,
 ) -> HealthResponse:
     """Readiness probe: reports every dependency. Returns 200 with `degraded` if any is down."""
     services: dict[str, ServiceStatus] = {}
-    for name, check in _checks(settings, database, cache, storage, opensearch).items():
+    for name, check in _checks(settings, database, cache, storage, opensearch, embedder, captioner).items():
         result = check()
         status = "healthy" if result.get("status") == "healthy" else "unhealthy"
         message = (

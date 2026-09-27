@@ -8,6 +8,7 @@ x-app-env: &app-env
   S3_PUBLIC_ENDPOINT_URL: http://localhost:8333
   OPENSEARCH_HOST: http://opensearch:9200
   OLLAMA_HOST: http://ollama:11434
+  EMBEDDER_URL: http://embedder:8000
 
 services:
   api:
@@ -48,6 +49,8 @@ services:
       postgres:
         condition: service_healthy
       seaweedfs:
+        condition: service_healthy
+      embedder:
         condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "celery -A src.worker.celery_app inspect ping -d celery@$$HOSTNAME --timeout 5"]
@@ -92,6 +95,28 @@ services:
       timeout: 10s
       retries: 5
       start_period: 90s
+    restart: unless-stopped
+    networks:
+      - rag-network
+
+  # CLIP model server: embeds keyframes (worker) and search queries (api). One model copy for everyone.
+  embedder:
+    build: ./embedder
+    container_name: video-rag-embedder
+    environment:
+      CLIP_MODEL: ViT-B-32
+      CLIP_PRETRAINED: laion2b_s34b_b79k
+      TORCH_THREADS: "4"
+    volumes:
+      - embedder_models:/models  # weights downloaded once (~600 MB)
+    ports:
+      - "8001:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 180s
     restart: unless-stopped
     networks:
       - rag-network
@@ -178,12 +203,16 @@ services:
       timeout: 10s
       retries: 5
       start_period: 60s
+    restart: unless-stopped
     networks:
       - rag-network
 
   ollama:
     image: ollama/ollama:0.11.2
     container_name: video-rag-ollama
+    environment:
+      OLLAMA_MAX_LOADED_MODELS: "1"  # one model in RAM at a time (captioning now, the LLM in Week 5)
+      OLLAMA_KEEP_ALIVE: 10m
     ports:
       - "11434:11434"
     volumes:
@@ -194,6 +223,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
+    restart: unless-stopped
     networks:
       - rag-network
 
@@ -227,6 +257,7 @@ volumes:
   redis_data:
   seaweedfs_data:
   whisper_models:
+  embedder_models:
   airflow_logs:
 
 networks:

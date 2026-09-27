@@ -65,6 +65,13 @@ class VideoRepository:
         self.session.flush()
         return len(segments)
 
+    def update_segment(self, segment_id: str, **fields: Any) -> None:
+        segment = self.session.get(Segment, segment_id)
+        if segment is not None:
+            for key, value in fields.items():
+                setattr(segment, key, value)
+            self.session.flush()
+
     def list_segments(self, video_id: str, kind: str | None = None) -> list[Segment]:
         query = select(Segment).where(Segment.video_id == video_id)
         if kind:

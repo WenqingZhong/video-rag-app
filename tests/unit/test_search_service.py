@@ -81,7 +81,7 @@ def test_keyword_query_and_group_by_video():
     assert [h.source["video_id"] for h in result.hits] == ["a", "b"]
     assert result.hits[0].match_start_sec == 0 and result.hits[0].match_score is None
     fields = os_.search.call_args.args[0]["query"]["bool"]["must"][0]["multi_match"]["fields"]
-    assert fields == ["text.stemmed", "video_title^2"]  # never the stop-word-keeping exact field
+    assert fields == ["text.stemmed", "caption", "video_title^2"]  # never the stop-word-keeping exact field
 
 
 def test_build_filters():

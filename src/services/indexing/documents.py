@@ -32,6 +32,10 @@ def segment_documents(video: Video, segments: list[Segment]) -> list[dict[str, A
             "words": s.words,
             "frame_key": s.frame_key,
             "frame_time_sec": s.frame_time_sec,
+            "caption": s.caption,
+            "image_embedding": s.image_embedding,
+            "embedding_model": s.embedding_model,
+            "caption_model": s.caption_model,
             **video_fields,
         }
         for s in segments

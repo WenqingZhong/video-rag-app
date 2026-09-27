@@ -29,8 +29,6 @@ class PostgreSQLSettings(BaseSettings):
 
 Base = declarative_base()
 
-SCHEMA_LOCK_KEY = 7_311_2024  # arbitrary app-wide id for pg_advisory_xact_lock
-
 
 class PostgreSQLDatabase(BaseDatabase):
     """PostgreSQL database implementation."""
@@ -64,27 +62,14 @@ class PostgreSQLDatabase(BaseDatabase):
                 conn.execute(text("SELECT 1"))
                 logger.info("Database connection test successful")
 
-            inspector = inspect(self.engine)
-            existing_tables = inspector.get_table_names()
+            from src.db.migrations.runner import run_migrations  # alembic is only needed here
 
-            # Several processes (uvicorn workers, Celery workers) start at once; serialise DDL so they
-            # don't race to create the same tables. (Schema migrations with Alembic replace this later.)
-            with self.engine.begin() as conn:
-                conn.execute(text("SELECT pg_advisory_xact_lock(:key)"), {"key": SCHEMA_LOCK_KEY})
-                Base.metadata.create_all(bind=conn)
-
-            updated_tables = inspector.get_table_names()
-            new_tables = set(updated_tables) - set(existing_tables)
-
-            if new_tables:
-                logger.info("Created new tables: %s", ", ".join(sorted(new_tables)))
-            else:
-                logger.info("All tables already exist - no new tables created")
+            run_migrations(self.engine)
+            logger.info("Schema is up to date (tables: %s)", ", ".join(sorted(inspect(self.engine).get_table_names())))
 
             self.last_error = None
             logger.info("PostgreSQL database initialized successfully")
             logger.info("Database: %s", self.engine.url.database)
-            logger.info("Total tables: %s", ", ".join(updated_tables) if updated_tables else "None")
             return True
 
         except Exception as exc:  # noqa: BLE001 - any failure means "degraded", never crash startup/health

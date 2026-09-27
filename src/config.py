@@ -61,7 +61,7 @@ class Settings(DefaultSettings):
     scene_threshold: float = 0.3  # ffmpeg scene-change score (0-1); lower = more cuts
     visual_min_segment_sec: float = 1.0  # shots shorter than this merge into the previous one
     visual_max_segment_sec: float = 10.0  # longer shots are split so each segment has a representative keyframe
-    frame_width: int = 640
+    frame_max_side: int = 640  # keyframes fit within 640×640 (portrait and landscape alike)
     speech_window_sec: float = 15.0
     speech_stride_sec: float = 10.0  # window - stride = overlap, so a quote spanning a boundary is in one window
 
@@ -71,6 +71,21 @@ class Settings(DefaultSettings):
     whisper_compute_type: str = "int8"
     whisper_beam_size: int = 5
 
+    # Embedding service (CLIP, its own container)
+    embedder_url: str = "http://localhost:8001"
+    embedder_timeout: float = 60.0
+    embedding_dim: int = 512  # must match the embedder's model (ViT-B-32); fixed in the index mapping
+    embed_batch_size: int = 32
+
+    # Captions (vision-language model served by Ollama)
+    caption_model: str = "qwen2.5vl:3b"
+    caption_max_side: int = 448  # downscale before captioning: ~4.5 s/frame on CPU instead of 10-30 s
+    caption_timeout: float = 180.0
+    caption_prompt: str = (
+        "Describe this video frame in one factual sentence for a search index: "
+        "the main subjects, what they are doing, and the setting."
+    )
+
     # OpenSearch configuration
     opensearch_host: str = "http://localhost:9200"
     opensearch_index: str = "video_segments"  # an ALIAS; it points at a versioned index (video_segments_v1)
@@ -79,6 +94,8 @@ class Settings(DefaultSettings):
     search_phrase_slop: int = 2  # words the phrase may be stretched by (ASR inserting/dropping filler words)
     search_fuzzy_min_match: str = "75%"  # share of quote words that must (fuzzily) match in the last-resort strategy
     search_max_size: int = 50
+    search_rrf_k: int = 60  # Reciprocal Rank Fusion constant (standard value; damps the weight of top ranks)
+    search_vector_min_similarity: float = 0.15  # CLIP cosine below this is treated as "not a match"
 
     # Ollama configuration
     ollama_host: str = "http://localhost:11434"

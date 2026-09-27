@@ -81,6 +81,10 @@ def fake_services(settings, database, storage):
     cache.health_check = _healthy("redis ok")
     opensearch = MagicMock()
     opensearch.health_check = _healthy("opensearch ok")
+    embedder = MagicMock()
+    embedder.health_check = _healthy("embedder ok")
+    captioner = MagicMock()
+    captioner.health_check = _healthy("caption model ok")
     return {
         "settings": settings,
         "database": db_mock,
@@ -88,6 +92,8 @@ def fake_services(settings, database, storage):
         "storage_client": storage,
         "pexels_client": MagicMock(),
         "opensearch_service": opensearch,
+        "embedding_client": embedder,
+        "captioner": captioner,
     }
 
 

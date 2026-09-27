@@ -74,11 +74,16 @@ def detect_scene_changes(path: Path, threshold: float, timeout: int = 1800) -> l
     return parse_scene_times(result.stderr)
 
 
-def extract_frame(path: Path, time_sec: float, out_path: Path, width: int) -> Path:
-    """Grab one JPEG at `time_sec` (input seeking: fast even deep into long videos)."""
+def extract_frame(path: Path, time_sec: float, out_path: Path, max_side: int) -> Path:
+    """Grab one JPEG at `time_sec`, fitting within max_side × max_side (portrait or landscape).
+
+    Input seeking (-ss before -i) is fast even deep into long videos.
+    """
+    # Fit the LONG side: scaling only the width made portrait frames 640×1138, doubling captioning cost.
+    fit = f"scale=w={max_side}:h={max_side}:force_original_aspect_ratio=decrease:force_divisible_by=2"
     _run(
         ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-ss", f"{time_sec:.3f}", "-i", str(path),
-         "-frames:v", "1", "-vf", f"scale={width}:-2", "-q:v", "3", str(out_path)],
+         "-frames:v", "1", "-vf", fit, "-q:v", "3", str(out_path)],
         timeout=60,
     )  # fmt: skip
     if not out_path.exists():

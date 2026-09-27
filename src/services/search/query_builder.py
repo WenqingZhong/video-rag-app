@@ -24,8 +24,12 @@ def build_filters(video_id: str | None = None, kind: str | None = None, source: 
     return filters
 
 
+# Vectors are 512 floats per document: never ship them back in search results.
+SOURCE = {"excludes": ["image_embedding"]}
+
+
 def _body(must: dict[str, Any], filters: list[dict[str, Any]], size: int) -> dict[str, Any]:
-    return {"size": size, "query": {"bool": {"must": [must], "filter": filters}}, "highlight": HIGHLIGHT}
+    return {"size": size, "query": {"bool": {"must": [must], "filter": filters}}, "highlight": HIGHLIGHT, "_source": SOURCE}
 
 
 def phrase_query(phrase: str, filters: list[dict[str, Any]], size: int, slop: int = 0) -> dict[str, Any]:
@@ -47,14 +51,14 @@ def fuzzy_query(phrase: str, filters: list[dict[str, Any]], size: int, minimum_s
 
 
 def keyword_query(text: str, filters: list[dict[str, Any]], size: int) -> dict[str, Any]:
-    """BM25 relevance over stemmed transcripts and video titles (English analyzer drops stop words)."""
+    """BM25 relevance over stemmed transcripts, keyframe captions and video titles (English analyzer drops stop words)."""
     return _body(
         {
             "multi_match": {
                 "query": text,
                 # Not the exact `text` field: it keeps stop words, so "give me a clip of a dog"
                 # would match any transcript containing "me", "a" or "of".
-                "fields": ["text.stemmed", "video_title^2"],
+                "fields": ["text.stemmed", "caption", "video_title^2"],
                 "type": "best_fields",
                 "tie_breaker": 0.3,
             }
@@ -62,3 +66,12 @@ def keyword_query(text: str, filters: list[dict[str, Any]], size: int) -> dict[s
         filters,
         size,
     )
+
+
+def vector_query(vector: list[float], filters: list[dict[str, Any]], size: int) -> dict[str, Any]:
+    """k nearest keyframes to the query vector. Filters run inside the kNN search (Lucene engine), so filtered
+    searches still return up to `size` hits instead of filtering a small top-k afterwards."""
+    knn: dict[str, Any] = {"vector": vector, "k": size}
+    if filters:
+        knn["filter"] = {"bool": {"filter": filters}}
+    return {"size": size, "query": {"knn": {"image_embedding": knn}}, "_source": SOURCE}

@@ -25,7 +25,7 @@ def test_health_all_healthy(client, external_ok):
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "ok"
-    assert set(body["services"]) == {"database", "redis", "object_storage", "opensearch", "ollama", "worker"}
+    assert set(body["services"]) == {"database", "redis", "object_storage", "opensearch", "embedder", "ollama", "worker"}
     assert body["services"]["database"]["message"] == "Connected successfully"
 
 

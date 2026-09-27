@@ -12,6 +12,7 @@ from src.repositories import VideoRepository
 from src.services.processing import ffmpeg
 from src.services.processing.segmentation import build_shots, build_speech_windows
 from src.services.processing.transcription import Transcriber
+from src.services.processing.visual import VisualEnricher
 from src.services.storage import StorageClient
 
 logger = logging.getLogger(__name__)
@@ -22,7 +23,7 @@ def frames_prefix(video_id: str) -> str:
 
 
 class VideoPipeline:
-    """download → probe → scenes → keyframes → transcript → segments → search index.
+    """download → probe → scenes → keyframes → embeddings + captions → transcript → segments → search index.
 
     Idempotent: re-running for the same video deletes its old frames and replaces its segments,
     so Celery redeliveries (acks_late) and manual re-processing are safe.
@@ -35,12 +36,14 @@ class VideoPipeline:
         settings: Settings,
         transcriber_factory: Callable[[], Transcriber],
         indexer: Callable[[str], int] | None = None,
+        enricher: VisualEnricher | None = None,
     ):
         self.database = database
         self.storage = storage
         self.settings = settings
         self._transcriber_factory = transcriber_factory
         self._indexer = indexer  # video_id -> documents indexed; None = skip (e.g. tests)
+        self._enricher = enricher  # keyframes -> CLIP vectors + captions; None = skip
 
     def _set_stage(self, video_id: str, stage: str) -> None:
         with self.database.get_session() as session:
@@ -84,12 +87,15 @@ class VideoPipeline:
 
             self._set_stage(video_id, "extracting_keyframes")
             self.storage.delete_prefix(frames_prefix(video_id))
-            visual_segments = []
+            visual_segments, frame_images = [], []
             for idx, shot in enumerate(shots):
                 frame_time = min(shot.mid, max(meta.duration_sec - 0.05, 0))
-                frame_path = ffmpeg.extract_frame(source, frame_time, workdir / f"frame_{idx:05d}.jpg", self.settings.frame_width)
+                frame_path = ffmpeg.extract_frame(
+                    source, frame_time, workdir / f"frame_{idx:05d}.jpg", self.settings.frame_max_side
+                )
                 key = f"{frames_prefix(video_id)}{int(frame_time * 1000):09d}.jpg"
                 self.storage.upload_file(frame_path, key, content_type="image/jpeg")
+                frame_images.append(frame_path.read_bytes())
                 visual_segments.append(
                     {
                         "kind": SegmentKind.VISUAL,
@@ -100,6 +106,11 @@ class VideoPipeline:
                         "frame_time_sec": round(frame_time, 3),
                     }
                 )
+
+            if self._enricher is not None:
+                enriched = self._enricher.enrich(frame_images, on_stage=lambda stage: self._set_stage(video_id, stage))
+                for segment, fields in zip(visual_segments, enriched, strict=True):
+                    segment.update(fields)
 
             speech_segments, language = [], None
             if meta.has_audio:

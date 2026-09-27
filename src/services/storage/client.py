@@ -49,6 +49,9 @@ class StorageClient:
         self.s3.download_file(self.bucket, key, str(local_path))
         return local_path
 
+    def get_bytes(self, key: str) -> bytes:
+        return self.s3.get_object(Bucket=self.bucket, Key=key)["Body"].read()
+
     def exists(self, key: str) -> bool:
         try:
             self.s3.head_object(Bucket=self.bucket, Key=key)

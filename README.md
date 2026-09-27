@@ -15,8 +15,9 @@ multimodal retrieval approach follows the multimodal-agents-course.
 | `redis` | Cache (db 0), Celery broker (db 1) and results (db 2) | 6379 |
 | `seaweedfs` | S3-compatible object storage for raw videos, frames and clips | 8333 |
 | `opensearch` / `opensearch-dashboards` | Hybrid (BM25 + vector) segment index | 9200 / 5601 |
-| `ollama` | Local LLM | 11434 |
+| `ollama` | Local models: `qwen2.5vl:3b` captions keyframes (one model loaded at a time) | 11434 |
 | `airflow` | Scheduler: daily Pexels ingestion DAG (calls the API) | 8080 |
+| `embedder` | CLIP model server (ViT-B/32): text + image → 512-d vectors | 8001 |
 
 Object storage is accessed purely through the S3 API (boto3). MinIO no longer publishes community
 container images, so SeaweedFS is used locally; point `S3_ENDPOINT_URL` at any S3-compatible store,
@@ -65,6 +66,40 @@ Pexels videos first go through `video.download_pexels` (best mp4 ≤ 720p, max 6
   reports `match_start_sec`/`match_end_sec` from word timestamps and a `play_url` (`…#t=start,end`).
 - The pipeline's last stage is `indexing`: a video is `ready` once it is searchable.
 
+## Visual & hybrid search (Week 4)
+
+- Each keyframe gets a **CLIP vector** (`embedder` service) and a **caption** (`qwen2.5vl:3b` via Ollama), stored in
+  Postgres (`segments.image_embedding`, `caption`) and indexed (`knn_vector`, HNSW, cosine).
+- Queries without quotes run **hybrid** search: BM25 (transcript + caption + title) and kNN (CLIP text vector vs
+  keyframes), fused with **Reciprocal Rank Fusion**. `mode` = `auto` | `hybrid` | `keyword` | `vector`.
+- `POST /api/v1/admin/enrich {video_id?, force?}`: backfill vectors + captions from keyframes already in S3.
+- `POST /api/v1/admin/reindex`: when the index is older than the code (`INDEX_VERSION`), builds the new versioned
+  index from Postgres and switches the alias atomically (blue/green; old index kept for rollback).
+- Schema changes use **Alembic** (`src/db/migrations`), applied automatically at startup.
+  New migration: `uv run alembic revision --autogenerate -m "..."`.
+
+## Search quality & design decisions
+
+Retrieval changes are judged with a labelled evaluation set, not by eyeballing results:
+
+- [`eval/queries.json`](eval/queries.json): 36 queries with relevant videos (by Pexels id, labelled from the actual
+  keyframes). 16 **basic** + 20 **hard**, grouped by the weakness they probe: `style`, `detail`, `synonym`, `count`,
+  `color`, `negation`.
+- `make eval`: Recall@5 and MRR for keyword / vector / hybrid, overall and **per category**.
+
+| mode | Recall@5 | MRR | style | detail | synonym |
+|---|---|---|---|---|---|
+| keyword | 0.717 | 0.722 | 0.33 | 1.00 | 0.00 |
+| vector (CLIP) | 0.989 | 0.926 | 1.00 | 0.83 | 1.00 |
+| **hybrid** | **0.989** | **0.940** | 0.83 | 1.00 | 1.00 |
+
+Decisions backed by experiments live in [`docs/decisions/`](docs/decisions/):
+
+- [ADR 0001: Don't add caption embeddings](docs/decisions/0001-no-caption-embeddings.md). Embedding the keyframe
+  captions as a third retriever changed 2 of 36 queries (one better, one worse) and lowered hard-query MRR
+  (0.917 → 0.902). Keyword and CLIP already complement each other, and caption embeddings inherit caption errors.
+  Reproduce: `make experiment-captions` → [`eval/results/caption_embeddings.json`](eval/results/caption_embeddings.json).
+
 Requires `PEXELS_API_KEY` in `.env` (free at https://www.pexels.com/api/). Attribution (author, page URL) is stored per video.
 
 ## Local development
@@ -101,6 +136,17 @@ src/
   services/indexing/   # Postgres rows -> OpenSearch documents; index_video()
   services/search/     # quote parsing, query builder, phrase locator (word times), SearchService
   worker/              # Celery app + tasks (video.download_pexels, video.process, index.rebuild)
+  services/embeddings/ # client for the embedding service
+  services/captioning/ # Ollama vision-model captioner
+  services/processing/visual.py  # keyframes -> vectors + captions (pipeline + backfill)
+  services/search/fusion.py      # Reciprocal Rank Fusion
+  db/migrations/       # Alembic migrations + startup runner
+embedder/              # CLIP embedding service (own image: torch CPU + open_clip)
+eval/queries.json      # labelled search queries (relevance by Pexels id, with categories)
+eval/results/          # saved experiment results (evidence for docs/decisions)
+docs/decisions/        # architecture decision records (ADRs)
+scripts/evaluate_search.py  # Recall@k / MRR per search mode and category (make eval)
+scripts/experiment_caption_embeddings.py  # caption-embedding experiment (make experiment-captions)
 airflow/dags/          # pexels_ingestion DAG
 infra/airflow/start.sh # creates the airflow metadata DB, runs `airflow standalone`
 infra/seaweedfs/s3.json  # local S3 credentials (dev only; must match .env)

@@ -91,6 +91,10 @@ class Segment(Base):
     words: Mapped[list | None] = mapped_column(JSON)  # speech: [{"word", "start", "end", "prob"}]
     frame_key: Mapped[str | None] = mapped_column(Text)  # visual: S3 key of the keyframe
     frame_time_sec: Mapped[float | None] = mapped_column(Float)  # visual: where the keyframe was taken
+    caption: Mapped[str | None] = mapped_column(Text)  # visual: one-sentence description of the keyframe
+    image_embedding: Mapped[list | None] = mapped_column(JSON)  # visual: CLIP vector of the keyframe
+    embedding_model: Mapped[str | None] = mapped_column(String(64))  # which model produced image_embedding
+    caption_model: Mapped[str | None] = mapped_column(String(64))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
 
     video: Mapped[Video] = relationship(back_populates="segments")

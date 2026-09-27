@@ -1,6 +1,6 @@
 from src.models import Segment, Video
 from src.services.indexing import segment_documents
-from src.services.opensearch import INDEX_BODY
+from src.services.opensearch import build_index_body
 
 
 def test_documents_denormalise_video_fields_and_match_the_strict_mapping():
@@ -24,5 +24,5 @@ def test_documents_denormalise_video_fields_and_match_the_strict_mapping():
     assert [d["segment_id"] for d in docs] == ["s1", "s2"]
     assert docs[0]["video_title"] == "Dogs playing"  # visual segments findable by title until Week 4 captions
     assert docs[1]["words"][0]["word"] == "hello"
-    mapped = set(INDEX_BODY["mappings"]["properties"])
+    mapped = set(build_index_body(512)["mappings"]["properties"])
     assert all(set(d) <= mapped for d in docs)  # "dynamic: strict" would reject unknown fields

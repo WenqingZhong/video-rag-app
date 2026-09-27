@@ -3,6 +3,7 @@ from opensearchpy.exceptions import OpenSearchException
 
 from src.dependencies import SearchDep, StorageDep
 from src.schemas.api.search import SearchHitOut, SearchRequest, SearchResponse, VideoRef
+from src.services.search.service import SearchUnavailable
 
 router = APIRouter(tags=["Search"])
 
@@ -11,7 +12,8 @@ PLAY_PADDING_SEC = 1.0  # a little context before/after the matched words
 
 @router.post("/search", response_model=SearchResponse)
 def search(body: SearchRequest, service: SearchDep, storage: StorageDep) -> SearchResponse:
-    """Quoted text → phrase search over transcripts (exact → slop → fuzzy). Otherwise keyword search (BM25)."""
+    """Quoted text → phrase search over transcripts (exact → slop → fuzzy).
+    Otherwise hybrid: keyword (BM25 over transcripts, captions, titles) + vector (CLIP over keyframes), fused with RRF."""
     try:
         result = service.search(
             body.query,
@@ -20,8 +22,9 @@ def search(body: SearchRequest, service: SearchDep, storage: StorageDep) -> Sear
             source=body.source,
             size=body.size,
             group_by_video=body.group_by_video,
+            mode=body.mode,
         )
-    except OpenSearchException as exc:
+    except (OpenSearchException, SearchUnavailable) as exc:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=f"Search unavailable: {exc}") from exc
 
     hits = []
@@ -51,10 +54,19 @@ def search(body: SearchRequest, service: SearchDep, storage: StorageDep) -> Sear
                 matched_text=hit.matched_text,
                 match_score=hit.match_score,
                 score=hit.score,
+                scores=hit.scores,
                 text=doc.get("text"),
+                caption=doc.get("caption"),
                 highlight=hit.highlight,
                 play_url=play_url,
                 frame_url=storage.presigned_url(doc["frame_key"]) if doc.get("frame_key") else None,
             )
         )
-    return SearchResponse(query=body.query, phrase=result.parsed.phrase, strategy=result.strategy, total=len(hits), hits=hits)
+    return SearchResponse(
+        query=body.query,
+        phrase=result.parsed.phrase,
+        strategy=result.strategy,
+        visual_query=result.visual_query,
+        total=len(hits),
+        hits=hits,
+    )

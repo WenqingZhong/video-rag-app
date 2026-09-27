@@ -1,6 +1,12 @@
-"""Index definition for segment documents. One document = one segment (a searchable moment of a video)."""
+"""Index definition for segment documents. One document = one segment (a searchable moment of a video).
 
-INDEX_VERSION = 1
+Bump INDEX_VERSION whenever the mapping changes: POST /admin/reindex then builds the new versioned index
+from Postgres and switches the alias to it atomically (blue/green), keeping the old one for rollback.
+"""
+
+import copy
+
+INDEX_VERSION = 2  # v1: Week 3 (text only) · v2: Week 4 (+ caption, CLIP image embedding)
 
 
 def versioned_index_name(alias: str, version: int = INDEX_VERSION) -> str:
@@ -8,11 +14,16 @@ def versioned_index_name(alias: str, version: int = INDEX_VERSION) -> str:
     return f"{alias}_v{version}"
 
 
-INDEX_BODY = {
+def parse_version(index_name: str) -> int | None:
+    suffix = index_name.rsplit("_v", 1)[-1]
+    return int(suffix) if suffix.isdigit() else None
+
+
+_BASE_BODY = {
     "settings": {
         "number_of_shards": 1,
         "number_of_replicas": 0,  # single node locally; production sets >= 1
-        "index.knn": True,  # can only be set at creation: enables vector fields in Week 4 without a rebuild
+        "index.knn": True,  # enables vector fields; can only be set at creation
         "analysis": {
             "analyzer": {
                 # Keeps every word ("is", "the") and its position: required for exact phrase matching of quotes.
@@ -38,6 +49,11 @@ INDEX_BODY = {
             "words": {"type": "object", "enabled": False},  # stored for exact timings, not searchable
             "frame_key": {"type": "keyword", "index": False},
             "frame_time_sec": {"type": "float", "index": False},
+            # Week 4: what the keyframe shows, as words (keyword search) and as a vector (semantic search)
+            "caption": {"type": "text", "analyzer": "english"},
+            "image_embedding": None,  # filled in by build_index_body (dimension comes from settings)
+            "embedding_model": {"type": "keyword"},
+            "caption_model": {"type": "keyword"},
             # Denormalised video fields: filter/rank without joins, render results without a DB round trip
             "video_title": {"type": "text", "analyzer": "english", "fields": {"raw": {"type": "keyword"}}},
             "video_source": {"type": "keyword"},
@@ -51,3 +67,20 @@ INDEX_BODY = {
         },
     },
 }
+
+
+def build_index_body(embedding_dim: int) -> dict:
+    body = copy.deepcopy(_BASE_BODY)
+    body["mappings"]["properties"]["image_embedding"] = {
+        "type": "knn_vector",
+        "dimension": embedding_dim,
+        # HNSW graph: approximate nearest-neighbour search in milliseconds instead of comparing every vector.
+        # Lucene engine: supports filters (video_id, source) inside the kNN search itself.
+        "method": {
+            "name": "hnsw",
+            "space_type": "cosinesimil",
+            "engine": "lucene",
+            "parameters": {"m": 16, "ef_construction": 128},
+        },
+    }
+    return body

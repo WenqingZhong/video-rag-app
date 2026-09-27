@@ -7,6 +7,8 @@ from sqlalchemy.orm import Session
 from src.config import Settings
 from src.db.interfaces.base import BaseDatabase
 from src.services.cache import CacheClient
+from src.services.captioning import Captioner
+from src.services.embeddings import EmbeddingClient
 from src.services.ingestion import IngestionService
 from src.services.opensearch import OpenSearchService
 from src.services.pexels import PexelsClient
@@ -49,11 +51,20 @@ def get_opensearch_service(request: Request) -> OpenSearchService:
     return service
 
 
+def get_embedding_client(request: Request) -> EmbeddingClient | None:
+    return getattr(request.app.state, "embedding_client", None)
+
+
+def get_captioner(request: Request) -> Captioner | None:
+    return getattr(request.app.state, "captioner", None)
+
+
 def get_search_service(
     opensearch: Annotated[OpenSearchService, Depends(get_opensearch_service)],
     settings: Annotated[Settings, Depends(get_settings)],
+    embedder: Annotated[EmbeddingClient | None, Depends(get_embedding_client)],
 ) -> SearchService:
-    return SearchService(opensearch, settings)
+    return SearchService(opensearch, settings, embedder=embedder)
 
 
 def _enqueue_process(video_id: str) -> str:
@@ -85,3 +96,5 @@ PexelsDep = Annotated[PexelsClient, Depends(get_pexels_client)]
 IngestionDep = Annotated[IngestionService, Depends(get_ingestion_service)]
 OpenSearchDep = Annotated[OpenSearchService, Depends(get_opensearch_service)]
 SearchDep = Annotated[SearchService, Depends(get_search_service)]
+EmbedderDep = Annotated[EmbeddingClient | None, Depends(get_embedding_client)]
+CaptionerDep = Annotated[Captioner | None, Depends(get_captioner)]

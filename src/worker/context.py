@@ -4,8 +4,11 @@ from functools import lru_cache
 
 from src.config import get_settings
 from src.db.factory import make_database
+from src.services.captioning import make_captioner
+from src.services.embeddings import make_embedding_client
 from src.services.opensearch import make_opensearch_service
 from src.services.processing.transcription import Transcriber
+from src.services.processing.visual import VisualEnricher
 from src.services.storage import make_storage_client
 
 
@@ -34,3 +37,9 @@ def get_opensearch():
     service = make_opensearch_service(get_settings())
     service.ensure_index()
     return service
+
+
+@lru_cache
+def get_enricher() -> VisualEnricher:
+    settings = get_settings()
+    return VisualEnricher(make_embedding_client(settings), make_captioner(settings))

@@ -1,0 +1,309 @@
+{
+  "description": "Search relevance labels. Relevance is per video, by Pexels id (stable across databases), set from each video's keyframes and captions (checked visually), not only its title. Categories: basic (Week 4 baseline), style (camera/look, not in captions), count, detail, color, synonym, negation.",
+  "queries": [
+    {
+      "query": "give me a clip of a dog",
+      "relevant": [
+        "10587035",
+        "10976377",
+        "36609977",
+        "5340598",
+        "26864498"
+      ],
+      "category": "basic"
+    },
+    {
+      "query": "puppies",
+      "relevant": [
+        "10587035"
+      ],
+      "category": "basic"
+    },
+    {
+      "query": "a kitten resting",
+      "relevant": [
+        "4009842",
+        "11741208"
+      ],
+      "note": "meaning: 'kitten' is in no title",
+      "category": "basic"
+    },
+    {
+      "query": "ocean waves",
+      "relevant": [
+        "6748729",
+        "9620654",
+        "36301470"
+      ],
+      "category": "basic"
+    },
+    {
+      "query": "sandy beach",
+      "relevant": [
+        "33312503",
+        "36301470",
+        "6748729"
+      ],
+      "category": "basic"
+    },
+    {
+      "query": "birds in the sky",
+      "relevant": [
+        "13456511"
+      ],
+      "category": "basic"
+    },
+    {
+      "query": "a colourful parrot-like bird",
+      "relevant": [
+        "35012714"
+      ],
+      "note": "meaning: it's a turaco",
+      "category": "basic"
+    },
+    {
+      "query": "busy city streets at night",
+      "relevant": [
+        "10433645",
+        "3555556"
+      ],
+      "category": "basic"
+    },
+    {
+      "query": "cars on a road",
+      "relevant": [
+        "10433645",
+        "3555556",
+        "37505403",
+        "31220532"
+      ],
+      "category": "basic"
+    },
+    {
+      "query": "someone chopping vegetables",
+      "relevant": [
+        "37848043"
+      ],
+      "category": "basic"
+    },
+    {
+      "query": "cooking food in a pan",
+      "relevant": [
+        "37876503",
+        "37848043"
+      ],
+      "category": "basic"
+    },
+    {
+      "query": "people having a meeting",
+      "relevant": [
+        "8716795",
+        "35315590"
+      ],
+      "note": "meaning: titles say 'conference' / 'discussion'",
+      "category": "basic"
+    },
+    {
+      "query": "sunlight in the woods",
+      "relevant": [
+        "38978881",
+        "11265968"
+      ],
+      "note": "meaning: titles say 'forest'",
+      "category": "basic"
+    },
+    {
+      "query": "animals",
+      "relevant": [
+        "10587035",
+        "10976377",
+        "36609977",
+        "5340598",
+        "26864498",
+        "4009842",
+        "11741208",
+        "13456511",
+        "35012714"
+      ],
+      "note": "meaning: a category, no title says 'animal'",
+      "category": "basic"
+    },
+    {
+      "query": "car dashboard with navigation",
+      "relevant": [
+        "37505403"
+      ],
+      "category": "basic"
+    },
+    {
+      "query": "sea water",
+      "relevant": [
+        "6748729",
+        "9620654",
+        "36301470",
+        "33312503"
+      ],
+      "category": "basic"
+    },
+    {
+      "query": "a bird's-eye view of a city at night",
+      "relevant": [
+        "10433645"
+      ],
+      "category": "style",
+      "note": "'birds' is a keyword trap: the bird videos match the word"
+    },
+    {
+      "query": "drone footage above the coast",
+      "relevant": [
+        "33312503"
+      ],
+      "category": "style",
+      "note": "caption says 'sandy beach', never 'aerial' or 'drone'"
+    },
+    {
+      "query": "wintry weather",
+      "relevant": [
+        "10976377"
+      ],
+      "category": "style",
+      "note": "snow is in the frame; 'winter' only in the title"
+    },
+    {
+      "query": "several young dogs in a cardboard box",
+      "relevant": [
+        "10587035"
+      ],
+      "category": "count"
+    },
+    {
+      "query": "two dogs lying next to each other",
+      "relevant": [
+        "5340598",
+        "36609977"
+      ],
+      "category": "count"
+    },
+    {
+      "query": "a single dog looking at the camera",
+      "relevant": [
+        "10976377",
+        "26864498"
+      ],
+      "category": "count"
+    },
+    {
+      "query": "three people talking",
+      "relevant": [
+        "35315590",
+        "8716795"
+      ],
+      "category": "count"
+    },
+    {
+      "query": "a dog under a metal structure",
+      "relevant": [
+        "5340598"
+      ],
+      "category": "detail"
+    },
+    {
+      "query": "a cat wrapped in a blanket",
+      "relevant": [
+        "11741208",
+        "4009842"
+      ],
+      "category": "detail"
+    },
+    {
+      "query": "someone pouring milk",
+      "relevant": [
+        "37876503"
+      ],
+      "category": "detail"
+    },
+    {
+      "query": "a bird eating from a metal bowl",
+      "relevant": [
+        "35012714"
+      ],
+      "category": "detail"
+    },
+    {
+      "query": "a phone mounted on the dashboard",
+      "relevant": [
+        "37505403"
+      ],
+      "category": "detail",
+      "note": "caption says 'GPS device'; the frame shows a phone"
+    },
+    {
+      "query": "a red traffic light",
+      "relevant": [
+        "3555556"
+      ],
+      "category": "detail"
+    },
+    {
+      "query": "an orange car",
+      "relevant": [
+        "31220532"
+      ],
+      "category": "color"
+    },
+    {
+      "query": "turquoise water",
+      "relevant": [
+        "36301470"
+      ],
+      "category": "color",
+      "note": "caption says 'light blue-green'"
+    },
+    {
+      "query": "canine",
+      "relevant": [
+        "10587035",
+        "10976377",
+        "36609977",
+        "5340598",
+        "26864498"
+      ],
+      "category": "synonym"
+    },
+    {
+      "query": "feline",
+      "relevant": [
+        "4009842",
+        "11741208"
+      ],
+      "category": "synonym"
+    },
+    {
+      "query": "seashore",
+      "relevant": [
+        "33312503",
+        "36301470",
+        "6748729"
+      ],
+      "category": "synonym"
+    },
+    {
+      "query": "automobiles",
+      "relevant": [
+        "31220532",
+        "37505403",
+        "10433645"
+      ],
+      "category": "synonym"
+    },
+    {
+      "query": "a beach with no people",
+      "relevant": [
+        "36301470",
+        "6748729"
+      ],
+      "category": "negation",
+      "note": "33312503 has people and should NOT be found"
+    }
+  ]
+}

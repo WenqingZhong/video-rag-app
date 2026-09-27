@@ -10,6 +10,8 @@ from src.config import get_settings
 from src.db.factory import make_database
 from src.routers import admin, ping, search, videos
 from src.services.cache import make_cache_client
+from src.services.captioning import make_captioner
+from src.services.embeddings import make_embedding_client
 from src.services.opensearch import make_opensearch_service
 from src.services.pexels import make_pexels_client
 from src.services.storage import make_storage_client
@@ -48,6 +50,10 @@ async def lifespan(app: FastAPI):
     except OpenSearchException as exc:
         logger.warning("OpenSearch unavailable during startup: %s", exc)
 
+    # Clients only: no network call at startup, so the API boots even if these services are still loading.
+    app.state.embedding_client = make_embedding_client(settings)
+    app.state.captioner = make_captioner(settings)
+
     # Placeholder for later weeks
     app.state.llm_service = None
 
@@ -57,6 +63,8 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down Video RAG API...")
     app.state.cache_client.close()
     app.state.opensearch_service.close()
+    app.state.embedding_client.close()
+    app.state.captioner.close()
     if app.state.pexels_client is not None:
         app.state.pexels_client.close()
     app.state.database.teardown()

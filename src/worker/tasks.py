@@ -15,7 +15,7 @@ from src.services.indexing import index_video
 from src.services.ingestion.service import raw_key
 from src.services.processing.pipeline import VideoPipeline
 from src.worker.celery_app import celery_app
-from src.worker.context import get_database, get_opensearch, get_storage, get_transcriber
+from src.worker.context import get_database, get_enricher, get_opensearch, get_storage, get_transcriber
 
 logger = logging.getLogger(__name__)
 
@@ -102,17 +102,52 @@ def process_video(self: Task, video_id: str) -> dict:
             get_settings(),
             transcriber_factory=get_transcriber,
             indexer=lambda vid: index_video(get_database(), get_opensearch(), vid),
+            enricher=get_enricher(),
         )
         return pipeline.process(video_id)
     except Exception as exc:  # noqa: BLE001 - classified in _retry_or_fail
         _retry_or_fail(self, video_id, exc)
 
 
+@celery_app.task(name="video.enrich_visual", bind=True, max_retries=MAX_RETRIES)
+def enrich_visual(self: Task, video_id: str, force: bool = False) -> dict:
+    """Add CLIP vectors + captions to an already-processed video, from the keyframes stored in S3.
+
+    Much cheaper than reprocessing (no download, scene detection or Whisper). The video stays `ready`
+    and searchable throughout; only its visual segments are updated, then the video is re-indexed.
+    """
+    try:
+        with get_database().get_session() as session:
+            segments = VideoRepository(session).list_segments(video_id, kind="visual")
+            todo = [
+                (s.id, s.frame_key) for s in segments if s.frame_key and (force or s.image_embedding is None or s.caption is None)
+            ]
+        if not todo:
+            return {"video_id": video_id, "enriched": 0}
+
+        images = [get_storage().get_bytes(key) for _, key in todo]
+        fields = get_enricher().enrich(images)
+        with get_database().get_session() as session:
+            repo = VideoRepository(session)
+            for (segment_id, _), values in zip(todo, fields, strict=True):
+                repo.update_segment(segment_id, **values)
+            session.commit()
+        indexed = index_video(get_database(), get_opensearch(), video_id)
+        return {"video_id": video_id, "enriched": len(todo), "indexed": indexed}
+    except Exception as exc:
+        # Unlike processing, a failed enrichment must NOT mark a ready video as failed: it stays searchable as before.
+        if isinstance(exc, TRANSIENT_ERRORS) and self.request.retries < MAX_RETRIES:
+            raise self.retry(exc=exc, countdown=10 * 2**self.request.retries) from exc
+        logger.exception("enrich_visual(%s) failed", video_id)
+        raise
+
+
 @celery_app.task(name="index.rebuild", bind=True)
 def rebuild_index(self: Task, video_id: str | None = None) -> dict:
     """Re-copy segments from Postgres into OpenSearch: every ready video, or just one.
 
-    The index is derived data, so this is how it's backfilled or repaired (e.g. after a mapping change).
+    If the live index is an older version than the code's mapping, this is a blue/green migration:
+    build the new versioned index, fill it, then switch the alias atomically (old index kept for rollback).
     """
     with get_database().get_session() as session:
         repo = VideoRepository(session)
@@ -124,10 +159,25 @@ def rebuild_index(self: Task, video_id: str | None = None) -> dict:
 
     opensearch = get_opensearch()
     indexed, failed = 0, []
-    for vid in ids:
-        try:
-            indexed += index_video(get_database(), opensearch, vid)
-        except Exception as exc:  # one bad video must not abort the rebuild
-            logger.exception("rebuild: indexing %s failed", vid)
-            failed.append({"video_id": vid, "error": f"{type(exc).__name__}: {exc}"})
-    return {"videos": len(ids) - len(failed), "segments": indexed, "failed": failed, "index_total": opensearch.count()}
+
+    def fill(index: str | None = None) -> None:
+        nonlocal indexed
+        for vid in ids:
+            try:
+                indexed += index_video(get_database(), opensearch, vid, index=index)
+            except Exception as exc:  # one bad video must not abort the rebuild
+                logger.exception("rebuild: indexing %s failed", vid)
+                failed.append({"video_id": vid, "error": f"{type(exc).__name__}: {exc}"})
+
+    migration = None
+    if video_id is None and opensearch.is_outdated():
+        migration = opensearch.migrate(fill)
+    else:
+        fill()
+    return {
+        "videos": len(ids) - len(failed),
+        "segments": indexed,
+        "failed": failed,
+        "index_total": opensearch.count(),
+        "migration": migration,
+    }
