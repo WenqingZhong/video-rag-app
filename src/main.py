@@ -3,21 +3,28 @@ import os
 from contextlib import asynccontextmanager
 
 from botocore.exceptions import BotoCoreError, ClientError
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from opensearchpy.exceptions import OpenSearchException
 
 from src.config import get_settings
 from src.db.factory import make_database
-from src.routers import admin, ask, clips, ping, search, videos
-from src.services.cache import make_cache_client
+from src.routers import admin, ask, clips, ping, search, traces, videos
+from src.services.answering.cache import AnswerCache
+from src.services.cache import IndexVersion, make_cache_client
 from src.services.captioning import make_captioner
 from src.services.embeddings import make_embedding_client
+from src.services.metrics import render as render_metrics
 from src.services.opensearch import make_opensearch_service
 from src.services.pexels import make_pexels_client
 from src.services.storage import make_storage_client
+from src.services.tracing import TraceStore
+from src.services.tracing.logs import LOG_FORMAT, add_trace_ids
+from src.services.tracing.middleware import TracingMiddleware
 from src.services.understanding import make_query_understanding
+from src.services.usage import make_usage_recorder
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
+add_trace_ids(logging.getLogger())  # "[<trace id>]" on every line logged while handling a request
 logger = logging.getLogger(__name__)
 
 API_PREFIX = "/api/v1"
@@ -31,6 +38,7 @@ async def lifespan(app: FastAPI):
     settings = get_settings()
     app.state.settings = settings
     app.state.database = make_database()
+    app.state.trace_store = TraceStore(app.state.database) if settings.tracing_enabled else None
     app.state.cache_client = make_cache_client(settings)
     app.state.storage_client = make_storage_client(settings)
 
@@ -54,7 +62,14 @@ async def lifespan(app: FastAPI):
     # Clients only: no network call at startup, so the API boots even if these services are still loading.
     app.state.embedding_client = make_embedding_client(settings)
     app.state.captioner = make_captioner(settings)
-    app.state.understanding = make_query_understanding(settings)  # LLM client only: no call at startup
+    # LLM client only: no call at startup. Each call's tokens go to the llm_calls table.
+    # Each model call's tokens go to llm_calls; understood requests are cached in Redis.
+    recorder = make_usage_recorder(settings, app.state.database, origin="api")
+    app.state.understanding = make_query_understanding(settings, recorder, cache=app.state.cache_client)
+    # Whole answers, per index version (bumped by the workers on every index write).
+    app.state.answer_cache = (
+        AnswerCache(app.state.cache_client, IndexVersion(app.state.cache_client), settings) if settings.cache_enabled else None
+    )
 
     # Placeholder for later weeks
     app.state.llm_service = None
@@ -82,12 +97,22 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(TracingMiddleware)  # every request is a trace; its id comes back as X-Request-ID
+
 app.include_router(ping.router, prefix=API_PREFIX)
 app.include_router(videos.router, prefix=API_PREFIX)
 app.include_router(search.router, prefix=API_PREFIX)
 app.include_router(admin.router, prefix=API_PREFIX)
 app.include_router(clips.router, prefix=API_PREFIX)
 app.include_router(ask.router, prefix=API_PREFIX)
+app.include_router(traces.router, prefix=API_PREFIX)
+
+
+@app.get("/metrics", include_in_schema=False)
+def metrics() -> Response:
+    """Prometheus scrape endpoint (request rates, latency, /ask results, cache hits)."""
+    body, content_type = render_metrics()
+    return Response(body, media_type=content_type)
 
 
 @app.get("/", include_in_schema=False)

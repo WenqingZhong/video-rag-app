@@ -33,3 +33,5 @@ celery_app.conf.update(
     # video-processing job on the default "celery" queue.
     task_routes={"clip.cut": {"queue": "clips"}},
 )
+
+import src.worker.tracing  # noqa: F401 - connect the tracing signals in every process that uses Celery

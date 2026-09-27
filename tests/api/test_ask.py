@@ -4,6 +4,7 @@ from src.services.answering import Answer, AnsweredClip
 from src.services.clips import ClipRange
 from src.services.search import SearchHit
 from src.services.understanding import Intent, Understanding
+from src.services.usage import LLMCall
 
 
 class FakeAsk:
@@ -22,6 +23,8 @@ def test_ask_returns_clip_url_answer_and_what_was_understood(client):
         hit, ClipRange(8.73, 11.61), "clips/v1/000008730-000011610.mp4", False, 'At 0:09–0:11 in "host_talk": "…"'
     )
     understood = Understanding(Intent(type="quote", phrase="AI is changing everything"), "llm", 1.2, notes=[])
+    understood.llm_call, understood.llm_outcome = LLMCall("understand", "qwen", 423, 26), "accepted"
+    understood.cost_usd = 0.000553
     fake = FakeAsk(Answer(understood, "answered", "exact_phrase", clip.explanation, [clip], {"total": 2.0}))
     app.dependency_overrides[get_ask_service] = lambda: fake
 
@@ -31,6 +34,10 @@ def test_ask_returns_clip_url_answer_and_what_was_understood(client):
     assert body["status"] == "answered" and body["understood"]["intent"]["phrase"] == "AI is changing everything"
     assert body["clips"][0]["url"] == "http://s3.test/clips/v1/000008730-000011610.mp4"
     assert body["clips"][0]["duration_sec"] == 2.88
+    assert body["usage"] == {
+        "prompt_tokens": 423, "output_tokens": 26, "total_tokens": 449, "cost_usd": 0.000553, "outcome": "accepted",
+        "saved_tokens": 0, "saved_cost_usd": 0.0,
+    }  # fmt: skip
 
 
 def test_ask_needs_subject_has_no_clips(client):
@@ -40,6 +47,7 @@ def test_ask_needs_subject_has_no_clips(client):
     )
     body = client.post("/api/v1/ask", json={"query": "exclude people"}).json()
     assert body["status"] == "needs_subject" and body["clips"] == []
+    assert body["usage"]["total_tokens"] == 0 and body["usage"]["outcome"] is None  # rules only: no tokens
 
 
 def test_ask_validates(client):

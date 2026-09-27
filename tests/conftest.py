@@ -51,6 +51,15 @@ class SQLiteDatabase:
         self.engine.dispose()
 
 
+@pytest.fixture(autouse=True)
+def queued(monkeypatch) -> list[tuple[str, str]]:
+    """Tests never reach the real Celery broker: a running worker would pick the job up (and fail on a test video)."""
+    jobs: list[tuple[str, str]] = []
+    monkeypatch.setattr("src.dependencies._enqueue_process", lambda video_id: jobs.append(("process", video_id)) or "job-1")
+    monkeypatch.setattr("src.dependencies._enqueue_download", lambda video_id: jobs.append(("download", video_id)) or "job-2")
+    return jobs
+
+
 @pytest.fixture
 def settings() -> Settings:
     return Settings(_env_file=None)

@@ -3,9 +3,11 @@ from fastapi import APIRouter, HTTPException, status
 from opensearchpy.exceptions import OpenSearchException
 
 from src.dependencies import AskDep, StorageDep
-from src.schemas.api.ask import AskRequest, AskResponse, ClipOut, IntentOut, Understood
+from src.schemas.api.ask import AskRequest, AskResponse, ClipOut, IntentOut, Understood, UsageOut
 from src.schemas.api.search import VideoRef
+from src.services.metrics import observe_ask
 from src.services.search.service import SearchUnavailable
+from src.services.tracing import current_trace_id
 
 router = APIRouter(tags=["Ask"])
 
@@ -46,7 +48,9 @@ def ask(body: AskRequest, service: AskDep, storage: StorageDep) -> AskResponse:
             )
         )
     understood = answer.understanding
+    observe_ask(answer.status, understood.source, answer.cache, answer.timings)
     return AskResponse(
+        request_id=current_trace_id(),
         query=body.query,
         status=answer.status,
         answer=answer.answer,
@@ -56,4 +60,22 @@ def ask(body: AskRequest, service: AskDep, storage: StorageDep) -> AskResponse:
         strategy=answer.strategy,
         clips=clips,
         timings=answer.timings,
+        usage=_usage(understood),
+        cache=answer.cache,
+    )
+
+
+def _usage(understood) -> UsageOut:
+    call = understood.llm_call
+    if call is None:
+        avoided = understood.avoided_call  # a cache hit: nothing spent, this much saved
+        if avoided is None:
+            return UsageOut()
+        return UsageOut(saved_tokens=avoided.total_tokens, saved_cost_usd=understood.saved_cost_usd)
+    return UsageOut(
+        prompt_tokens=call.prompt_tokens,
+        output_tokens=call.output_tokens,
+        total_tokens=call.total_tokens,
+        cost_usd=understood.cost_usd,
+        outcome=understood.llm_outcome,
     )

@@ -26,6 +26,11 @@
       "sources": {
         "rules": 58
       },
+      "tokens": {
+        "total": 0,
+        "per_request": 0.0,
+        "cost_usd": 0.0
+      },
       "rows": [
         {
           "request": "Give me the part where the host says ‘AI is changing everything’",
@@ -43,6 +48,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -63,6 +70,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -83,6 +92,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -103,6 +114,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -123,6 +136,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -143,6 +158,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -163,6 +180,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -183,6 +202,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -203,6 +224,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -223,6 +246,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -243,6 +268,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -263,6 +290,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -283,6 +312,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -303,6 +334,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -323,6 +356,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -343,6 +378,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -363,6 +400,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -383,6 +422,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -403,6 +444,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -423,6 +466,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -445,6 +490,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -467,6 +514,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -489,6 +538,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -511,6 +562,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -533,6 +586,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -555,6 +610,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -577,6 +634,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -599,6 +658,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -622,6 +683,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -644,6 +707,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -664,6 +729,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -684,6 +751,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -704,6 +773,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -724,6 +795,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -744,6 +817,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -764,6 +839,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -784,6 +861,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -804,6 +883,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -826,6 +907,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -848,6 +931,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -868,6 +953,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -888,6 +975,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -908,6 +997,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -928,6 +1019,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -948,6 +1041,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -968,6 +1063,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -990,6 +1087,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -1010,6 +1109,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -1030,6 +1131,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -1050,6 +1153,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -1072,6 +1177,8 @@
             "has_subject": false
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -1094,6 +1201,8 @@
             "has_subject": false
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -1114,6 +1223,8 @@
             "has_subject": false
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -1136,6 +1247,8 @@
             "has_subject": false
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -1158,6 +1271,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -1178,6 +1293,8 @@
             "has_subject": false
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -1198,6 +1315,8 @@
             "has_subject": false
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -1218,6 +1337,8 @@
             "has_subject": false
           },
           "source": "rules",
+          "outcome": null,
+          "tokens": 0,
           "notes": [
             "LLM disabled"
           ]
@@ -1242,13 +1363,18 @@
         "no_subject": 0.88
       },
       "seconds": {
-        "p50": 1.19,
-        "max": 3.61
+        "p50": 1.84,
+        "max": 3.35
       },
       "sources": {
         "llm": 44,
         "llm+rules": 11,
         "rules": 3
+      },
+      "tokens": {
+        "total": 25969,
+        "per_request": 447.7,
+        "cost_usd": 0.031469
       },
       "rows": [
         {
@@ -1267,6 +1393,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 455,
           "notes": []
         },
         {
@@ -1285,6 +1413,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 449,
           "notes": []
         },
         {
@@ -1303,6 +1433,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 448,
           "notes": []
         },
         {
@@ -1321,6 +1453,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 453,
           "notes": []
         },
         {
@@ -1339,6 +1473,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 452,
           "notes": []
         },
         {
@@ -1357,6 +1493,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 449,
           "notes": []
         },
         {
@@ -1375,6 +1513,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 450,
           "notes": []
         },
         {
@@ -1393,6 +1533,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 454,
           "notes": []
         },
         {
@@ -1411,6 +1553,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 450,
           "notes": []
         },
         {
@@ -1429,6 +1573,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 446,
           "notes": []
         },
         {
@@ -1447,6 +1593,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 444,
           "notes": []
         },
         {
@@ -1465,6 +1613,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 448,
           "notes": []
         },
         {
@@ -1483,6 +1633,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 446,
           "notes": []
         },
         {
@@ -1501,6 +1653,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 444,
           "notes": []
         },
         {
@@ -1519,6 +1673,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 452,
           "notes": []
         },
         {
@@ -1537,6 +1693,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 447,
           "notes": []
         },
         {
@@ -1555,6 +1713,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 443,
           "notes": []
         },
         {
@@ -1573,6 +1733,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 443,
           "notes": []
         },
         {
@@ -1591,6 +1753,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 453,
           "notes": []
         },
         {
@@ -1609,6 +1773,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 449,
           "notes": []
         },
         {
@@ -1629,6 +1795,8 @@
             "has_subject": true
           },
           "source": "llm+rules",
+          "outcome": "adjusted",
+          "tokens": 444,
           "notes": [
             "exclusions added by rules: ['people']"
           ]
@@ -1651,6 +1819,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 446,
           "notes": []
         },
         {
@@ -1671,6 +1841,8 @@
             "has_subject": true
           },
           "source": "llm+rules",
+          "outcome": "adjusted",
+          "tokens": 444,
           "notes": [
             "exclusions added by rules: ['animals']"
           ]
@@ -1693,6 +1865,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 446,
           "notes": []
         },
         {
@@ -1713,6 +1887,8 @@
             "has_subject": true
           },
           "source": "llm+rules",
+          "outcome": "adjusted",
+          "tokens": 447,
           "notes": [
             "exclusions added by rules: ['fried food']"
           ]
@@ -1735,6 +1911,8 @@
             "has_subject": true
           },
           "source": "llm+rules",
+          "outcome": "adjusted",
+          "tokens": 448,
           "notes": [
             "exclusions added by rules: ['beach']"
           ]
@@ -1757,6 +1935,8 @@
             "has_subject": true
           },
           "source": "llm+rules",
+          "outcome": "adjusted",
+          "tokens": 447,
           "notes": [
             "type topic → visual: no speech word or quote marks in the request",
             "exclusions added by rules: ['kitchen']"
@@ -1780,6 +1960,8 @@
             "has_subject": true
           },
           "source": "llm+rules",
+          "outcome": "adjusted",
+          "tokens": 450,
           "notes": [
             "exclusions added by rules: ['siamese cats']"
           ]
@@ -1803,6 +1985,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 467,
           "notes": []
         },
         {
@@ -1823,6 +2007,8 @@
             "has_subject": true
           },
           "source": "llm+rules",
+          "outcome": "adjusted",
+          "tokens": 445,
           "notes": [
             "exclusions added by rules: ['sky']"
           ]
@@ -1843,6 +2029,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 446,
           "notes": []
         },
         {
@@ -1861,6 +2049,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 449,
           "notes": []
         },
         {
@@ -1879,6 +2069,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "adjusted",
+          "tokens": 451,
           "notes": [
             "type quote → visual: no speech word or quote marks in the request"
           ]
@@ -1899,6 +2091,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 453,
           "notes": []
         },
         {
@@ -1917,6 +2111,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "adjusted",
+          "tokens": 446,
           "notes": [
             "type topic → visual: no speech word or quote marks in the request"
           ]
@@ -1937,6 +2133,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "adjusted",
+          "tokens": 451,
           "notes": [
             "type quote → visual: no speech word or quote marks in the request"
           ]
@@ -1957,6 +2155,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 442,
           "notes": []
         },
         {
@@ -1975,6 +2175,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 447,
           "notes": []
         },
         {
@@ -1995,6 +2197,8 @@
             "has_subject": true
           },
           "source": "llm+rules",
+          "outcome": "adjusted",
+          "tokens": 455,
           "notes": [
             "exclusions added by rules: ['siamese one']"
           ]
@@ -2017,6 +2221,8 @@
             "has_subject": true
           },
           "source": "llm+rules",
+          "outcome": "adjusted",
+          "tokens": 447,
           "notes": [
             "exclusions added by rules: ['sand']"
           ]
@@ -2037,6 +2243,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 443,
           "notes": []
         },
         {
@@ -2055,6 +2263,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 446,
           "notes": []
         },
         {
@@ -2073,6 +2283,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 451,
           "notes": []
         },
         {
@@ -2091,6 +2303,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 451,
           "notes": []
         },
         {
@@ -2109,6 +2323,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "adjusted",
+          "tokens": 447,
           "notes": [
             "type topic → visual: no speech word or quote marks in the request"
           ]
@@ -2129,6 +2345,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 451,
           "notes": []
         },
         {
@@ -2149,6 +2367,8 @@
             "has_subject": true
           },
           "source": "llm+rules",
+          "outcome": "adjusted",
+          "tokens": 452,
           "notes": [
             "exclusions added by rules: ['bowls']"
           ]
@@ -2169,6 +2389,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 445,
           "notes": []
         },
         {
@@ -2187,6 +2409,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "adjusted",
+          "tokens": 444,
           "notes": [
             "type topic → visual: no speech word or quote marks in the request"
           ]
@@ -2207,6 +2431,8 @@
             "has_subject": true
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 449,
           "notes": []
         },
         {
@@ -2227,6 +2453,8 @@
             "has_subject": false
           },
           "source": "rules",
+          "outcome": "rejected",
+          "tokens": 443,
           "notes": [
             "visual text 'a horse running' not in the request's words → rules"
           ]
@@ -2249,6 +2477,8 @@
             "has_subject": false
           },
           "source": "llm+rules",
+          "outcome": "adjusted",
+          "tokens": 441,
           "notes": [
             "no subject: nothing to search for (only what to avoid, or a placeholder like 'something')",
             "exclusions added by rules: ['people']"
@@ -2270,6 +2500,8 @@
             "has_subject": false
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 441,
           "notes": [
             "no subject: nothing to search for (only what to avoid, or a placeholder like 'something')"
           ]
@@ -2292,6 +2524,8 @@
             "has_subject": false
           },
           "source": "llm",
+          "outcome": "accepted",
+          "tokens": 444,
           "notes": [
             "no subject: nothing to search for (only what to avoid, or a placeholder like 'something')"
           ]
@@ -2314,6 +2548,8 @@
             "has_subject": true
           },
           "source": "rules",
+          "outcome": "rejected",
+          "tokens": 451,
           "notes": [
             "visual text 'nothing with cars in it' not in the request's words → rules"
           ]
@@ -2334,6 +2570,8 @@
             "has_subject": false
           },
           "source": "llm",
+          "outcome": "adjusted",
+          "tokens": 439,
           "notes": [
             "type quote → visual: no speech word or quote marks in the request",
             "no subject: nothing to search for (only what to avoid, or a placeholder like 'something')"
@@ -2355,6 +2593,8 @@
             "has_subject": false
           },
           "source": "llm",
+          "outcome": "adjusted",
+          "tokens": 441,
           "notes": [
             "type quote → visual: no speech word or quote marks in the request",
             "no subject: nothing to search for (only what to avoid, or a placeholder like 'something')"
@@ -2376,6 +2616,8 @@
             "has_subject": false
           },
           "source": "rules",
+          "outcome": "rejected",
+          "tokens": 444,
           "notes": [
             "type quote → visual: no speech word or quote marks in the request",
             "visual text 'nothing with cars in it' not in the request's words → rules"

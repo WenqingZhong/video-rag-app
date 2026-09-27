@@ -4,12 +4,14 @@ from functools import lru_cache
 
 from src.config import get_settings
 from src.db.factory import make_database
+from src.services.cache import IndexVersion, make_cache_client
 from src.services.captioning import make_captioner
 from src.services.embeddings import make_embedding_client
 from src.services.opensearch import make_opensearch_service
 from src.services.processing.transcription import Transcriber
 from src.services.processing.visual import VisualEnricher
 from src.services.storage import make_storage_client
+from src.services.usage import make_usage_recorder
 
 
 @lru_cache
@@ -42,4 +44,11 @@ def get_opensearch():
 @lru_cache
 def get_enricher() -> VisualEnricher:
     settings = get_settings()
-    return VisualEnricher(make_embedding_client(settings), make_captioner(settings))
+    recorder = make_usage_recorder(settings, get_database(), origin="worker")
+    return VisualEnricher(make_embedding_client(settings), make_captioner(settings), recorder)
+
+
+@lru_cache
+def get_index_version() -> IndexVersion:
+    """Bumped after every index write, so the API stops serving answers cached before the change."""
+    return IndexVersion(make_cache_client(get_settings()))

@@ -1,0 +1,55 @@
+{
+  "requests": 48,
+  "passes": [
+    {
+      "pass": "1 cold",
+      "requests": 48,
+      "p50_ms": 2158,
+      "p95_ms": 3443,
+      "answer_hits": 0,
+      "understanding_hits": 0,
+      "tokens_spent": 21377,
+      "tokens_saved": 0,
+      "cost_spent_usd": 0.025985,
+      "cost_saved_usd": 0.0
+    },
+    {
+      "pass": "2 repeat (answer cache)",
+      "requests": 48,
+      "p50_ms": 4,
+      "p95_ms": 5,
+      "answer_hits": 48,
+      "understanding_hits": 0,
+      "tokens_spent": 0,
+      "tokens_saved": 21377,
+      "cost_spent_usd": 0.0,
+      "cost_saved_usd": 0.025985
+    },
+    {
+      "pass": "3 max_clips=2 (understanding cache)",
+      "requests": 48,
+      "p50_ms": 55,
+      "p95_ms": 584,
+      "answer_hits": 0,
+      "understanding_hits": 48,
+      "tokens_spent": 0,
+      "tokens_saved": 21377,
+      "cost_spent_usd": 0.0,
+      "cost_saved_usd": 0.025985
+    },
+    {
+      "pass": "4 after re-index",
+      "requests": 10,
+      "p50_ms": 55,
+      "p95_ms": 65,
+      "answer_hits": 0,
+      "understanding_hits": 10,
+      "tokens_spent": 0,
+      "tokens_saved": 4444,
+      "cost_spent_usd": 0.0,
+      "cost_saved_usd": 0.00538
+    }
+  ],
+  "identical": 48,
+  "identical_after_bump": 10
+}

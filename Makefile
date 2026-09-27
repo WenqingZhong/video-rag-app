@@ -1,4 +1,4 @@
-.PHONY: help start stop restart status logs health setup run worker format lint eval eval-intents experiment-captions test test-cov clean
+.PHONY: help start stop restart status logs health setup run worker format lint eval eval-intents eval-cache experiment-captions usage trace dashboards test test-cov clean
 
 help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
@@ -47,6 +47,18 @@ experiment-captions: ## Re-run the caption-embedding experiment (see docs/decisi
 
 eval-intents: ## Request-understanding accuracy (LLM vs rules) on eval/intents.json
 	uv run python scripts/evaluate_intents.py --save eval/results/intents.json
+
+eval-cache: ## What the understanding and answer caches save (needs the stack running)
+	uv run python scripts/evaluate_cache.py --save eval/results/cache.json
+
+usage: ## Tokens consumed by model calls and their estimated cost (from the llm_calls table)
+	uv run python scripts/usage_report.py
+
+dashboards: ## Regenerate the Grafana dashboards (infra/grafana/dashboards) from scripts/build_dashboards.py
+	uv run python scripts/build_dashboards.py
+
+trace: ## Recent traces, or one as a timeline: make trace ID=<X-Request-ID>
+	uv run python scripts/show_trace.py $(ID)
 
 test: ## Run tests
 	uv run pytest

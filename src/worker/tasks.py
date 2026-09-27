@@ -16,8 +16,16 @@ from src.services.indexing import index_video
 from src.services.ingestion.service import raw_key
 from src.services.processing import ffmpeg
 from src.services.processing.pipeline import VideoPipeline
+from src.services.tracing import span
 from src.worker.celery_app import celery_app
-from src.worker.context import get_database, get_enricher, get_opensearch, get_storage, get_transcriber
+from src.worker.context import (
+    get_database,
+    get_enricher,
+    get_index_version,
+    get_opensearch,
+    get_storage,
+    get_transcriber,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +111,7 @@ def process_video(self: Task, video_id: str) -> dict:
             get_storage(),
             get_settings(),
             transcriber_factory=get_transcriber,
-            indexer=lambda vid: index_video(get_database(), get_opensearch(), vid),
+            indexer=lambda vid: index_video(get_database(), get_opensearch(), vid, versions=get_index_version()),
             enricher=get_enricher(),
         )
         return pipeline.process(video_id)
@@ -128,13 +136,13 @@ def enrich_visual(self: Task, video_id: str, force: bool = False) -> dict:
             return {"video_id": video_id, "enriched": 0}
 
         images = [get_storage().get_bytes(key) for _, key in todo]
-        fields = get_enricher().enrich(images)
+        fields = get_enricher().enrich(images, video_id=video_id)
         with get_database().get_session() as session:
             repo = VideoRepository(session)
             for (segment_id, _), values in zip(todo, fields, strict=True):
                 repo.update_segment(segment_id, **values)
             session.commit()
-        indexed = index_video(get_database(), get_opensearch(), video_id)
+        indexed = index_video(get_database(), get_opensearch(), video_id, versions=get_index_version())
         return {"video_id": video_id, "enriched": len(todo), "indexed": indexed}
     except Exception as exc:
         # Unlike processing, a failed enrichment must NOT mark a ready video as failed: it stays searchable as before.
@@ -166,7 +174,7 @@ def rebuild_index(self: Task, video_id: str | None = None) -> dict:
         nonlocal indexed
         for vid in ids:
             try:
-                indexed += index_video(get_database(), opensearch, vid, index=index)
+                indexed += index_video(get_database(), opensearch, vid, index=index, versions=get_index_version())
             except Exception as exc:  # one bad video must not abort the rebuild
                 logger.exception("rebuild: indexing %s failed", vid)
                 failed.append({"video_id": vid, "error": f"{type(exc).__name__}: {exc}"})
@@ -200,9 +208,12 @@ def cut_clip(self: Task, video_id: str, start_sec: float, end_sec: float) -> str
                 raise ValueError(f"video {video_id} has no stored file")
             source_key = video.s3_key
         with tempfile.TemporaryDirectory(prefix="clip-") as tmp:
-            source = storage.download_file(source_key, Path(tmp) / Path(source_key).name)
-            out = ffmpeg.cut_clip(source, clip.start_sec, clip.end_sec, Path(tmp) / "clip.mp4")
-            storage.upload_file(out, key, content_type="video/mp4")
+            with span("s3.download_source"):
+                source = storage.download_file(source_key, Path(tmp) / Path(source_key).name)
+            with span("ffmpeg.cut", duration_sec=clip.duration):
+                out = ffmpeg.cut_clip(source, clip.start_sec, clip.end_sec, Path(tmp) / "clip.mp4")
+            with span("s3.upload_clip"):
+                storage.upload_file(out, key, content_type="video/mp4")
         return key
     except TRANSIENT_ERRORS as exc:
         raise self.retry(exc=exc, countdown=2) from exc

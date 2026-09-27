@@ -101,6 +101,30 @@ request ─▶ understand (qwen2.5vl:3b via Ollama JSON schema → quote | topic
 - `POST /api/v1/search {"understand": true}`: the same understanding, without cutting.
 - `make eval-intents`: understanding accuracy (LLM vs rules) on `eval/intents.json`.
 
+## Monitoring, token usage & caching (Week 6)
+
+| Where | What |
+|---|---|
+| **Grafana** http://localhost:3000 | **Tokens & cost:** tokens consumed, estimated cost, what caching saved, per call, per video · **Requests & latency:** request rate and latency, `/ask` results, rules fallback, cache hit rates, time per step, slowest traces, errors |
+| Prometheus http://localhost:9090 | live request metrics, scraped from the API's `/metrics` |
+| `GET /api/v1/traces`, `/traces/{id}` | recent or slowest traces; one trace as a timeline, API and workers together |
+| every `/ask` response | `request_id` (= trace id, also the `X-Request-ID` header), `usage` (tokens, cost, tokens saved), `cache` (hit / miss) |
+
+- **Tokens:** every model call is a row in `llm_calls` (tokens, time, cost). Cost is an **estimate**: our tokens at a
+  hosted model's list price (`LLM_PRICE_*` in `.env`; the models run locally).
+- **Traces:** every request and Celery task is a trace of timed steps in `trace_spans`; the trace id travels with Celery
+  jobs, so a clip cut shows up inside the request that asked for it. Kept 14 days (Airflow DAG `maintenance`).
+- **Caching (Redis):** understood requests for 7 days, whole answers for 24 h. The answer key includes an index version
+  bumped on every index write, so new videos are never hidden by an old cached answer.
+
+| | tokens | cost per 1,000 (Haiku 4.5 list price) |
+|---|---|---|
+| one `/ask` (understanding) | ~448 | $0.54 |
+| one keyframe caption | ~225 | $0.34 |
+| a repeated `/ask` (cached) | 0 | $0, in 4 ms instead of 2.2 s |
+
+- `make usage` · `make trace [ID=…]` · `make eval-cache` · `make dashboards` (regenerate the Grafana JSON from code)
+
 ## Search quality & design decisions
 
 Retrieval changes are judged with a labelled evaluation set, not by eyeballing results:
@@ -131,6 +155,9 @@ Decisions backed by experiments live in [`docs/decisions/`](docs/decisions/):
   and a vector-only similarity cut-off (0.20, chosen by a sweep) cut false answers from 7 to 2 of 12.
 - [ADR 0003: Clip delivery](docs/decisions/0003-clip-delivery.md). Real MP4s, re-encoded for word accuracy (verified
   by transcribing a clip back), cached, cut on a dedicated queue so users never wait behind video processing.
+- [ADR 0004: Observability and caching](docs/decisions/0004-observability-and-caching.md). Our own token ledger and
+  traces in Postgres, Prometheus + Grafana (not Langfuse: too heavy self-hosted, and requests would leave the machine
+  on the cloud version). The model is ~75% of `/ask` time; cached answers are identical to fresh ones (48/48).
 
 Requires `PEXELS_API_KEY` in `.env` (free at https://www.pexels.com/api/). Attribution (author, page URL) is stored per video.
 
@@ -177,6 +204,13 @@ src/
   services/answering/            # /ask orchestration + template answers
   routers/ask.py, routers/clips.py  # /ask, /clips
   db/migrations/       # Alembic migrations + startup runner
+  services/usage/      # token ledger (llm_calls): LLMCall, pricing, recorder, report
+  services/tracing/    # tracer (spans), trace store (trace_spans), request-id middleware, log trace ids
+  services/metrics/    # Prometheus metrics (multiprocess) behind /metrics
+  services/understanding/cache.py, services/answering/cache.py  # understanding and answer caches
+  services/cache/keys.py, services/cache/index_version.py       # cache keys (code fingerprints), index version
+  worker/tracing.py    # trace id through Celery message headers
+  routers/traces.py    # /traces
 embedder/              # CLIP embedding service (own image: torch CPU + open_clip)
 eval/queries.json      # labelled search queries (relevance by Pexels id, with categories)
 eval/results/          # saved experiment results (evidence for docs/decisions)
@@ -186,7 +220,10 @@ scripts/evaluate_intents.py # understanding accuracy, LLM vs rules (make eval-in
 eval/intents.json           # 58 labelled requests (incl. held-out, free phrasing, no subject)
 eval/no_answer.json         # requests that should return no clip
 scripts/experiment_caption_embeddings.py  # caption-embedding experiment (make experiment-captions)
-airflow/dags/          # pexels_ingestion DAG
+airflow/dags/          # pexels_ingestion DAG · maintenance DAG (trace retention)
+infra/prometheus/, infra/grafana/  # scrape config · provisioned data sources and dashboards
+scripts/build_dashboards.py  # Grafana dashboards as code (make dashboards)
+scripts/usage_report.py, scripts/show_trace.py, scripts/evaluate_cache.py  # make usage · make trace · make eval-cache
 infra/airflow/start.sh # creates the airflow metadata DB, runs `airflow standalone`
 infra/seaweedfs/s3.json  # local S3 credentials (dev only; must match .env)
 tests/

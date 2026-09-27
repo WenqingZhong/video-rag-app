@@ -54,7 +54,7 @@ def test_visual_enricher_adds_vectors_and_captions():
     embedder, captioner = MagicMock(), MagicMock()
     embedder.embed_images.return_value = [[0.1], [0.2]]
     embedder.model = "clip"
-    captioner.caption.side_effect = ["a dog", "a cat"]
+    captioner.caption_with_usage.side_effect = [("a dog", MagicMock()), ("a cat", MagicMock())]
     captioner.model = "qwen"
     stages = []
     fields = VisualEnricher(embedder, captioner).enrich([b"1", b"2"], on_stage=stages.append)

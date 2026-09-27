@@ -19,7 +19,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from src.config import Settings
+from src.db.factory import make_database
 from src.services.understanding import QueryUnderstanding, make_query_understanding
+from src.services.usage import make_usage_recorder
 
 _DROP = {"a", "an", "the"}
 
@@ -30,10 +32,12 @@ def norm(text: str | None) -> tuple[str, ...]:
 
 
 def score(system: QueryUnderstanding, requests: list[dict]) -> dict:
-    rows, seconds = [], []
+    rows, seconds, tokens, cost = [], [], [], 0.0
     for item in requests:
         result = system.understand(item["request"])
         seconds.append(result.seconds)
+        tokens.append(result.llm_call.total_tokens if result.llm_call else 0)
+        cost += result.cost_usd
         intent = result.intent
         expected_text = item["text"]
         type_ok = intent.type == item["type"]
@@ -49,6 +53,8 @@ def score(system: QueryUnderstanding, requests: list[dict]) -> dict:
                 "all": type_ok and text_ok and exclude_ok,
                 "got": {**intent.model_dump(), "has_subject": intent.has_subject},
                 "source": result.source,
+                "outcome": result.llm_outcome,
+                "tokens": tokens[-1],
                 "notes": result.notes,
             }
         )
@@ -60,6 +66,7 @@ def score(system: QueryUnderstanding, requests: list[dict]) -> dict:
         "all_by_category": {c: round(sum(r["all"] for r in rs) / len(rs), 2) for c, rs in by_category.items()},
         "seconds": {"p50": round(statistics.median(seconds), 2), "max": round(max(seconds), 2)},
         "sources": {s: sum(1 for r in rows if r["source"] == s) for s in sorted({r["source"] for r in rows})},
+        "tokens": {"total": sum(tokens), "per_request": round(sum(tokens) / len(tokens), 1), "cost_usd": round(cost, 6)},
         "rows": rows,
     }
 
@@ -71,15 +78,21 @@ def main() -> None:
 
     requests = json.loads((ROOT / "eval" / "intents.json").read_text())["requests"]
     settings = Settings()
-    systems = {"rules only": QueryUnderstanding(None), "LLM + guards + rules": make_query_understanding(settings)}
+    # origin "eval": these calls are recorded in llm_calls but kept apart from real traffic
+    recorder = make_usage_recorder(settings, make_database(), origin="eval")
+    systems = {"rules only": QueryUnderstanding(None), "LLM + guards + rules": make_query_understanding(settings, recorder)}
     systems["LLM + guards + rules"].understand("hi")  # load the model first, so latency isn't a cold start
     reports = {name: score(system, requests) for name, system in systems.items()}
 
     print(f"{len(requests)} labelled requests\n")
-    print(f"{'system':<22}{'type':>7}{'text':>7}{'exclude':>9}{'all':>7}{'p50 s':>8}")
+    print(f"{'system':<22}{'type':>7}{'text':>7}{'exclude':>9}{'all':>7}{'p50 s':>8}{'tokens/req':>12}{'$/1000 req':>12}")
     for name, rep in reports.items():
-        a = rep["accuracy"]
-        print(f"{name:<22}{a['type']:>7.2f}{a['text']:>7.2f}{a['exclude']:>9.2f}{a['all']:>7.2f}{rep['seconds']['p50']:>8.2f}")
+        a, t = rep["accuracy"], rep["tokens"]
+        per_1000 = 1000 * t["cost_usd"] / len(requests)
+        print(
+            f"{name:<22}{a['type']:>7.2f}{a['text']:>7.2f}{a['exclude']:>9.2f}{a['all']:>7.2f}{rep['seconds']['p50']:>8.2f}"
+            f"{t['per_request']:>12.1f}{per_1000:>12.3f}"
+        )
     categories = list(reports["rules only"]["all_by_category"])
     print("\nall-correct by category:")
     print(f"{'category':<16}{'n':>4}" + "".join(f"{name:>24}" for name in reports))

@@ -129,8 +129,9 @@ def get_ask_service(
     search: Annotated[SearchService, Depends(get_search_service)],
     clips: Annotated[ClipService, Depends(get_clip_service)],
     settings: Annotated[Settings, Depends(get_settings)],
+    request: Request,
 ) -> AskService:
-    return AskService(understanding, search, clips, settings)
+    return AskService(understanding, search, clips, settings, answers=getattr(request.app.state, "answer_cache", None))
 
 
 UnderstandingDep = Annotated[QueryUnderstanding, Depends(get_query_understanding)]

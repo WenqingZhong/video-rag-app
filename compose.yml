@@ -14,6 +14,9 @@ services:
   api:
     build: .
     container_name: video-rag-api
+    # Prometheus multiprocess mode: each of the 4 uvicorn processes writes its metrics here; /metrics adds them up.
+    # Emptied on start, so a restart begins from zero instead of mixing in samples of dead processes.
+    command: ["sh", "-c", "rm -rf $$PROMETHEUS_MULTIPROC_DIR && mkdir -p $$PROMETHEUS_MULTIPROC_DIR && exec uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 4"]
     ports:
       - "8000:8000"
     depends_on:
@@ -33,7 +36,9 @@ services:
       start_period: 40s
     env_file:
       - .env
-    environment: *app-env
+    environment:
+      <<: *app-env
+      PROMETHEUS_MULTIPROC_DIR: /tmp/prometheus
     restart: unless-stopped
     networks:
       - rag-network
@@ -121,6 +126,47 @@ services:
       timeout: 10s
       retries: 5
       start_period: 90s
+    restart: unless-stopped
+    networks:
+      - rag-network
+
+  # Monitoring (Week 6): Prometheus scrapes the API; Grafana shows it next to tokens/cost/traces from Postgres.
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    container_name: video-rag-prometheus
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=15d"]
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9090/-/healthy || exit 1"]
+      interval: 30s
+    restart: unless-stopped
+    networks:
+      - rag-network
+
+  grafana:
+    image: grafana/grafana-oss:12.1.0
+    container_name: video-rag-grafana
+    depends_on:
+      - prometheus
+      - postgres
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"  # local dev only: no login screen
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/tokens_and_cost.json
+    volumes:
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/health || exit 1"]
+      interval: 30s
     restart: unless-stopped
     networks:
       - rag-network
@@ -285,6 +331,8 @@ volumes:
   whisper_models:
   embedder_models:
   airflow_logs:
+  prometheus_data:
+  grafana_data:
 
 networks:
   rag-network:

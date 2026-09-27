@@ -92,6 +92,23 @@ class Settings(DefaultSettings):
     understanding_model: str = "qwen2.5vl:3b"
     understanding_timeout: float = 30.0
 
+    # Token usage (every model call is written to the llm_calls table). The models run locally for free; cost is
+    # an ESTIMATE: our token counts at a hosted model's list price. Change the reference here or in .env.
+    usage_tracking_enabled: bool = True
+    llm_price_reference: str = "Claude Haiku 4.5 list price"
+    llm_price_input_per_mtok: float = 1.00  # USD per million input tokens (image tokens included)
+    llm_price_output_per_mtok: float = 5.00  # USD per million output tokens
+
+    # Tracing: every API request and Celery task is saved as a trace (timed spans) in the trace_spans table.
+    tracing_enabled: bool = True
+    trace_retention_days: int = 14  # older spans are deleted daily (Airflow DAG "maintenance")
+
+    # Caching (Redis db 0). Keys include a fingerprint of the code and settings they depend on; answers also
+    # include the index version, which every index write bumps. So TTLs are a safety net, not the invalidation.
+    cache_enabled: bool = True
+    understanding_cache_ttl_sec: int = 7 * 24 * 3600  # request → intent
+    answer_cache_ttl_sec: int = 24 * 3600  # request (+ filters) → the full /ask answer
+
     # Clips (cut by the dedicated clip-worker, cached in S3 under clips/)
     clip_padding_sec: float = 0.75  # context around quoted words
     clip_max_sec: float = 15.0  # visual/topic clips longer than this are centred on the keyframe

@@ -2,7 +2,8 @@
 
 import logging
 import tempfile
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from pathlib import Path
 
 from src.config import Settings
@@ -14,6 +15,7 @@ from src.services.processing.segmentation import build_shots, build_speech_windo
 from src.services.processing.transcription import Transcriber
 from src.services.processing.visual import VisualEnricher
 from src.services.storage import StorageClient
+from src.services.tracing import Span, span
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +53,13 @@ class VideoPipeline:
             session.commit()
         logger.info("video %s: %s", video_id, stage)
 
+    @contextmanager
+    def _stage(self, video_id: str, stage: str, **attributes) -> Iterator[Span]:
+        """Show the stage on the video row (for GET /videos/{id}) and time it as a span of the task's trace."""
+        self._set_stage(video_id, stage)
+        with span(f"stage.{stage}", **attributes) as step:
+            yield step
+
     def process(self, video_id: str) -> dict:
         with self.database.get_session() as session:
             video = VideoRepository(session).get(video_id)
@@ -63,66 +72,72 @@ class VideoPipeline:
         with tempfile.TemporaryDirectory(prefix=f"video-{video_id[:8]}-") as tmp:
             workdir = Path(tmp)
 
-            self._set_stage(video_id, "downloading_source")
-            source = self.storage.download_file(s3_key, workdir / Path(s3_key).name)
+            with self._stage(video_id, "downloading_source"):
+                source = self.storage.download_file(s3_key, workdir / Path(s3_key).name)
 
-            self._set_stage(video_id, "probing")
-            meta = ffmpeg.probe(source)
-            with self.database.get_session() as session:
-                VideoRepository(session).update(
-                    video_id,
-                    duration_sec=meta.duration_sec,
-                    width=meta.width,
-                    height=meta.height,
-                    fps=meta.fps,
-                    has_audio=meta.has_audio,
-                )
-                session.commit()
+            with self._stage(video_id, "probing") as step:
+                meta = ffmpeg.probe(source)
+                step.set(duration_sec=meta.duration_sec, has_audio=meta.has_audio)
+                with self.database.get_session() as session:
+                    VideoRepository(session).update(
+                        video_id,
+                        duration_sec=meta.duration_sec,
+                        width=meta.width,
+                        height=meta.height,
+                        fps=meta.fps,
+                        has_audio=meta.has_audio,
+                    )
+                    session.commit()
 
-            self._set_stage(video_id, "detecting_scenes")
-            cuts = ffmpeg.detect_scene_changes(source, self.settings.scene_threshold)
-            shots = build_shots(
-                cuts, meta.duration_sec, self.settings.visual_min_segment_sec, self.settings.visual_max_segment_sec
-            )
+            with self._stage(video_id, "detecting_scenes") as step:
+                cuts = ffmpeg.detect_scene_changes(source, self.settings.scene_threshold)
+                shots = build_shots(
+                    cuts, meta.duration_sec, self.settings.visual_min_segment_sec, self.settings.visual_max_segment_sec
+                )
+                step.set(shots=len(shots))
 
-            self._set_stage(video_id, "extracting_keyframes")
-            self.storage.delete_prefix(frames_prefix(video_id))
-            visual_segments, frame_images = [], []
-            for idx, shot in enumerate(shots):
-                frame_time = min(shot.mid, max(meta.duration_sec - 0.05, 0))
-                frame_path = ffmpeg.extract_frame(
-                    source, frame_time, workdir / f"frame_{idx:05d}.jpg", self.settings.frame_max_side
-                )
-                key = f"{frames_prefix(video_id)}{int(frame_time * 1000):09d}.jpg"
-                self.storage.upload_file(frame_path, key, content_type="image/jpeg")
-                frame_images.append(frame_path.read_bytes())
-                visual_segments.append(
-                    {
-                        "kind": SegmentKind.VISUAL,
-                        "idx": idx,
-                        "start_sec": shot.start,
-                        "end_sec": shot.end,
-                        "frame_key": key,
-                        "frame_time_sec": round(frame_time, 3),
-                    }
-                )
+            with self._stage(video_id, "extracting_keyframes"):
+                self.storage.delete_prefix(frames_prefix(video_id))
+                visual_segments, frame_images = [], []
+                for idx, shot in enumerate(shots):
+                    frame_time = min(shot.mid, max(meta.duration_sec - 0.05, 0))
+                    frame_path = ffmpeg.extract_frame(
+                        source, frame_time, workdir / f"frame_{idx:05d}.jpg", self.settings.frame_max_side
+                    )
+                    key = f"{frames_prefix(video_id)}{int(frame_time * 1000):09d}.jpg"
+                    self.storage.upload_file(frame_path, key, content_type="image/jpeg")
+                    frame_images.append(frame_path.read_bytes())
+                    visual_segments.append(
+                        {
+                            "kind": SegmentKind.VISUAL,
+                            "idx": idx,
+                            "start_sec": shot.start,
+                            "end_sec": shot.end,
+                            "frame_key": key,
+                            "frame_time_sec": round(frame_time, 3),
+                        }
+                    )
 
             if self._enricher is not None:
-                enriched = self._enricher.enrich(frame_images, on_stage=lambda stage: self._set_stage(video_id, stage))
+                enriched = self._enricher.enrich(
+                    frame_images, on_stage=lambda stage: self._set_stage(video_id, stage), video_id=video_id
+                )
                 for segment, fields in zip(visual_segments, enriched, strict=True):
                     segment.update(fields)
 
             speech_segments, language = [], None
             if meta.has_audio:
-                self._set_stage(video_id, "transcribing")
-                audio = ffmpeg.extract_audio(source, workdir / "audio.wav")
-                transcript = self._transcriber_factory().transcribe(audio)
-                language = transcript.language
-                windows = build_speech_windows(transcript.words, self.settings.speech_window_sec, self.settings.speech_stride_sec)
-                speech_segments = [{"kind": SegmentKind.SPEECH, "idx": i, **window} for i, window in enumerate(windows)]
+                with self._stage(video_id, "transcribing") as step:
+                    audio = ffmpeg.extract_audio(source, workdir / "audio.wav")
+                    transcript = self._transcriber_factory().transcribe(audio)
+                    language = transcript.language
+                    windows = build_speech_windows(
+                        transcript.words, self.settings.speech_window_sec, self.settings.speech_stride_sec
+                    )
+                    speech_segments = [{"kind": SegmentKind.SPEECH, "idx": i, **window} for i, window in enumerate(windows)]
+                    step.set(words=len(transcript.words), language=language)
 
-        self._set_stage(video_id, "saving_segments")
-        with self.database.get_session() as session:
+        with self._stage(video_id, "saving_segments"), self.database.get_session() as session:
             repo = VideoRepository(session)
             count = repo.replace_segments(video_id, visual_segments + speech_segments)
             repo.update(video_id, language=language)
@@ -132,8 +147,9 @@ class VideoPipeline:
         # so if indexing fails the video is marked failed and a retry/reprocess/rebuild repairs it.
         indexed = 0
         if self._indexer is not None:
-            self._set_stage(video_id, "indexing")
-            indexed = self._indexer(video_id)
+            with self._stage(video_id, "indexing") as step:
+                indexed = self._indexer(video_id)
+                step.set(documents=indexed)
 
         with self.database.get_session() as session:
             VideoRepository(session).set_status(video_id, VideoStatus.READY)

@@ -3,8 +3,10 @@
 import json
 
 import httpx
+from pydantic import ValidationError
 
 from src.services.understanding.intent import Intent
+from src.services.usage import LLMCall
 
 SCHEMA = {
     "type": "object",
@@ -42,12 +44,20 @@ Examples:
 "nothing with cars in it" -> {"type":"visual","phrase":null,"visual":null,"topic":null,"exclude":["cars"]}"""
 
 
+class InvalidReply(ValueError):
+    """The model answered, but not with a valid intent. Its tokens were still spent."""
+
+    def __init__(self, message: str, call: LLMCall):
+        super().__init__(message)
+        self.call = call
+
+
 class LLMIntentParser:
     def __init__(self, ollama_host: str, model: str, timeout: float = 30.0):
         self.http = httpx.Client(base_url=ollama_host, timeout=timeout)
         self.model = model
 
-    def parse(self, query: str) -> Intent:
+    def parse(self, query: str) -> tuple[Intent, LLMCall]:
         response = self.http.post(
             "/api/chat",
             json={
@@ -59,7 +69,12 @@ class LLMIntentParser:
             },
         )
         response.raise_for_status()
-        return Intent.model_validate(json.loads(response.json()["message"]["content"]))
+        body = response.json()
+        call = LLMCall.from_ollama(body, "understand", self.model)
+        try:
+            return Intent.model_validate(json.loads(body["message"]["content"])), call
+        except (ValidationError, ValueError, KeyError) as exc:
+            raise InvalidReply(f"{type(exc).__name__}: {exc}", call) from exc
 
     def close(self) -> None:
         self.http.close()

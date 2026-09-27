@@ -1,0 +1,647 @@
+{
+  "uid": "video-rag-tokens",
+  "title": "Tokens & cost",
+  "description": "Model calls recorded in llm_calls (Week 6). Cost is an estimate at a hosted model's list price.",
+  "tags": [
+    "video-rag",
+    "week6"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 41,
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "refresh": "30s",
+  "templating": {
+    "list": [
+      {
+        "name": "origin",
+        "label": "Origin",
+        "type": "custom",
+        "query": "api,worker,eval",
+        "multi": true,
+        "includeAll": true,
+        "current": {
+          "text": [
+            "api",
+            "worker"
+          ],
+          "value": [
+            "api",
+            "worker"
+          ]
+        },
+        "description": "api: /ask requests \u00b7 worker: captions during ingestion \u00b7 eval: evaluation runs"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Tokens consumed",
+      "description": "Everything the model read (prompt + image tokens) and wrote, in the selected time range.",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "video-rag-postgres"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "video-rag-postgres"
+          },
+          "rawSql": "SELECT sum(prompt_tokens + output_tokens) FROM llm_calls WHERE $__timeFilter(created_at) AND origin IN ($origin) AND outcome <> 'cache_hit'",
+          "format": "table",
+          "rawQuery": true,
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "id": 1
+    },
+    {
+      "type": "stat",
+      "title": "Estimated cost",
+      "description": "Our tokens at the configured hosted model's list price (LLM_PRICE_*). The models run locally: an estimate.",
+      "gridPos": {
+        "x": 4,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "video-rag-postgres"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "video-rag-postgres"
+          },
+          "rawSql": "SELECT sum(cost_usd) FROM llm_calls WHERE $__timeFilter(created_at) AND origin IN ($origin) AND outcome <> 'cache_hit'",
+          "format": "table",
+          "rawQuery": true,
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "decimals": 4
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "id": 2
+    },
+    {
+      "type": "stat",
+      "title": "Tokens saved by cache",
+      "description": "Tokens of the model calls a cache hit made unnecessary.",
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "video-rag-postgres"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "video-rag-postgres"
+          },
+          "rawSql": "SELECT coalesce(sum(saved_tokens), 0) FROM llm_calls WHERE $__timeFilter(created_at) AND origin IN ($origin) AND outcome = 'cache_hit'",
+          "format": "table",
+          "rawQuery": true,
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "id": 3
+    },
+    {
+      "type": "stat",
+      "title": "Cost saved by cache",
+      "description": "",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "video-rag-postgres"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "video-rag-postgres"
+          },
+          "rawSql": "SELECT coalesce(sum(saved_cost_usd), 0) FROM llm_calls WHERE $__timeFilter(created_at) AND origin IN ($origin) AND outcome = 'cache_hit'",
+          "format": "table",
+          "rawQuery": true,
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "decimals": 4
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "id": 4
+    },
+    {
+      "type": "stat",
+      "title": "Understanding cache hit rate",
+      "description": "Of the requests that needed understanding: how many were served from a cache (no model call).",
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "video-rag-postgres"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "video-rag-postgres"
+          },
+          "rawSql": "SELECT count(*) FILTER (WHERE outcome = 'cache_hit')::float / nullif(count(*), 0) FROM llm_calls WHERE $__timeFilter(created_at) AND origin IN ($origin) AND operation = 'understand'",
+          "format": "table",
+          "rawQuery": true,
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "id": 5
+    },
+    {
+      "type": "stat",
+      "title": "Wasted understanding tokens",
+      "description": "Share of understanding tokens spent on answers the guards threw away (rejected) or that didn't parse.",
+      "gridPos": {
+        "x": 20,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "video-rag-postgres"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "video-rag-postgres"
+          },
+          "rawSql": "SELECT sum(prompt_tokens + output_tokens) FILTER (WHERE outcome IN ('rejected', 'invalid'))::float / nullif(sum(prompt_tokens + output_tokens), 0) FROM llm_calls WHERE $__timeFilter(created_at) AND origin IN ($origin) AND outcome <> 'cache_hit' AND operation = 'understand'",
+          "format": "table",
+          "rawQuery": true,
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "id": 6
+    },
+    {
+      "type": "timeseries",
+      "title": "Tokens by operation",
+      "description": "understand: one call per /ask not served from cache \u00b7 caption: one call per keyframe",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "video-rag-postgres"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "video-rag-postgres"
+          },
+          "rawSql": "SELECT $__timeGroupAlias(created_at, $__interval), operation AS metric, sum(prompt_tokens + output_tokens) AS tokens FROM llm_calls WHERE $__timeFilter(created_at) AND origin IN ($origin) AND outcome <> 'cache_hit' GROUP BY 1, 2 ORDER BY 1",
+          "format": "time_series",
+          "rawQuery": true,
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "drawStyle": "bars",
+            "fillOpacity": 60,
+            "lineWidth": 1,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "id": 7
+    },
+    {
+      "type": "timeseries",
+      "title": "Estimated cost by operation",
+      "description": "",
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "video-rag-postgres"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "video-rag-postgres"
+          },
+          "rawSql": "SELECT $__timeGroupAlias(created_at, $__interval), operation AS metric, sum(cost_usd) AS cost FROM llm_calls WHERE $__timeFilter(created_at) AND origin IN ($origin) AND outcome <> 'cache_hit' GROUP BY 1, 2 ORDER BY 1",
+          "format": "time_series",
+          "rawQuery": true,
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "custom": {
+            "drawStyle": "bars",
+            "fillOpacity": 60,
+            "lineWidth": 1,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "id": 8
+    },
+    {
+      "type": "table",
+      "title": "Per call",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 14,
+        "h": 7
+      },
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "video-rag-postgres"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "video-rag-postgres"
+          },
+          "rawSql": "SELECT operation, count(*) AS calls, round(avg(prompt_tokens + output_tokens)) AS \"tokens per call\", round(avg(prompt_tokens)) AS \"in\", round(avg(output_tokens)) AS \"out\", 1000 * avg(cost_usd) AS \"cost per 1000 calls\", sum(cost_usd) AS cost, avg(prompt_sec) AS \"avg reading prompt\", round((sum(output_tokens) / nullif(sum(output_sec), 0))::numeric, 1) AS \"tokens/s written\", max(price_reference) AS \"priced at\" FROM llm_calls WHERE $__timeFilter(created_at) AND origin IN ($origin) AND outcome <> 'cache_hit' GROUP BY operation ORDER BY operation",
+          "format": "table",
+          "rawQuery": true,
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cost per 1000 calls"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "currencyUSD"
+              },
+              {
+                "id": "decimals",
+                "value": 3
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cost"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "currencyUSD"
+              },
+              {
+                "id": "decimals",
+                "value": 4
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "avg reading prompt"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      },
+      "id": 9
+    },
+    {
+      "type": "table",
+      "title": "What became of the model's answer (understand)",
+      "description": "accepted: used as is \u00b7 adjusted: used after the guards changed it \u00b7 rejected: thrown away, the rules answered \u00b7 invalid: reply didn't parse \u00b7 cache_hit: no call made",
+      "gridPos": {
+        "x": 14,
+        "y": 12,
+        "w": 10,
+        "h": 7
+      },
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "video-rag-postgres"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "video-rag-postgres"
+          },
+          "rawSql": "SELECT outcome, count(*) AS calls, sum(prompt_tokens + output_tokens) AS \"tokens spent\", sum(saved_tokens) AS \"tokens saved\" FROM llm_calls WHERE $__timeFilter(created_at) AND origin IN ($origin) AND operation = 'understand' GROUP BY outcome ORDER BY calls DESC",
+          "format": "table",
+          "rawQuery": true,
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true
+      },
+      "id": 10
+    },
+    {
+      "type": "table",
+      "title": "Captions per video (ingestion)",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 19,
+        "w": 24,
+        "h": 9
+      },
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "video-rag-postgres"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "video-rag-postgres"
+          },
+          "rawSql": "SELECT coalesce(v.title, c.video_id) AS video, count(*) AS keyframes, sum(c.prompt_tokens + c.output_tokens) AS tokens, round(sum(c.prompt_tokens + c.output_tokens) / nullif(max(v.duration_sec), 0) * 60) AS \"tokens per minute\", sum(c.cost_usd) AS cost, max(c.created_at) AS \"last captioned\" FROM llm_calls c LEFT JOIN videos v ON v.id = c.video_id WHERE $__timeFilter(c.created_at) AND c.origin IN ($origin) AND c.operation = 'caption' AND c.outcome <> 'cache_hit' GROUP BY 1 ORDER BY tokens DESC LIMIT 50",
+          "format": "table",
+          "rawQuery": true,
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cost"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "currencyUSD"
+              },
+              {
+                "id": "decimals",
+                "value": 4
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      },
+      "id": 11
+    }
+  ],
+  "links": [
+    {
+      "title": "Tokens & cost",
+      "type": "link",
+      "url": "/d/video-rag-tokens"
+    },
+    {
+      "title": "Requests & latency",
+      "type": "link",
+      "url": "/d/video-rag-requests"
+    }
+  ]
+}

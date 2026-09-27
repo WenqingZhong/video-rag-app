@@ -1,0 +1,365 @@
+{
+  "overall": {
+    "calls": 121,
+    "prompt_tokens": 38084,
+    "output_tokens": 3179,
+    "total_tokens": 41263,
+    "cost_usd": 0.053979
+  },
+  "by_operation": {
+    "caption": {
+      "calls": 58,
+      "prompt_tokens": 11382,
+      "output_tokens": 1691,
+      "total_tokens": 13073,
+      "cost_usd": 0.019837,
+      "tokens_per_call": 225.4,
+      "cost_per_1000_calls_usd": 0.342
+    },
+    "understand": {
+      "calls": 63,
+      "prompt_tokens": 26702,
+      "output_tokens": 1488,
+      "total_tokens": 28190,
+      "cost_usd": 0.034142,
+      "tokens_per_call": 447.5,
+      "cost_per_1000_calls_usd": 0.5419
+    }
+  },
+  "by_origin": {
+    "api": {
+      "calls": 4,
+      "prompt_tokens": 1690,
+      "output_tokens": 92,
+      "total_tokens": 1782,
+      "cost_usd": 0.00215
+    },
+    "eval": {
+      "calls": 59,
+      "prompt_tokens": 25012,
+      "output_tokens": 1396,
+      "total_tokens": 26408,
+      "cost_usd": 0.031992
+    },
+    "worker": {
+      "calls": 58,
+      "prompt_tokens": 11382,
+      "output_tokens": 1691,
+      "total_tokens": 13073,
+      "cost_usd": 0.019837
+    }
+  },
+  "understand_outcomes": {
+    "accepted": {
+      "calls": 39,
+      "prompt_tokens": 16552,
+      "output_tokens": 935,
+      "total_tokens": 17487,
+      "cost_usd": 0.021227
+    },
+    "adjusted": {
+      "calls": 20,
+      "prompt_tokens": 8467,
+      "output_tokens": 455,
+      "total_tokens": 8922,
+      "cost_usd": 0.010742
+    },
+    "rejected": {
+      "calls": 4,
+      "prompt_tokens": 1683,
+      "output_tokens": 98,
+      "total_tokens": 1781,
+      "cost_usd": 0.002173
+    }
+  },
+  "understand_wasted_share": 0.063,
+  "speed": {
+    "caption": {
+      "avg_prompt_sec": 3.463,
+      "avg_output_sec": 1.925,
+      "output_tokens_per_sec": 15.1
+    },
+    "understand": {
+      "avg_prompt_sec": 0.375,
+      "avg_output_sec": 1.597,
+      "output_tokens_per_sec": 14.8
+    }
+  },
+  "videos": [
+    {
+      "video_id": "e9cfc172-9cc7-41e0-8ad0-cff03d489838",
+      "title": "Frying traditional home cooked snacks",
+      "keyframes": 5,
+      "calls": 5,
+      "prompt_tokens": 995,
+      "output_tokens": 191,
+      "total_tokens": 1186,
+      "cost_usd": 0.00195,
+      "tokens_per_minute": 1736
+    },
+    {
+      "video_id": "320050c0-73f0-41de-8efd-1a24c9956da3",
+      "title": "Footage of sea weaving",
+      "keyframes": 5,
+      "calls": 5,
+      "prompt_tokens": 835,
+      "output_tokens": 146,
+      "total_tokens": 981,
+      "cost_usd": 0.001565,
+      "tokens_per_minute": 1289
+    },
+    {
+      "video_id": "0a192c67-610f-4970-a429-ca8ffdd7b55d",
+      "title": "Siamese cat pupils blue eyes",
+      "keyframes": 4,
+      "calls": 4,
+      "prompt_tokens": 796,
+      "output_tokens": 118,
+      "total_tokens": 914,
+      "cost_usd": 0.001386,
+      "tokens_per_minute": 1459
+    },
+    {
+      "video_id": "454c1651-bdd5-4947-ab55-4bd0bfa359aa",
+      "title": "Close up footage of a pet cat",
+      "keyframes": 4,
+      "calls": 4,
+      "prompt_tokens": 796,
+      "output_tokens": 111,
+      "total_tokens": 907,
+      "cost_usd": 0.001351,
+      "tokens_per_minute": 1813
+    },
+    {
+      "video_id": "da734be6-40cc-4f36-bff2-5bb5a05089ca",
+      "title": "Black birds flying in sky",
+      "keyframes": 4,
+      "calls": 4,
+      "prompt_tokens": 796,
+      "output_tokens": 63,
+      "total_tokens": 859,
+      "cost_usd": 0.001111,
+      "tokens_per_minute": 1716
+    },
+    {
+      "video_id": "e77f7c87-a85d-4f81-ad62-b584f5c4dc04",
+      "title": "Colleagues talking at a business conference",
+      "keyframes": 3,
+      "calls": 3,
+      "prompt_tokens": 597,
+      "output_tokens": 135,
+      "total_tokens": 732,
+      "cost_usd": 0.001272,
+      "tokens_per_minute": 2022
+    },
+    {
+      "video_id": "41e2cec1-71a1-4ac5-906e-20224337ac7d",
+      "title": "Driving with gps navigation in city traffic",
+      "keyframes": 3,
+      "calls": 3,
+      "prompt_tokens": 597,
+      "output_tokens": 129,
+      "total_tokens": 726,
+      "cost_usd": 0.001242,
+      "tokens_per_minute": 1913
+    },
+    {
+      "video_id": "9bca9d3d-3c1e-438b-9365-c5eab9cfca02",
+      "title": "Vibrant green turaco perched in jungle setting",
+      "keyframes": 3,
+      "calls": 3,
+      "prompt_tokens": 597,
+      "output_tokens": 93,
+      "total_tokens": 690,
+      "cost_usd": 0.001062,
+      "tokens_per_minute": 1920
+    },
+    {
+      "video_id": "954519d1-855a-49dc-b52c-1334e3118371",
+      "title": "Dogs relaxing on a busy street sidewalk",
+      "keyframes": 2,
+      "calls": 2,
+      "prompt_tokens": 398,
+      "output_tokens": 71,
+      "total_tokens": 469,
+      "cost_usd": 0.000753,
+      "tokens_per_minute": 2419
+    },
+    {
+      "video_id": "e44d4ddc-3ffc-437f-9cdd-fd6369c52170",
+      "title": "Waves of the ocean",
+      "keyframes": 2,
+      "calls": 2,
+      "prompt_tokens": 398,
+      "output_tokens": 71,
+      "total_tokens": 469,
+      "cost_usd": 0.000753,
+      "tokens_per_minute": 1757
+    },
+    {
+      "video_id": "9f1e600a-5f9e-473d-9add-726a88ed25ef",
+      "title": "Dogs with their tongues out",
+      "keyframes": 2,
+      "calls": 2,
+      "prompt_tokens": 398,
+      "output_tokens": 67,
+      "total_tokens": 465,
+      "cost_usd": 0.000733,
+      "tokens_per_minute": 1993
+    },
+    {
+      "video_id": "9a3b49f9-2af9-4da6-9c2f-fdf1b3900c28",
+      "title": "Serene beach waves on a sunny day",
+      "keyframes": 2,
+      "calls": 2,
+      "prompt_tokens": 398,
+      "output_tokens": 54,
+      "total_tokens": 452,
+      "cost_usd": 0.000668,
+      "tokens_per_minute": 1806
+    },
+    {
+      "video_id": "2f9e29b3-7924-4e18-a835-a1db09465dd3",
+      "title": "Sunlight through trees in forest",
+      "keyframes": 2,
+      "calls": 2,
+      "prompt_tokens": 398,
+      "output_tokens": 51,
+      "total_tokens": 449,
+      "cost_usd": 0.000653,
+      "tokens_per_minute": 2670
+    },
+    {
+      "video_id": "1bac87f4-7fc7-423e-8f12-8d25faa836e9",
+      "title": "Sunlight filtering through forest canopy",
+      "keyframes": 2,
+      "calls": 2,
+      "prompt_tokens": 398,
+      "output_tokens": 44,
+      "total_tokens": 442,
+      "cost_usd": 0.000618,
+      "tokens_per_minute": 2560
+    },
+    {
+      "video_id": "11121983-dcfa-4756-924b-881610e04cd0",
+      "title": "host_talk",
+      "keyframes": 2,
+      "calls": 2,
+      "prompt_tokens": 398,
+      "output_tokens": 41,
+      "total_tokens": 439,
+      "cost_usd": 0.000603,
+      "tokens_per_minute": 1510
+    },
+    {
+      "video_id": "6d749237-b686-44c4-9806-e3d8d7cd1386",
+      "title": "host_talk",
+      "keyframes": 2,
+      "calls": 2,
+      "prompt_tokens": 398,
+      "output_tokens": 41,
+      "total_tokens": 439,
+      "cost_usd": 0.000603,
+      "tokens_per_minute": 1655
+    },
+    {
+      "video_id": "7c16dd6a-d971-4e22-a54e-6cb76f6f0d35",
+      "title": "Preparing fresh vegetables in home kitchen",
+      "keyframes": 2,
+      "calls": 2,
+      "prompt_tokens": 398,
+      "output_tokens": 35,
+      "total_tokens": 433,
+      "cost_usd": 0.000573,
+      "tokens_per_minute": 1742
+    },
+    {
+      "video_id": "a2716671-8652-4027-b236-f627da8e570b",
+      "title": "Aerial view of cox s bazar beach bangladesh",
+      "keyframes": 2,
+      "calls": 2,
+      "prompt_tokens": 398,
+      "output_tokens": 33,
+      "total_tokens": 431,
+      "cost_usd": 0.000563,
+      "tokens_per_minute": 2150
+    },
+    {
+      "video_id": "0c4cb5ac-c442-487c-a7c0-79f43f92896b",
+      "title": "Night traffic on junction in city",
+      "keyframes": 1,
+      "calls": 1,
+      "prompt_tokens": 199,
+      "output_tokens": 37,
+      "total_tokens": 236,
+      "cost_usd": 0.000384,
+      "tokens_per_minute": 2538
+    },
+    {
+      "video_id": "620cc03a-5de6-4c41-a789-2e9f81baf04a",
+      "title": "Casual indoor group discussion in natural light",
+      "keyframes": 1,
+      "calls": 1,
+      "prompt_tokens": 199,
+      "output_tokens": 36,
+      "total_tokens": 235,
+      "cost_usd": 0.000379,
+      "tokens_per_minute": 2582
+    },
+    {
+      "video_id": "3e76d2f7-b478-4dd7-b465-19cc49d0e196",
+      "title": "Dogs playing in yard in winter",
+      "keyframes": 1,
+      "calls": 1,
+      "prompt_tokens": 199,
+      "output_tokens": 28,
+      "total_tokens": 227,
+      "cost_usd": 0.000339,
+      "tokens_per_minute": 1388
+    },
+    {
+      "video_id": "3ab68f78-f441-4cc0-80d9-47a42f88f90a",
+      "title": "Close up of vintage car headlight",
+      "keyframes": 1,
+      "calls": 1,
+      "prompt_tokens": 199,
+      "output_tokens": 27,
+      "total_tokens": 226,
+      "cost_usd": 0.000334,
+      "tokens_per_minute": 1594
+    },
+    {
+      "video_id": "45c41863-c7d6-4326-89bd-95433e8db12a",
+      "title": "Road traffic on the street of london",
+      "keyframes": 1,
+      "calls": 1,
+      "prompt_tokens": 199,
+      "output_tokens": 26,
+      "total_tokens": 225,
+      "cost_usd": 0.000329,
+      "tokens_per_minute": 1751
+    },
+    {
+      "video_id": "c4ff6749-fbe0-441c-a683-5ab1293b7aff",
+      "title": "Perro",
+      "keyframes": 1,
+      "calls": 1,
+      "prompt_tokens": 199,
+      "output_tokens": 23,
+      "total_tokens": 222,
+      "cost_usd": 0.000314,
+      "tokens_per_minute": 2523
+    },
+    {
+      "video_id": "d1836fea-b08e-4512-a7df-8970c99ec587",
+      "title": "Cute puppies in box",
+      "keyframes": 1,
+      "calls": 1,
+      "prompt_tokens": 199,
+      "output_tokens": 20,
+      "total_tokens": 219,
+      "cost_usd": 0.000299,
+      "tokens_per_minute": 1369
+    }
+  ]
+}

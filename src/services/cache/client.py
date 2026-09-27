@@ -18,6 +18,9 @@ class CacheClient:
     def set(self, key: str, value: str, ttl_seconds: int | None = None) -> None:
         self.client.set(key, value, ex=ttl_seconds)
 
+    def incr(self, key: str) -> int:
+        return int(self.client.incr(key))
+
     def health_check(self) -> dict[str, Any]:
         try:
             self.client.ping()

@@ -8,9 +8,12 @@ from dataclasses import dataclass, field
 import httpx
 from pydantic import ValidationError
 
+from src.services.tracing import span
+from src.services.understanding.cache import UnderstandingCache
 from src.services.understanding.intent import Intent, find_exclusions, is_placeholder
-from src.services.understanding.llm import LLMIntentParser
+from src.services.understanding.llm import InvalidReply, LLMIntentParser
 from src.services.understanding.rules import parse_with_rules
+from src.services.usage import LLMCall, Outcome, UsageRecorder
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +35,12 @@ class Understanding:
     seconds: float
     llm_raw: Intent | None = None  # what the LLM answered, before the guards (for debugging / the demo)
     notes: list[str] = field(default_factory=list)  # what the guards changed, and why
+    llm_call: LLMCall | None = None  # tokens and time the model spent (None: rules only, or the call failed)
+    llm_outcome: Outcome | None = None  # what became of the model's answer (see src/services/usage/models.py)
+    cost_usd: float = 0.0  # estimated, at the configured hosted price
+    cached: bool = False  # served from the understanding cache: no model call was made
+    avoided_call: LLMCall | None = None  # on a cache hit: the call that was not made (its tokens were saved)
+    saved_cost_usd: float = 0.0
 
 
 def _words(text: str) -> list[str]:
@@ -69,23 +78,102 @@ def _merge_exclusions(candidates: list[str], query: str) -> list[str]:
     return merged
 
 
-class QueryUnderstanding:
-    def __init__(self, llm: LLMIntentParser | None):
-        self.llm = llm
+def _llm_attributes(target, call: LLMCall) -> None:
+    target.set(
+        prompt_tokens=call.prompt_tokens,
+        output_tokens=call.output_tokens,
+        load_sec=call.load_sec,
+        prompt_sec=call.prompt_sec,
+        output_sec=call.output_sec,
+    )
 
-    def understand(self, query: str) -> Understanding:
+
+def _cache_state(understanding: "QueryUnderstanding", result: Understanding) -> str:
+    if understanding.cache is None or understanding.llm is None:
+        return "off"
+    return "hit" if result.cached else "miss"
+
+
+def _outcome(source: str, raw: Intent, intent: Intent) -> Outcome:
+    if source == "rules":
+        return "rejected"
+    same = raw.type == intent.type and raw.text == intent.text and sorted(raw.exclude) == sorted(intent.exclude)
+    return "accepted" if same else "adjusted"
+
+
+class QueryUnderstanding:
+    def __init__(
+        self,
+        llm: LLMIntentParser | None,
+        recorder: UsageRecorder | None = None,
+        cache: "UnderstandingCache | None" = None,
+    ):
+        self.llm = llm
+        self.recorder = recorder
+        self.cache = cache  # None: always ask the model
+
+    def understand(self, query: str, request_id: str | None = None) -> Understanding:
+        with span("understand") as step:
+            result = self._from_cache(query, request_id)
+            if result is None:
+                result = self._understand(query, request_id)
+                # Only answers the model actually gave: a failed call (→ rules) should be retried next time.
+                if self.cache is not None and result.llm_call is not None:
+                    self.cache.put(query, result)
+            step.set(
+                source=result.source, outcome=result.llm_outcome, intent_type=result.intent.type, cache=_cache_state(self, result)
+            )
+            if result.llm_call is not None:
+                step.set(tokens=result.llm_call.total_tokens, cost_usd=result.cost_usd)
+            if result.avoided_call is not None:
+                step.set(saved_tokens=result.avoided_call.total_tokens)
+            return result
+
+    def _from_cache(self, query: str, request_id: str | None) -> Understanding | None:
+        if self.cache is None or self.llm is None:
+            return None
         started = time.perf_counter()
+        hit = self.cache.get(query)
+        if hit is None:
+            return None
+        avoided = hit.pop("avoided")
+        result = Understanding(seconds=round(time.perf_counter() - started, 3), cached=True, avoided_call=avoided, **hit)
+        if self.recorder is not None:
+            result.saved_cost_usd = self.recorder.record_saved(avoided, request_id=request_id)
+        return result
+
+    def _understand(self, query: str, request_id: str | None) -> Understanding:
+        started = time.perf_counter()
+        call: LLMCall | None = None
 
         def done(intent: Intent, source: str, raw: Intent | None, notes: list[str]) -> Understanding:
-            return Understanding(intent, source, round(time.perf_counter() - started, 3), raw, notes)
+            result = Understanding(intent, source, round(time.perf_counter() - started, 3), raw, notes, call)
+            if call is not None:
+                result.llm_outcome = "invalid" if raw is None else _outcome(source, raw, intent)
+                if self.recorder is not None:
+                    result.cost_usd = self.recorder.record(call, result.llm_outcome, request_id=request_id)
+            return result
 
         if self.llm is None:
             return done(parse_with_rules(query), "rules", None, ["LLM disabled"])
-        try:
-            raw = self.llm.parse(query)
-        except (httpx.HTTPError, ValidationError, ValueError, KeyError) as exc:
-            logger.warning("LLM understanding failed, using rules: %s", exc)
-            return done(parse_with_rules(query), "rules", None, [f"LLM error: {exc}"])
+        with span("llm.understand", model=self.llm.model) as llm_span:
+            try:
+                raw, call = self.llm.parse(query)
+            except InvalidReply as exc:
+                call = exc.call
+                llm_span.fail(exc)
+                logger.warning("LLM reply invalid, using rules: %s", exc)
+                failure = f"LLM reply invalid: {exc}"
+            except (httpx.HTTPError, ValidationError, ValueError, KeyError) as exc:
+                llm_span.fail(exc)
+                logger.warning("LLM understanding failed, using rules: %s", exc)
+                failure = f"LLM error: {exc}"
+            else:
+                failure = None
+            if call is not None:
+                _llm_attributes(llm_span, call)
+        if failure is not None:
+            return done(parse_with_rules(query), "rules", None, [failure])
 
         notes: list[str] = []
         intent_type = raw.type

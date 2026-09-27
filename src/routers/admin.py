@@ -1,10 +1,14 @@
+from datetime import UTC, datetime, timedelta
+
 from celery.result import AsyncResult
 from fastapi import APIRouter, status
 
-from src.dependencies import SessionDep
+from src.dependencies import SessionDep, SettingsDep
 from src.models import VideoStatus
 from src.repositories import VideoRepository
 from src.schemas.api.search import EnrichRequest, EnrichResponse, JobStatus, ReindexRequest
+from src.schemas.api.traces import CleanupRequest, CleanupResponse
+from src.services.tracing import delete_spans_before
 from src.worker.celery_app import celery_app
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
@@ -32,6 +36,14 @@ def enrich(session: SessionDep, body: EnrichRequest | None = None) -> EnrichResp
         ids = [v.id for v in videos]
     jobs = [enrich_visual.delay(video_id, force=body.force).id for video_id in ids]
     return EnrichResponse(queued=len(jobs), job_ids=jobs)
+
+
+@router.post("/cleanup-traces", response_model=CleanupResponse)
+def cleanup_traces(session: SessionDep, settings: SettingsDep, body: CleanupRequest | None = None) -> CleanupResponse:
+    """Delete trace spans older than the retention period (called daily by the Airflow "maintenance" DAG)."""
+    days = (body.older_than_days if body else None) or settings.trace_retention_days
+    before = datetime.now(UTC) - timedelta(days=days)
+    return CleanupResponse(deleted_spans=delete_spans_before(session, before), before=before)
 
 
 @router.get("/jobs/{job_id}", response_model=JobStatus)

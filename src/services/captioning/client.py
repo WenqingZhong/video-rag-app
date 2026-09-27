@@ -6,6 +6,8 @@ from typing import Any
 import httpx
 from PIL import Image
 
+from src.services.usage import LLMCall
+
 logger = logging.getLogger(__name__)
 
 
@@ -32,6 +34,9 @@ class Captioner:
         self.max_side = max_side
 
     def caption(self, image: bytes) -> str:
+        return self.caption_with_usage(image)[0]
+
+    def caption_with_usage(self, image: bytes) -> tuple[str, LLMCall]:
         payload = {
             "model": self.model,
             "prompt": self.prompt,
@@ -44,10 +49,11 @@ class Captioner:
             response.raise_for_status()  # retryable
         if response.status_code >= 400:
             raise CaptionError(f"Ollama rejected the request: {response.text[:200]}")
-        text = " ".join(response.json().get("response", "").split())
+        body = response.json()
+        text = " ".join(body.get("response", "").split())
         if not text:
             raise CaptionError("empty caption")
-        return text
+        return text, LLMCall.from_ollama(body, "caption", self.model, images=1)
 
     def health_check(self) -> dict[str, Any]:
         try:

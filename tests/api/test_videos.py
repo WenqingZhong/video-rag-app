@@ -20,11 +20,12 @@ def _seed(database):
         return video.id
 
 
-def test_upload_returns_202_and_queues(client, database, storage):
+def test_upload_returns_202_and_queues(client, database, storage, queued):
     response = client.post("/api/v1/videos", files={"file": ("talk.mp4", b"fake-bytes", "video/mp4")})
     assert response.status_code == 202
     body = response.json()
     assert body["status"] == "queued" and body["source"] == "upload"
+    assert queued == [("process", body["id"])]
     storage.upload_fileobj.assert_called_once()
 
 

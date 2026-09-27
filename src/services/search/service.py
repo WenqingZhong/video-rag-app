@@ -19,6 +19,7 @@ from src.services.search.fusion import reciprocal_rank_fusion
 from src.services.search.matching import locate_phrase
 from src.services.search.query_parser import ParsedQuery, parse_query
 from src.services.search.visual_query import visual_query_text
+from src.services.tracing import span
 from src.services.understanding.intent import Intent
 
 logger = logging.getLogger(__name__)
@@ -109,6 +110,12 @@ class SearchService:
         Exclusions drop hits whose caption/transcript/title mentions them. A quote/topic search that finds
         nothing is retried as visual ("three people talking" may be footage, not speech).
         """
+        with span("search", intent_type=intent.type, text=intent.text, exclude=intent.exclude or None) as step:
+            result = self._search_intent(intent, video_id, source, size, group_by_video)
+            step.set(strategy=result.strategy, hits=len(result.hits))
+            return result
+
+    def _search_intent(self, intent, video_id, source, size, group_by_video) -> SearchResult:
         fetch = min(size * OVERFETCH, self.settings.search_max_size * OVERFETCH)
         text, exclude = intent.text, intent.exclude
         if intent.type == "quote":
@@ -140,9 +147,11 @@ class SearchService:
             ("fuzzy_phrase", qb.fuzzy_query(phrase, filters, fetch, self.settings.search_fuzzy_min_match)),
         ]
         for strategy, body in strategies:
-            raw_hits = self.opensearch.search(body)["hits"]["hits"]
-            hits = [h for h in (self._to_hit(raw, parsed) for raw in raw_hits) if h is not None]
-            hits = [h for h in hits if not any(_mentions(h, term) for term in exclude)]
+            with span(f"search.{strategy}") as step:
+                raw_hits = self.opensearch.search(body)["hits"]["hits"]
+                hits = [h for h in (self._to_hit(raw, parsed) for raw in raw_hits) if h is not None]
+                hits = [h for h in hits if not any(_mentions(h, term) for term in exclude)]
+                step.set(hits=len(hits))
             if hits:
                 logger.info("search %r → %s (%s hits)", parsed.raw, strategy, len(hits))
                 return SearchResult(parsed=parsed, strategy=strategy, hits=self._dedupe(hits, size, group_by_video))
@@ -159,8 +168,10 @@ class SearchService:
 
         keyword_hits: list[SearchHit] = []
         if use_keyword:
-            raw = self.opensearch.search(qb.keyword_query(parsed.text, filters, fetch))["hits"]["hits"]
-            keyword_hits = [self._to_hit(r, parsed) for r in raw]
+            with span("search.keyword", kind=kind) as step:
+                raw = self.opensearch.search(qb.keyword_query(parsed.text, filters, fetch))["hits"]["hits"]
+                keyword_hits = [self._to_hit(r, parsed) for r in raw]
+                step.set(hits=len(keyword_hits))
 
         vector_hits: list[SearchHit] = []
         visual_text = None
@@ -194,8 +205,11 @@ class SearchService:
     def _vector_hits(self, text: str, filters: list[dict], fetch: int, parsed: ParsedQuery) -> list[SearchHit]:
         if self.embedder is None:
             raise SearchUnavailable("no embedding service configured")
-        vector = self.embedder.embed_texts([text])[0]
-        raw = self.opensearch.search(qb.vector_query(vector, filters, fetch))["hits"]["hits"]
+        with span("search.embed_text", text=text):
+            vector = self.embedder.embed_texts([text])[0]
+        with span("search.vector") as step:
+            raw = self.opensearch.search(qb.vector_query(vector, filters, fetch))["hits"]["hits"]
+            step.set(hits=len(raw))
         hits = []
         for r in raw:
             similarity = _cosine(float(r["_score"]))

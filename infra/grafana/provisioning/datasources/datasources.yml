@@ -1,0 +1,22 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    uid: video-rag-prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+
+  # Local dev: the app's own credentials. In production, a read-only role on llm_calls, trace_spans and videos.
+  - name: Postgres
+    uid: video-rag-postgres
+    type: grafana-postgresql-datasource
+    url: postgres:5432
+    user: video_rag
+    jsonData:
+      database: video_rag
+      sslmode: disable
+      postgresVersion: 1600
+    secureJsonData:
+      password: video_rag_password
