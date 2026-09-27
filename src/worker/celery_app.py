@@ -29,4 +29,7 @@ celery_app.conf.update(
     broker_connection_retry_on_startup=True,
     # Keep the health-check ping snappy when Redis is down.
     broker_transport_options={"socket_connect_timeout": 2, "socket_timeout": 2},
+    # Interactive work (a user is waiting) gets its own queue and worker, so it never waits behind a long
+    # video-processing job on the default "celery" queue.
+    task_routes={"clip.cut": {"queue": "clips"}},
 )

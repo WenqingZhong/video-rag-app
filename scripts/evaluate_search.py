@@ -19,13 +19,20 @@ from pathlib import Path
 import httpx
 
 ROOT = Path(__file__).resolve().parents[1]
-MODES = ["keyword", "vector", "hybrid"]
+MODES = ["keyword", "vector", "hybrid", "understood"]  # understood = the LLM parses the request first (Week 5)
 
 
 def search(api: str, query: str, mode: str, size: int) -> list[str]:
     response = httpx.post(
         f"{api}/api/v1/search",
-        json={"query": query, "mode": mode, "size": size, "group_by_video": True, "source": "pexels"},
+        json={
+            "query": query,
+            "mode": "auto" if mode == "understood" else mode,
+            "understand": mode == "understood",
+            "size": size,
+            "group_by_video": True,
+            "source": "pexels",
+        },
         timeout=60,
     )
     response.raise_for_status()
@@ -73,16 +80,31 @@ def evaluate(api: str, queries: list[dict], k: int) -> dict:
     return report
 
 
+def false_answers(api: str, queries: list[str]) -> dict:
+    """Requests whose correct answer is NO clip: how many does each mode answer anyway?"""
+    report = {}
+    for mode in MODES:
+        answered = [q for q in queries if search(api, q, mode, size=1)]
+        report[mode] = {"false_answers": len(answered), "of": len(queries), "answered": answered}
+    return report
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--api", default="http://localhost:8000")
     parser.add_argument("--queries", default=str(ROOT / "eval" / "queries.json"))
     parser.add_argument("--k", type=int, default=5)
     parser.add_argument("--json", action="store_true")
+    parser.add_argument("--save", help="also write the full report to this JSON file")
     args = parser.parse_args()
 
     queries = json.loads(Path(args.queries).read_text())["queries"]
     report = evaluate(args.api, queries, args.k)
+    no_answer = json.loads((ROOT / "eval" / "no_answer.json").read_text())["queries"]
+    report["false_answers"] = false_answers(args.api, no_answer)
+    if args.save:
+        Path(args.save).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.save).write_text(json.dumps(report, indent=2) + "\n")
     if args.json:
         print(json.dumps(report, indent=2))
         return
@@ -96,6 +118,9 @@ def main() -> None:
     for category, scores in report["categories"].items():
         count = sum(1 for r in report["queries"] if r["category"] == category)
         print(f"{category:<10}{count:>8}" + "".join(f"{scores[m]:>10.2f}" for m in MODES))
+    print(f"\nfalse answers (should return nothing, {len(no_answer)} requests in eval/no_answer.json):")
+    for mode, fa in report["false_answers"].items():
+        print(f"{mode:<11}{fa['false_answers']:>3} / {fa['of']}   {', '.join(repr(q) for q in fa['answered'][:6])}")
     print("\nper query (recall / rank of first relevant):")
     print(f"{'query':<34}" + "".join(f"{m:>16}" for m in MODES))
     for row in report["queries"]:

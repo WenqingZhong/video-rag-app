@@ -12,6 +12,7 @@ class SearchRequest(BaseModel):
     source: Literal["pexels", "upload"] | None = None
     size: int = Field(10, ge=1, le=50)
     group_by_video: bool = Field(False, description="Return only the best moment per video")
+    understand: bool = Field(False, description="Parse the request with the LLM first (as /ask does), then search by intent")
     mode: Literal["auto", "hybrid", "keyword", "vector"] = Field(
         "auto", description="auto: quotes → phrase search, otherwise hybrid. The others force one retriever (for comparison)"
     )

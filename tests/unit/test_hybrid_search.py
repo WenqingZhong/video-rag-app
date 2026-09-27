@@ -80,3 +80,42 @@ def test_speech_only_search_skips_vectors_and_quotes_keep_phrase_path():
     svc, _, emb = make([raw(doc("s1", "v1", kind="speech"), 1.0)], [])
     assert svc.search("future of work", kind="speech").strategy == "keyword"
     emb.embed_texts.assert_not_called()
+
+
+def test_visual_intent_searches_keyframes_for_the_intent_text_and_drops_exclusions():
+    from src.services.understanding import Intent
+
+    with_people = doc("b1", "v1", caption="A beach scene with a few people walking")
+    empty = doc("b2", "v2", caption="Calm waves on an empty sandy shore")
+    svc, opensearch, _ = make([raw(with_people, 3.0), raw(empty, 2.0)], [])
+
+    result = svc.search_intent(Intent(type="visual", visual="a beach", exclude=["people"]))
+
+    assert [h.source["segment_id"] for h in result.hits] == ["b2"]
+    keyword_body = opensearch.search.call_args_list[0].args[0]
+    assert {"term": {"kind": "visual"}} in keyword_body["query"]["bool"]["filter"]
+    assert keyword_body["query"]["bool"]["must"][0]["multi_match"]["query"] == "a beach"
+
+
+def test_speech_intent_with_no_hits_is_retried_as_visual():
+    from src.services.understanding import Intent
+
+    opensearch = MagicMock()
+    footage = doc("f1", "v1", caption="Three people talking in an office")
+
+    def search(body):
+        filters = body["query"].get("bool", {}).get("filter", [])
+        return {"hits": {"hits": [] if {"term": {"kind": "speech"}} in filters else [raw(footage, 2.0)]}}
+
+    opensearch.search.side_effect = search
+    svc = SearchService(opensearch, Settings(_env_file=None), embedder=None)
+    result = svc.search_intent(Intent(type="topic", topic="three people talking"))
+    assert result.strategy == "topic_none→visual_keyword" and result.hits[0].source["segment_id"] == "f1"
+
+
+def test_weak_vector_only_hits_are_dropped_in_hybrid_when_configured():
+    keyword = [raw(doc("both", "v1"), 3.0)]
+    vector = [raw(doc("both", "v1"), cosine_score(0.30)), raw(doc("weak_only", "v2"), cosine_score(0.18))]
+    svc, _, _ = make(keyword, vector)
+    svc.settings = Settings(_env_file=None, search_vector_only_min_similarity=0.20)
+    assert [h.source["segment_id"] for h in svc.search("a dog").hits] == ["both"]

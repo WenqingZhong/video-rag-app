@@ -8,13 +8,14 @@ from opensearchpy.exceptions import OpenSearchException
 
 from src.config import get_settings
 from src.db.factory import make_database
-from src.routers import admin, ping, search, videos
+from src.routers import admin, ask, clips, ping, search, videos
 from src.services.cache import make_cache_client
 from src.services.captioning import make_captioner
 from src.services.embeddings import make_embedding_client
 from src.services.opensearch import make_opensearch_service
 from src.services.pexels import make_pexels_client
 from src.services.storage import make_storage_client
+from src.services.understanding import make_query_understanding
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -53,6 +54,7 @@ async def lifespan(app: FastAPI):
     # Clients only: no network call at startup, so the API boots even if these services are still loading.
     app.state.embedding_client = make_embedding_client(settings)
     app.state.captioner = make_captioner(settings)
+    app.state.understanding = make_query_understanding(settings)  # LLM client only: no call at startup
 
     # Placeholder for later weeks
     app.state.llm_service = None
@@ -65,6 +67,8 @@ async def lifespan(app: FastAPI):
     app.state.opensearch_service.close()
     app.state.embedding_client.close()
     app.state.captioner.close()
+    if app.state.understanding.llm is not None:
+        app.state.understanding.llm.close()
     if app.state.pexels_client is not None:
         app.state.pexels_client.close()
     app.state.database.teardown()
@@ -82,6 +86,8 @@ app.include_router(ping.router, prefix=API_PREFIX)
 app.include_router(videos.router, prefix=API_PREFIX)
 app.include_router(search.router, prefix=API_PREFIX)
 app.include_router(admin.router, prefix=API_PREFIX)
+app.include_router(clips.router, prefix=API_PREFIX)
+app.include_router(ask.router, prefix=API_PREFIX)
 
 
 @app.get("/", include_in_schema=False)

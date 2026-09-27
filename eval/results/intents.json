@@ -1,0 +1,2387 @@
+{
+  "model": "qwen2.5vl:3b",
+  "requests": 58,
+  "systems": {
+    "rules only": {
+      "accuracy": {
+        "type": 0.879,
+        "text": 0.776,
+        "exclude": 0.983,
+        "all": 0.776
+      },
+      "all_by_category": {
+        "quote_marked": 1.0,
+        "quote_unmarked": 1.0,
+        "topic": 1.0,
+        "visual": 1.0,
+        "visual_exclude": 1.0,
+        "free_phrasing": 0.17,
+        "held_out": 0.75,
+        "no_subject": 0.88
+      },
+      "seconds": {
+        "p50": 0.0,
+        "max": 0.0
+      },
+      "sources": {
+        "rules": 58
+      },
+      "rows": [
+        {
+          "request": "Give me the part where the host says ‘AI is changing everything’",
+          "category": "quote_marked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "AI is changing everything",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "find where she says \"we are live\"",
+          "category": "quote_marked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "we are live",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "the bit with 'thanks for watching'",
+          "category": "quote_marked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "thanks for watching",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "Give me the part where the host says AI is changing everything",
+          "category": "quote_unmarked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "AI is changing everything",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "the moment she mentions that it changes how we write",
+          "category": "quote_unmarked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "it changes how we write",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "when does he say see you next week",
+          "category": "quote_unmarked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "see you next week",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "clip where the speaker goes my answer is simple",
+          "category": "quote_unmarked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "my answer is simple",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "I need the part where they said welcome back to the show",
+          "category": "quote_unmarked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "welcome back to the show",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "where does he talk about the future of work?",
+          "category": "topic",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "topic",
+            "phrase": null,
+            "topic": "the future of work",
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "the section where they discuss technology trends",
+          "category": "topic",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "topic",
+            "phrase": null,
+            "topic": "technology trends",
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "when do they talk about coding",
+          "category": "topic",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "topic",
+            "phrase": null,
+            "topic": "coding",
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "find where the host explains how people learn",
+          "category": "topic",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "topic",
+            "phrase": null,
+            "topic": "how people learn",
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "give me a clip of a dog",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "a dog",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "show me ocean waves",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "ocean waves",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "footage of a cat sleeping on a blanket",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "a cat sleeping on a blanket",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "I'd like a video of birds flying",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "birds flying",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "someone chopping vegetables",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "someone chopping vegetables",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "city traffic at night",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "city traffic at night",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "can you find me a green bird on a branch",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "green bird on a branch",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "aerial shot of a beach",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "aerial shot of a beach",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "a beach with no people",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "beach",
+            "exclude": [
+              "people"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "show me cars but not at night",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "cars",
+            "exclude": [
+              "night"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "a forest without any animals",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "forest",
+            "exclude": [
+              "animals"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "dogs, but no puppies please",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "dogs",
+            "exclude": [
+              "puppies"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "a kitchen scene with no fried food",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "kitchen scene",
+            "exclude": [
+              "fried food"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "waves on the sea without the beach",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "waves on the sea",
+            "exclude": [
+              "beach"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "people in a meeting, not in a kitchen",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "people in a meeting",
+            "exclude": [
+              "kitchen"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "a cat, excluding siamese cats",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "cat",
+            "exclude": [
+              "siamese cats"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "street at night with no buses or cars",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "street at night",
+            "exclude": [
+              "buses",
+              "cars"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "birds, but not in the sky",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "birds",
+            "exclude": [
+              "sky"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "that line about AI changing everything",
+          "category": "free_phrasing",
+          "type": false,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "that line about AI changing everything",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "I remember her saying something like we are live",
+          "category": "free_phrasing",
+          "type": true,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "quote",
+            "phrase": "something like we are live",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "play back the welcome back to the show bit",
+          "category": "free_phrasing",
+          "type": false,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "play back the welcome back to the show bit",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "what did the host say about the biggest trend right now",
+          "category": "free_phrasing",
+          "type": false,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "quote",
+            "phrase": "about the biggest trend right now",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "any bit on how we code",
+          "category": "free_phrasing",
+          "type": false,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "any bit on how we code",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "the goodbye at the end, see you next week",
+          "category": "free_phrasing",
+          "type": false,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "goodbye at the end, see you next week",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "any footage showing snow",
+          "category": "free_phrasing",
+          "type": true,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "any footage showing snow",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "puppies in a box",
+          "category": "free_phrasing",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "puppies in a box",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "I want to see a cat but not the siamese one",
+          "category": "free_phrasing",
+          "type": true,
+          "text": false,
+          "exclude": false,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "to see a cat",
+            "exclude": [
+              "siamese one"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "something with waves crashing, preferably no sand",
+          "category": "free_phrasing",
+          "type": true,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "something with waves crashing, preferably",
+            "exclude": [
+              "sand"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "a turaco",
+          "category": "free_phrasing",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "turaco",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "anything filmed from a car dashboard",
+          "category": "free_phrasing",
+          "type": true,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "anything filmed from a car dashboard",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "the clip where she tells viewers see you next week",
+          "category": "held_out",
+          "type": false,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "she tells viewers see you next week",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "did anyone say welcome back to the show?",
+          "category": "held_out",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "welcome back to the show",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "which part covers the future of work",
+          "category": "held_out",
+          "type": false,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "which part covers the future of work",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "snowy fence with a white dog",
+          "category": "held_out",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "snowy fence with a white dog",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "a green parrot-like bird, no bowls",
+          "category": "held_out",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "green parrot-like bird",
+            "exclude": [
+              "bowls"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "video of waves hitting rocks",
+          "category": "held_out",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "waves hitting rocks",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "people chatting at a conference",
+          "category": "held_out",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "people chatting at a conference",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "a frying pan full of snacks",
+          "category": "held_out",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "frying pan full of snacks",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "exclude people",
+          "category": "no_subject",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": null,
+            "exclude": [
+              "people"
+            ],
+            "has_subject": false
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "anything without people",
+          "category": "no_subject",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": null,
+            "exclude": [
+              "people"
+            ],
+            "has_subject": false
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "show me something",
+          "category": "no_subject",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "something",
+            "exclude": [],
+            "has_subject": false
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "just nothing with water please",
+          "category": "no_subject",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": null,
+            "exclude": [
+              "water"
+            ],
+            "has_subject": false
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "anything, as long as there are no cars",
+          "category": "no_subject",
+          "type": true,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "anything, as long as there are",
+            "exclude": [
+              "cars"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "hi",
+          "category": "no_subject",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "hi",
+            "exclude": [],
+            "has_subject": false
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "hello there",
+          "category": "no_subject",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "hello there",
+            "exclude": [],
+            "has_subject": false
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        },
+        {
+          "request": "thanks!",
+          "category": "no_subject",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "thanks",
+            "exclude": [],
+            "has_subject": false
+          },
+          "source": "rules",
+          "notes": [
+            "LLM disabled"
+          ]
+        }
+      ]
+    },
+    "LLM + guards + rules": {
+      "accuracy": {
+        "type": 0.914,
+        "text": 0.828,
+        "exclude": 0.983,
+        "all": 0.81
+      },
+      "all_by_category": {
+        "quote_marked": 1.0,
+        "quote_unmarked": 1.0,
+        "topic": 1.0,
+        "visual": 0.88,
+        "visual_exclude": 0.8,
+        "free_phrasing": 0.58,
+        "held_out": 0.75,
+        "no_subject": 0.88
+      },
+      "seconds": {
+        "p50": 1.19,
+        "max": 3.61
+      },
+      "sources": {
+        "llm": 44,
+        "llm+rules": 11,
+        "rules": 3
+      },
+      "rows": [
+        {
+          "request": "Give me the part where the host says ‘AI is changing everything’",
+          "category": "quote_marked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "AI is changing everything",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "find where she says \"we are live\"",
+          "category": "quote_marked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "we are live",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "the bit with 'thanks for watching'",
+          "category": "quote_marked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "thanks for watching",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "Give me the part where the host says AI is changing everything",
+          "category": "quote_unmarked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "AI is changing everything",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "the moment she mentions that it changes how we write",
+          "category": "quote_unmarked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "it changes how we write",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "when does he say see you next week",
+          "category": "quote_unmarked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "see you next week",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "clip where the speaker goes my answer is simple",
+          "category": "quote_unmarked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "my answer is simple",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "I need the part where they said welcome back to the show",
+          "category": "quote_unmarked",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "welcome back to the show",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "where does he talk about the future of work?",
+          "category": "topic",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "topic",
+            "phrase": null,
+            "topic": "future of work",
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "the section where they discuss technology trends",
+          "category": "topic",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "topic",
+            "phrase": null,
+            "topic": "technology trends",
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "when do they talk about coding",
+          "category": "topic",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "topic",
+            "phrase": null,
+            "topic": "coding",
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "find where the host explains how people learn",
+          "category": "topic",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "topic",
+            "phrase": null,
+            "topic": "how people learn",
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "give me a clip of a dog",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "a dog",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "show me ocean waves",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "ocean waves",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "footage of a cat sleeping on a blanket",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "a cat sleeping on a blanket",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "I'd like a video of birds flying",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "birds flying",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "someone chopping vegetables",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "someone chopping vegetables",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "city traffic at night",
+          "category": "visual",
+          "type": true,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "city traffic",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "can you find me a green bird on a branch",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "a green bird on a branch",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "aerial shot of a beach",
+          "category": "visual",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "aerial shot of a beach",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "a beach with no people",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "a beach",
+            "exclude": [
+              "people"
+            ],
+            "has_subject": true
+          },
+          "source": "llm+rules",
+          "notes": [
+            "exclusions added by rules: ['people']"
+          ]
+        },
+        {
+          "request": "show me cars but not at night",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "cars",
+            "exclude": [
+              "night"
+            ],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "a forest without any animals",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "a forest",
+            "exclude": [
+              "animals"
+            ],
+            "has_subject": true
+          },
+          "source": "llm+rules",
+          "notes": [
+            "exclusions added by rules: ['animals']"
+          ]
+        },
+        {
+          "request": "dogs, but no puppies please",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "dogs",
+            "exclude": [
+              "puppies"
+            ],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "a kitchen scene with no fried food",
+          "category": "visual_exclude",
+          "type": true,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "a kitchen",
+            "exclude": [
+              "fried food"
+            ],
+            "has_subject": true
+          },
+          "source": "llm+rules",
+          "notes": [
+            "exclusions added by rules: ['fried food']"
+          ]
+        },
+        {
+          "request": "waves on the sea without the beach",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "waves on the sea",
+            "exclude": [
+              "beach"
+            ],
+            "has_subject": true
+          },
+          "source": "llm+rules",
+          "notes": [
+            "exclusions added by rules: ['beach']"
+          ]
+        },
+        {
+          "request": "people in a meeting, not in a kitchen",
+          "category": "visual_exclude",
+          "type": true,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "meeting",
+            "exclude": [
+              "kitchen"
+            ],
+            "has_subject": true
+          },
+          "source": "llm+rules",
+          "notes": [
+            "type topic → visual: no speech word or quote marks in the request",
+            "exclusions added by rules: ['kitchen']"
+          ]
+        },
+        {
+          "request": "a cat, excluding siamese cats",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "a cat",
+            "exclude": [
+              "siamese cats"
+            ],
+            "has_subject": true
+          },
+          "source": "llm+rules",
+          "notes": [
+            "exclusions added by rules: ['siamese cats']"
+          ]
+        },
+        {
+          "request": "street at night with no buses or cars",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "street at night",
+            "exclude": [
+              "buses",
+              "cars"
+            ],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "birds, but not in the sky",
+          "category": "visual_exclude",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "birds",
+            "exclude": [
+              "sky"
+            ],
+            "has_subject": true
+          },
+          "source": "llm+rules",
+          "notes": [
+            "exclusions added by rules: ['sky']"
+          ]
+        },
+        {
+          "request": "that line about AI changing everything",
+          "category": "free_phrasing",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "AI changing everything",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "I remember her saying something like we are live",
+          "category": "free_phrasing",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "we are live",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "play back the welcome back to the show bit",
+          "category": "free_phrasing",
+          "type": false,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "welcome back to the show",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": [
+            "type quote → visual: no speech word or quote marks in the request"
+          ]
+        },
+        {
+          "request": "what did the host say about the biggest trend right now",
+          "category": "free_phrasing",
+          "type": false,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "quote",
+            "phrase": "biggest trend right now",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "any bit on how we code",
+          "category": "free_phrasing",
+          "type": false,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "how we code",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": [
+            "type topic → visual: no speech word or quote marks in the request"
+          ]
+        },
+        {
+          "request": "the goodbye at the end, see you next week",
+          "category": "free_phrasing",
+          "type": false,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "see you next week",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": [
+            "type quote → visual: no speech word or quote marks in the request"
+          ]
+        },
+        {
+          "request": "any footage showing snow",
+          "category": "free_phrasing",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "snow",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "puppies in a box",
+          "category": "free_phrasing",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "puppies in a box",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "I want to see a cat but not the siamese one",
+          "category": "free_phrasing",
+          "type": true,
+          "text": true,
+          "exclude": false,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "a cat",
+            "exclude": [
+              "siamese one"
+            ],
+            "has_subject": true
+          },
+          "source": "llm+rules",
+          "notes": [
+            "exclusions added by rules: ['siamese one']"
+          ]
+        },
+        {
+          "request": "something with waves crashing, preferably no sand",
+          "category": "free_phrasing",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "waves crashing",
+            "exclude": [
+              "sand"
+            ],
+            "has_subject": true
+          },
+          "source": "llm+rules",
+          "notes": [
+            "exclusions added by rules: ['sand']"
+          ]
+        },
+        {
+          "request": "a turaco",
+          "category": "free_phrasing",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "a turaco",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "anything filmed from a car dashboard",
+          "category": "free_phrasing",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "a car dashboard",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "the clip where she tells viewers see you next week",
+          "category": "held_out",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "see you next week",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "did anyone say welcome back to the show?",
+          "category": "held_out",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "quote",
+            "phrase": "welcome back to the show",
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "which part covers the future of work",
+          "category": "held_out",
+          "type": false,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "future of work",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": [
+            "type topic → visual: no speech word or quote marks in the request"
+          ]
+        },
+        {
+          "request": "snowy fence with a white dog",
+          "category": "held_out",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "snowy fence with a white dog",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "a green parrot-like bird, no bowls",
+          "category": "held_out",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "a green parrot-like bird",
+            "exclude": [
+              "bowls"
+            ],
+            "has_subject": true
+          },
+          "source": "llm+rules",
+          "notes": [
+            "exclusions added by rules: ['bowls']"
+          ]
+        },
+        {
+          "request": "video of waves hitting rocks",
+          "category": "held_out",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "waves hitting rocks",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "people chatting at a conference",
+          "category": "held_out",
+          "type": true,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "people chatting",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": [
+            "type topic → visual: no speech word or quote marks in the request"
+          ]
+        },
+        {
+          "request": "a frying pan full of snacks",
+          "category": "held_out",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "a frying pan full of snacks",
+            "exclude": [],
+            "has_subject": true
+          },
+          "source": "llm",
+          "notes": []
+        },
+        {
+          "request": "exclude people",
+          "category": "no_subject",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": null,
+            "exclude": [
+              "people"
+            ],
+            "has_subject": false
+          },
+          "source": "rules",
+          "notes": [
+            "visual text 'a horse running' not in the request's words → rules"
+          ]
+        },
+        {
+          "request": "anything without people",
+          "category": "no_subject",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": null,
+            "exclude": [
+              "people"
+            ],
+            "has_subject": false
+          },
+          "source": "llm+rules",
+          "notes": [
+            "no subject: nothing to search for (only what to avoid, or a placeholder like 'something')",
+            "exclusions added by rules: ['people']"
+          ]
+        },
+        {
+          "request": "show me something",
+          "category": "no_subject",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": false
+          },
+          "source": "llm",
+          "notes": [
+            "no subject: nothing to search for (only what to avoid, or a placeholder like 'something')"
+          ]
+        },
+        {
+          "request": "just nothing with water please",
+          "category": "no_subject",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": null,
+            "exclude": [
+              "water"
+            ],
+            "has_subject": false
+          },
+          "source": "llm",
+          "notes": [
+            "no subject: nothing to search for (only what to avoid, or a placeholder like 'something')"
+          ]
+        },
+        {
+          "request": "anything, as long as there are no cars",
+          "category": "no_subject",
+          "type": true,
+          "text": false,
+          "exclude": true,
+          "all": false,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "anything, as long as there are",
+            "exclude": [
+              "cars"
+            ],
+            "has_subject": true
+          },
+          "source": "rules",
+          "notes": [
+            "visual text 'nothing with cars in it' not in the request's words → rules"
+          ]
+        },
+        {
+          "request": "hi",
+          "category": "no_subject",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": false
+          },
+          "source": "llm",
+          "notes": [
+            "type quote → visual: no speech word or quote marks in the request",
+            "no subject: nothing to search for (only what to avoid, or a placeholder like 'something')"
+          ]
+        },
+        {
+          "request": "hello there",
+          "category": "no_subject",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": null,
+            "exclude": [],
+            "has_subject": false
+          },
+          "source": "llm",
+          "notes": [
+            "type quote → visual: no speech word or quote marks in the request",
+            "no subject: nothing to search for (only what to avoid, or a placeholder like 'something')"
+          ]
+        },
+        {
+          "request": "thanks!",
+          "category": "no_subject",
+          "type": true,
+          "text": true,
+          "exclude": true,
+          "all": true,
+          "got": {
+            "type": "visual",
+            "phrase": null,
+            "topic": null,
+            "visual": "thanks",
+            "exclude": [],
+            "has_subject": false
+          },
+          "source": "rules",
+          "notes": [
+            "type quote → visual: no speech word or quote marks in the request",
+            "visual text 'nothing with cars in it' not in the request's words → rules"
+          ]
+        }
+      ]
+    }
+  }
+}

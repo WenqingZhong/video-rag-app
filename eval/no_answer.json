@@ -1,0 +1,17 @@
+{
+  "description": "Requests whose correct answer is NO clip: things absent from the library, and chit-chat. Measures false answers (the 'hi' → red screen problem). Checked against the library's captions and titles.",
+  "queries": [
+    "hi",
+    "hello there",
+    "thanks!",
+    "show me a dragon breathing fire",
+    "a spaceship landing on mars",
+    "an elephant",
+    "someone playing the piano",
+    "a football match",
+    "a snowboarder doing a flip",
+    "a horse running",
+    "the part where he says the stock market crashed",
+    "where do they talk about cryptocurrency"
+  ]
+}

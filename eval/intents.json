@@ -1,0 +1,405 @@
+{
+  "description": "Labelled requests for request understanding (Week 5). 'text' is the phrase (quote), topic or visual description, compared after lowercasing and dropping articles, punctuation and plural s; '' means no subject (ask back). Categories: quote_marked, quote_unmarked, topic, visual, visual_exclude = phrasings the rule parser was designed for; free_phrasing = written to avoid the rule patterns (some were used in Phase 1 spot checks, so not unseen); held_out = written for the rebuild with labels fixed before any system ran on them; no_subject = only exclusions, placeholders or greetings.",
+  "requests": [
+    {
+      "request": "Give me the part where the host says ‘AI is changing everything’",
+      "type": "quote",
+      "text": "AI is changing everything",
+      "category": "quote_marked"
+    },
+    {
+      "request": "find where she says \"we are live\"",
+      "type": "quote",
+      "text": "we are live",
+      "category": "quote_marked"
+    },
+    {
+      "request": "the bit with 'thanks for watching'",
+      "type": "quote",
+      "text": "thanks for watching",
+      "category": "quote_marked"
+    },
+    {
+      "request": "Give me the part where the host says AI is changing everything",
+      "type": "quote",
+      "text": "AI is changing everything",
+      "category": "quote_unmarked"
+    },
+    {
+      "request": "the moment she mentions that it changes how we write",
+      "type": "quote",
+      "text": "it changes how we write",
+      "category": "quote_unmarked"
+    },
+    {
+      "request": "when does he say see you next week",
+      "type": "quote",
+      "text": "see you next week",
+      "category": "quote_unmarked"
+    },
+    {
+      "request": "clip where the speaker goes my answer is simple",
+      "type": "quote",
+      "text": "my answer is simple",
+      "category": "quote_unmarked"
+    },
+    {
+      "request": "I need the part where they said welcome back to the show",
+      "type": "quote",
+      "text": "welcome back to the show",
+      "category": "quote_unmarked"
+    },
+    {
+      "request": "where does he talk about the future of work?",
+      "type": "topic",
+      "text": "future of work",
+      "category": "topic"
+    },
+    {
+      "request": "the section where they discuss technology trends",
+      "type": "topic",
+      "text": "technology trends",
+      "category": "topic"
+    },
+    {
+      "request": "when do they talk about coding",
+      "type": "topic",
+      "text": "coding",
+      "category": "topic"
+    },
+    {
+      "request": "find where the host explains how people learn",
+      "type": "topic",
+      "text": "how people learn",
+      "category": "topic"
+    },
+    {
+      "request": "give me a clip of a dog",
+      "type": "visual",
+      "text": "dog",
+      "category": "visual"
+    },
+    {
+      "request": "show me ocean waves",
+      "type": "visual",
+      "text": "ocean waves",
+      "category": "visual"
+    },
+    {
+      "request": "footage of a cat sleeping on a blanket",
+      "type": "visual",
+      "text": "cat sleeping on blanket",
+      "category": "visual"
+    },
+    {
+      "request": "I'd like a video of birds flying",
+      "type": "visual",
+      "text": "birds flying",
+      "category": "visual"
+    },
+    {
+      "request": "someone chopping vegetables",
+      "type": "visual",
+      "text": "someone chopping vegetables",
+      "category": "visual"
+    },
+    {
+      "request": "city traffic at night",
+      "type": "visual",
+      "text": "city traffic at night",
+      "category": "visual"
+    },
+    {
+      "request": "can you find me a green bird on a branch",
+      "type": "visual",
+      "text": "green bird on branch",
+      "category": "visual"
+    },
+    {
+      "request": "aerial shot of a beach",
+      "type": "visual",
+      "text": "aerial shot of beach",
+      "category": "visual"
+    },
+    {
+      "request": "a beach with no people",
+      "type": "visual",
+      "text": "beach",
+      "category": "visual_exclude",
+      "exclude": [
+        "people"
+      ]
+    },
+    {
+      "request": "show me cars but not at night",
+      "type": "visual",
+      "text": "cars",
+      "category": "visual_exclude",
+      "exclude": [
+        "night"
+      ]
+    },
+    {
+      "request": "a forest without any animals",
+      "type": "visual",
+      "text": "forest",
+      "category": "visual_exclude",
+      "exclude": [
+        "animals"
+      ]
+    },
+    {
+      "request": "dogs, but no puppies please",
+      "type": "visual",
+      "text": "dogs",
+      "category": "visual_exclude",
+      "exclude": [
+        "puppies"
+      ]
+    },
+    {
+      "request": "a kitchen scene with no fried food",
+      "type": "visual",
+      "text": "kitchen scene",
+      "category": "visual_exclude",
+      "exclude": [
+        "fried food"
+      ]
+    },
+    {
+      "request": "waves on the sea without the beach",
+      "type": "visual",
+      "text": "waves on sea",
+      "category": "visual_exclude",
+      "exclude": [
+        "beach"
+      ]
+    },
+    {
+      "request": "people in a meeting, not in a kitchen",
+      "type": "visual",
+      "text": "people in meeting",
+      "category": "visual_exclude",
+      "exclude": [
+        "kitchen"
+      ]
+    },
+    {
+      "request": "a cat, excluding siamese cats",
+      "type": "visual",
+      "text": "cat",
+      "category": "visual_exclude",
+      "exclude": [
+        "siamese cats"
+      ]
+    },
+    {
+      "request": "street at night with no buses or cars",
+      "type": "visual",
+      "text": "street at night",
+      "category": "visual_exclude",
+      "exclude": [
+        "buses",
+        "cars"
+      ]
+    },
+    {
+      "request": "birds, but not in the sky",
+      "type": "visual",
+      "text": "birds",
+      "category": "visual_exclude",
+      "exclude": [
+        "sky"
+      ]
+    },
+    {
+      "request": "that line about AI changing everything",
+      "type": "quote",
+      "text": "AI changing everything",
+      "category": "free_phrasing"
+    },
+    {
+      "request": "I remember her saying something like we are live",
+      "type": "quote",
+      "text": "we are live",
+      "category": "free_phrasing"
+    },
+    {
+      "request": "play back the welcome back to the show bit",
+      "type": "quote",
+      "text": "welcome back to the show",
+      "category": "free_phrasing"
+    },
+    {
+      "request": "what did the host say about the biggest trend right now",
+      "type": "topic",
+      "text": "biggest trend right now",
+      "category": "free_phrasing"
+    },
+    {
+      "request": "any bit on how we code",
+      "type": "topic",
+      "text": "how we code",
+      "category": "free_phrasing"
+    },
+    {
+      "request": "the goodbye at the end, see you next week",
+      "type": "quote",
+      "text": "see you next week",
+      "category": "free_phrasing"
+    },
+    {
+      "request": "any footage showing snow",
+      "type": "visual",
+      "text": "snow",
+      "category": "free_phrasing"
+    },
+    {
+      "request": "puppies in a box",
+      "type": "visual",
+      "text": "puppies in box",
+      "category": "free_phrasing"
+    },
+    {
+      "request": "I want to see a cat but not the siamese one",
+      "type": "visual",
+      "text": "cat",
+      "category": "free_phrasing",
+      "exclude": [
+        "siamese"
+      ]
+    },
+    {
+      "request": "something with waves crashing, preferably no sand",
+      "type": "visual",
+      "text": "waves crashing",
+      "category": "free_phrasing",
+      "exclude": [
+        "sand"
+      ]
+    },
+    {
+      "request": "a turaco",
+      "type": "visual",
+      "text": "turaco",
+      "category": "free_phrasing"
+    },
+    {
+      "request": "anything filmed from a car dashboard",
+      "type": "visual",
+      "text": "car dashboard",
+      "category": "free_phrasing"
+    },
+    {
+      "request": "the clip where she tells viewers see you next week",
+      "type": "quote",
+      "text": "see you next week",
+      "category": "held_out"
+    },
+    {
+      "request": "did anyone say welcome back to the show?",
+      "type": "quote",
+      "text": "welcome back to the show",
+      "category": "held_out"
+    },
+    {
+      "request": "which part covers the future of work",
+      "type": "topic",
+      "text": "future of work",
+      "category": "held_out"
+    },
+    {
+      "request": "snowy fence with a white dog",
+      "type": "visual",
+      "text": "snowy fence with white dog",
+      "category": "held_out"
+    },
+    {
+      "request": "a green parrot-like bird, no bowls",
+      "type": "visual",
+      "text": "green parrot-like bird",
+      "category": "held_out",
+      "exclude": [
+        "bowls"
+      ]
+    },
+    {
+      "request": "video of waves hitting rocks",
+      "type": "visual",
+      "text": "waves hitting rocks",
+      "category": "held_out"
+    },
+    {
+      "request": "people chatting at a conference",
+      "type": "visual",
+      "text": "people chatting at conference",
+      "category": "held_out"
+    },
+    {
+      "request": "a frying pan full of snacks",
+      "type": "visual",
+      "text": "frying pan full of snacks",
+      "category": "held_out"
+    },
+    {
+      "request": "exclude people",
+      "type": "visual",
+      "text": "",
+      "category": "no_subject",
+      "exclude": [
+        "people"
+      ]
+    },
+    {
+      "request": "anything without people",
+      "type": "visual",
+      "text": "",
+      "category": "no_subject",
+      "exclude": [
+        "people"
+      ]
+    },
+    {
+      "request": "show me something",
+      "type": "visual",
+      "text": "",
+      "category": "no_subject"
+    },
+    {
+      "request": "just nothing with water please",
+      "type": "visual",
+      "text": "",
+      "category": "no_subject",
+      "exclude": [
+        "water"
+      ]
+    },
+    {
+      "request": "anything, as long as there are no cars",
+      "type": "visual",
+      "text": "",
+      "category": "no_subject",
+      "exclude": [
+        "cars"
+      ]
+    },
+    {
+      "request": "hi",
+      "type": "visual",
+      "text": "",
+      "category": "no_subject"
+    },
+    {
+      "request": "hello there",
+      "type": "visual",
+      "text": "",
+      "category": "no_subject"
+    },
+    {
+      "request": "thanks!",
+      "type": "visual",
+      "text": "",
+      "category": "no_subject"
+    }
+  ]
+}

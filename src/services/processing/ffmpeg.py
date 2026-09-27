@@ -114,3 +114,23 @@ def extract_audio(path: Path, out_path: Path, timeout: int = 1800) -> Path:
         timeout,
     )
     return out_path
+
+
+def cut_clip(path: Path, start_sec: float, end_sec: float, out_path: Path, timeout: int = 300) -> Path:
+    """Cut [start, end] into a standalone MP4, frame-accurate.
+
+    Re-encodes instead of stream-copying: a copy can only start on a compression keyframe (often seconds
+    early), which would break word-accurate quote clips. Short clips take ~1 s to re-encode.
+    """
+    _run(
+        ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+         "-ss", f"{start_sec:.3f}", "-i", str(path), "-t", f"{end_sec - start_sec:.3f}",
+         "-c:v", "libx264", "-preset", "veryfast", "-crf", "23", "-pix_fmt", "yuv420p",
+         "-c:a", "aac", "-b:a", "128k",
+         "-movflags", "+faststart",  # metadata first: browsers start playing before the download ends
+         str(out_path)],
+        timeout,
+    )  # fmt: skip
+    if not out_path.exists() or out_path.stat().st_size == 0:
+        raise FFmpegError(f"no clip produced for {start_sec:.2f}-{end_sec:.2f}s")
+    return out_path

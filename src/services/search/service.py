@@ -5,6 +5,7 @@
 """
 
 import logging
+import re
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
@@ -18,6 +19,7 @@ from src.services.search.fusion import reciprocal_rank_fusion
 from src.services.search.matching import locate_phrase
 from src.services.search.query_parser import ParsedQuery, parse_query
 from src.services.search.visual_query import visual_query_text
+from src.services.understanding.intent import Intent
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +59,13 @@ def _overlaps(a: SearchHit, b: SearchHit) -> bool:
     )
 
 
+def _mentions(hit: SearchHit, term: str) -> bool:
+    """Does the hit's caption, transcript or title mention `term`? Word-prefix match: 'night' also catches 'nighttime'."""
+    haystack = " ".join(str(hit.source.get(f) or "") for f in ("caption", "text", "video_title")).lower()
+    words = [re.escape(w.rstrip("s")) for w in term.lower().split()]
+    return bool(words) and re.search(r"\b" + r"\w*\s+".join(words), haystack) is not None
+
+
 def _cosine(opensearch_score: float) -> float:
     """OpenSearch reports cosinesimil kNN scores as (1 + cosine) / 2; convert back to cosine."""
     return 2 * opensearch_score - 1
@@ -84,8 +93,44 @@ class SearchService:
             return self._phrase_search(parsed, video_id, kind, source, size, fetch, group_by_video)
         return self._semantic_search(parsed, video_id, kind, source, size, fetch, group_by_video, mode)
 
+    def search_intent(
+        self,
+        intent: Intent,
+        video_id: str | None = None,
+        source: str | None = None,
+        size: int = 10,
+        group_by_video: bool = False,
+    ) -> SearchResult:
+        """Search driven by an understood request (Week 5) instead of raw text.
+
+        quote  → phrase cascade over speech (exact word times)
+        topic  → keyword search over speech
+        visual → hybrid search over keyframes only (a transcript saying "dog" isn't footage of a dog)
+        Exclusions drop hits whose caption/transcript/title mentions them. A quote/topic search that finds
+        nothing is retried as visual ("three people talking" may be footage, not speech).
+        """
+        fetch = min(size * OVERFETCH, self.settings.search_max_size * OVERFETCH)
+        text, exclude = intent.text, intent.exclude
+        if intent.type == "quote":
+            parsed = ParsedQuery(raw=text, phrase=text, text=text)
+            result = self._phrase_search(parsed, video_id, "speech", source, size, fetch, group_by_video, exclude)
+        elif intent.type == "topic":
+            parsed = ParsedQuery(raw=text, phrase=None, text=text)
+            result = self._semantic_search(parsed, video_id, "speech", source, size, fetch, group_by_video, "keyword", exclude)
+        else:
+            parsed = ParsedQuery(raw=text, phrase=None, text=text)
+            return self._semantic_search(parsed, video_id, "visual", source, size, fetch, group_by_video, "auto", exclude)
+        if result.hits:
+            return result
+        visual = ParsedQuery(raw=text, phrase=None, text=text)
+        fallback = self._semantic_search(visual, video_id, "visual", source, size, fetch, group_by_video, "auto", exclude)
+        if fallback.hits:
+            fallback.strategy = f"{intent.type}_none→visual_{fallback.strategy}"
+            return fallback
+        return result
+
     # ---- quotes ----------------------------------------------------------------------------------------
-    def _phrase_search(self, parsed, video_id, kind, source, size, fetch, group_by_video) -> SearchResult:
+    def _phrase_search(self, parsed, video_id, kind, source, size, fetch, group_by_video, exclude=()) -> SearchResult:
         # A quote is something *said*: search speech unless the caller asked for a specific kind.
         filters = qb.build_filters(video_id=video_id, kind=kind or "speech", source=source)
         phrase = parsed.phrase
@@ -97,13 +142,14 @@ class SearchService:
         for strategy, body in strategies:
             raw_hits = self.opensearch.search(body)["hits"]["hits"]
             hits = [h for h in (self._to_hit(raw, parsed) for raw in raw_hits) if h is not None]
+            hits = [h for h in hits if not any(_mentions(h, term) for term in exclude)]
             if hits:
                 logger.info("search %r → %s (%s hits)", parsed.raw, strategy, len(hits))
                 return SearchResult(parsed=parsed, strategy=strategy, hits=self._dedupe(hits, size, group_by_video))
         return SearchResult(parsed=parsed, strategy="none")
 
     # ---- keyword + vector ------------------------------------------------------------------------------
-    def _semantic_search(self, parsed, video_id, kind, source, size, fetch, group_by_video, mode) -> SearchResult:
+    def _semantic_search(self, parsed, video_id, kind, source, size, fetch, group_by_video, mode, exclude=()) -> SearchResult:
         # Explicit keyword/vector/hybrid mode treats quotes as plain text (no phrase pinpointing).
         parsed = ParsedQuery(raw=parsed.raw, phrase=None, text=parsed.text)
         filters = qb.build_filters(video_id=video_id, kind=kind, source=source)
@@ -136,6 +182,8 @@ class SearchService:
         else:
             strategy, hits = "keyword", keyword_hits
 
+        if exclude:
+            hits = [h for h in hits if not any(_mentions(h, term) for term in exclude)]
         logger.info("search %r → %s (%s keyword, %s vector)", parsed.raw, strategy, len(keyword_hits), len(vector_hits))
         if not hits:
             return SearchResult(parsed=parsed, strategy="none", visual_query=visual_text)
@@ -174,6 +222,9 @@ class SearchService:
         hits = []
         for segment_id, info in fused.items():
             hit = by_id[segment_id]
+            # kNN always returns neighbours; with no keyword support, demand a stronger visual match.
+            if "keyword" not in info["ranks"] and vector_scores[segment_id] < self.settings.search_vector_only_min_similarity:
+                continue
             hit.scores = {"rrf": round(info["rrf"], 5)}
             for name, rank in info["ranks"].items():
                 hit.scores[f"{name}_rank"] = rank

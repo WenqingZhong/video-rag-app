@@ -27,19 +27,26 @@ def _check_http(url: str, name: str) -> dict[str, Any]:
         return {"status": "unhealthy", "message": f"{name} check failed: {exc}"}
 
 
-def _check_worker() -> dict[str, Any]:
+def _ping_workers() -> dict | Exception:
+    """One broadcast ping; returns as soon as both expected workers (processing + clips) have answered."""
     try:
-        # limit=1: return as soon as one worker answers instead of always waiting the full timeout
-        replies = celery_app.control.ping(timeout=1.0, limit=1)
+        replies = celery_app.control.ping(timeout=1.0, limit=2) or []
     except Exception as exc:  # noqa: BLE001 - kombu/redis raise several unrelated types
-        return {"status": "unhealthy", "message": f"Broker unreachable: {exc}"}
-    if not replies:
-        return {"status": "unhealthy", "message": "No Celery workers responded"}
-    return {"status": "healthy", "message": "Celery worker responding"}
+        return exc
+    return {name: reply for item in replies for name, reply in item.items()}
+
+
+def _worker_check(replies: dict | Exception, prefix: str, label: str) -> dict[str, Any]:
+    if isinstance(replies, Exception):
+        return {"status": "unhealthy", "message": f"Broker unreachable: {replies}"}
+    names = [name for name in replies if name.startswith(prefix)]
+    if not names:
+        return {"status": "unhealthy", "message": f"No {label} responded"}
+    return {"status": "healthy", "message": f"{label} responding ({names[0]})"}
 
 
 def _checks(
-    settings: Settings, database, cache, storage, opensearch, embedder, captioner
+    settings: Settings, database, cache, storage, opensearch, embedder, captioner, workers
 ) -> dict[str, Callable[[], dict[str, Any]]]:
     return {
         "database": database.healthcheck,
@@ -49,7 +56,8 @@ def _checks(
         "embedder": embedder.health_check if embedder else lambda: {"status": "unhealthy", "message": "not configured"},
         # Ollama must be up AND have the caption model pulled
         "ollama": captioner.health_check if captioner else lambda: _check_http(f"{settings.ollama_host}/api/version", "Ollama"),
-        "worker": _check_worker,
+        "worker": lambda: _worker_check(workers, "worker@", "processing worker"),
+        "clip_worker": lambda: _worker_check(workers, "clips@", "clip worker"),
     }
 
 
@@ -65,7 +73,7 @@ def health_check(
 ) -> HealthResponse:
     """Readiness probe: reports every dependency. Returns 200 with `degraded` if any is down."""
     services: dict[str, ServiceStatus] = {}
-    for name, check in _checks(settings, database, cache, storage, opensearch, embedder, captioner).items():
+    for name, check in _checks(settings, database, cache, storage, opensearch, embedder, captioner, _ping_workers()).items():
         result = check()
         status = "healthy" if result.get("status") == "healthy" else "unhealthy"
         message = (

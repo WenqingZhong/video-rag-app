@@ -1,0 +1,835 @@
+{
+  "k": 5,
+  "modes": {
+    "keyword": {
+      "recall@5": 0.717,
+      "mrr": 0.722
+    },
+    "vector": {
+      "recall@5": 0.989,
+      "mrr": 0.94
+    },
+    "hybrid": {
+      "recall@5": 0.97,
+      "mrr": 0.94
+    },
+    "understood": {
+      "recall@5": 0.97,
+      "mrr": 0.954
+    }
+  },
+  "queries": [
+    {
+      "query": "give me a clip of a dog",
+      "category": "basic",
+      "keyword": {
+        "recall": 0.8,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 0.8,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 0.8,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 0.8,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "puppies",
+      "category": "basic",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 3
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "a kitten resting",
+      "category": "basic",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "ocean waves",
+      "category": "basic",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "sandy beach",
+      "category": "basic",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "birds in the sky",
+      "category": "basic",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "a colourful parrot-like bird",
+      "category": "basic",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 2
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "busy city streets at night",
+      "category": "basic",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "cars on a road",
+      "category": "basic",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "someone chopping vegetables",
+      "category": "basic",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "cooking food in a pan",
+      "category": "basic",
+      "keyword": {
+        "recall": 0.5,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "people having a meeting",
+      "category": "basic",
+      "keyword": {
+        "recall": 0.0,
+        "first_relevant_rank": null
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 2
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 2
+      }
+    },
+    {
+      "query": "sunlight in the woods",
+      "category": "basic",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "animals",
+      "category": "basic",
+      "keyword": {
+        "recall": 0.0,
+        "first_relevant_rank": null
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "car dashboard with navigation",
+      "category": "basic",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "sea water",
+      "category": "basic",
+      "keyword": {
+        "recall": 0.5,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "a bird's-eye view of a city at night",
+      "category": "style",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "drone footage above the coast",
+      "category": "style",
+      "keyword": {
+        "recall": 0.0,
+        "first_relevant_rank": null
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 2
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 2
+      }
+    },
+    {
+      "query": "wintry weather",
+      "category": "style",
+      "keyword": {
+        "recall": 0.0,
+        "first_relevant_rank": null
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "several young dogs in a cardboard box",
+      "category": "count",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "two dogs lying next to each other",
+      "category": "count",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "a single dog looking at the camera",
+      "category": "count",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "three people talking",
+      "category": "count",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "a dog under a metal structure",
+      "category": "detail",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 2
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "a cat wrapped in a blanket",
+      "category": "detail",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "someone pouring milk",
+      "category": "detail",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "a bird eating from a metal bowl",
+      "category": "detail",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 2
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "a phone mounted on the dashboard",
+      "category": "detail",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "a red traffic light",
+      "category": "detail",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "an orange car",
+      "category": "color",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "turquoise water",
+      "category": "color",
+      "keyword": {
+        "recall": 0.0,
+        "first_relevant_rank": null
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 3
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 3
+      }
+    },
+    {
+      "query": "canine",
+      "category": "synonym",
+      "keyword": {
+        "recall": 0.0,
+        "first_relevant_rank": null
+      },
+      "vector": {
+        "recall": 0.8,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 0.8,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 0.8,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "feline",
+      "category": "synonym",
+      "keyword": {
+        "recall": 0.0,
+        "first_relevant_rank": null
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "seashore",
+      "category": "synonym",
+      "keyword": {
+        "recall": 0.0,
+        "first_relevant_rank": null
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "automobiles",
+      "category": "synonym",
+      "keyword": {
+        "recall": 0.0,
+        "first_relevant_rank": null
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      },
+      "hybrid": {
+        "recall": 0.33,
+        "first_relevant_rank": 1
+      },
+      "understood": {
+        "recall": 0.33,
+        "first_relevant_rank": 1
+      }
+    },
+    {
+      "query": "a beach with no people",
+      "category": "negation",
+      "keyword": {
+        "recall": 1.0,
+        "first_relevant_rank": 2
+      },
+      "vector": {
+        "recall": 1.0,
+        "first_relevant_rank": 2
+      },
+      "hybrid": {
+        "recall": 1.0,
+        "first_relevant_rank": 2
+      },
+      "understood": {
+        "recall": 1.0,
+        "first_relevant_rank": 1
+      }
+    }
+  ],
+  "categories": {
+    "basic": {
+      "keyword": 0.844,
+      "vector": 0.958,
+      "hybrid": 0.969,
+      "understood": 0.969
+    },
+    "color": {
+      "keyword": 0.5,
+      "vector": 1.0,
+      "hybrid": 0.667,
+      "understood": 0.667
+    },
+    "count": {
+      "keyword": 1.0,
+      "vector": 1.0,
+      "hybrid": 1.0,
+      "understood": 1.0
+    },
+    "detail": {
+      "keyword": 1.0,
+      "vector": 0.833,
+      "hybrid": 1.0,
+      "understood": 1.0
+    },
+    "negation": {
+      "keyword": 0.5,
+      "vector": 0.5,
+      "hybrid": 0.5,
+      "understood": 1.0
+    },
+    "style": {
+      "keyword": 0.333,
+      "vector": 1.0,
+      "hybrid": 0.833,
+      "understood": 0.833
+    },
+    "synonym": {
+      "keyword": 0.0,
+      "vector": 1.0,
+      "hybrid": 1.0,
+      "understood": 1.0
+    }
+  },
+  "false_answers": {
+    "keyword": {
+      "false_answers": 4,
+      "of": 12,
+      "answered": [
+        "show me a dragon breathing fire",
+        "someone playing the piano",
+        "the part where he says the stock market crashed",
+        "where do they talk about cryptocurrency"
+      ]
+    },
+    "vector": {
+      "false_answers": 9,
+      "of": 12,
+      "answered": [
+        "hi",
+        "hello there",
+        "thanks!",
+        "a spaceship landing on mars",
+        "an elephant",
+        "someone playing the piano",
+        "a snowboarder doing a flip",
+        "the part where he says the stock market crashed",
+        "where do they talk about cryptocurrency"
+      ]
+    },
+    "hybrid": {
+      "false_answers": 7,
+      "of": 12,
+      "answered": [
+        "hi",
+        "hello there",
+        "thanks!",
+        "show me a dragon breathing fire",
+        "someone playing the piano",
+        "the part where he says the stock market crashed",
+        "where do they talk about cryptocurrency"
+      ]
+    },
+    "understood": {
+      "false_answers": 2,
+      "of": 12,
+      "answered": [
+        "someone playing the piano",
+        "the part where he says the stock market crashed"
+      ]
+    }
+  }
+}

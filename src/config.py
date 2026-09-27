@@ -86,6 +86,17 @@ class Settings(DefaultSettings):
         "the main subjects, what they are doing, and the setting."
     )
 
+    # Request understanding (LLM → structured intent). Reuses the caption model: Ollama holds one model at a
+    # time, so a separate text model would be reloaded every time captioning and /ask alternate.
+    understanding_enabled: bool = True
+    understanding_model: str = "qwen2.5vl:3b"
+    understanding_timeout: float = 30.0
+
+    # Clips (cut by the dedicated clip-worker, cached in S3 under clips/)
+    clip_padding_sec: float = 0.75  # context around quoted words
+    clip_max_sec: float = 15.0  # visual/topic clips longer than this are centred on the keyframe
+    clip_timeout: float = 60.0  # how long the API waits for the clip worker
+
     # OpenSearch configuration
     opensearch_host: str = "http://localhost:9200"
     opensearch_index: str = "video_segments"  # an ALIAS; it points at a versioned index (video_segments_v1)
@@ -96,6 +107,9 @@ class Settings(DefaultSettings):
     search_max_size: int = 50
     search_rrf_k: int = 60  # Reciprocal Rank Fusion constant (standard value; damps the weight of top ranks)
     search_vector_min_similarity: float = 0.15  # CLIP cosine below this is treated as "not a match"
+    # Hybrid: a result found ONLY by vector search (no keyword support) must be at least this similar.
+    # 0.20 chosen by a sweep (ADR 0002): false answers 5 → 2 of 12, MRR unchanged, one relevant video lost.
+    search_vector_only_min_similarity: float = 0.20
 
     # Ollama configuration
     ollama_host: str = "http://localhost:11434"

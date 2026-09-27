@@ -11,8 +11,10 @@ from opensearchpy.exceptions import ConnectionTimeout as OpenSearchTimeout
 from src.config import get_settings
 from src.models import VideoStatus
 from src.repositories import VideoRepository
+from src.services.clips import ClipRange, clip_key
 from src.services.indexing import index_video
 from src.services.ingestion.service import raw_key
+from src.services.processing import ffmpeg
 from src.services.processing.pipeline import VideoPipeline
 from src.worker.celery_app import celery_app
 from src.worker.context import get_database, get_enricher, get_opensearch, get_storage, get_transcriber
@@ -181,3 +183,26 @@ def rebuild_index(self: Task, video_id: str | None = None) -> dict:
         "index_total": opensearch.count(),
         "migration": migration,
     }
+
+
+@celery_app.task(name="clip.cut", bind=True, max_retries=2)
+def cut_clip(self: Task, video_id: str, start_sec: float, end_sec: float) -> str:
+    """Cut one clip into S3 (clips/…) and return its key. Routed to the `clips` queue (see celery_app)."""
+    clip = ClipRange(start_sec, end_sec)
+    key = clip_key(video_id, clip)
+    storage = get_storage()
+    if storage.exists(key):  # another request cut it in the meantime
+        return key
+    try:
+        with get_database().get_session() as session:
+            video = VideoRepository(session).get(video_id)
+            if video is None or not video.s3_key:
+                raise ValueError(f"video {video_id} has no stored file")
+            source_key = video.s3_key
+        with tempfile.TemporaryDirectory(prefix="clip-") as tmp:
+            source = storage.download_file(source_key, Path(tmp) / Path(source_key).name)
+            out = ffmpeg.cut_clip(source, clip.start_sec, clip.end_sec, Path(tmp) / "clip.mp4")
+            storage.upload_file(out, key, content_type="video/mp4")
+        return key
+    except TRANSIENT_ERRORS as exc:
+        raise self.retry(exc=exc, countdown=2) from exc

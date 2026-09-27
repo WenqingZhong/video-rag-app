@@ -1,8 +1,10 @@
 from fastapi import APIRouter, HTTPException, status
 from opensearchpy.exceptions import OpenSearchException
 
-from src.dependencies import SearchDep, StorageDep
+from src.dependencies import SearchDep, StorageDep, UnderstandingDep
 from src.schemas.api.search import SearchHitOut, SearchRequest, SearchResponse, VideoRef
+from src.services.search import SearchResult
+from src.services.search.query_parser import ParsedQuery
 from src.services.search.service import SearchUnavailable
 
 router = APIRouter(tags=["Search"])
@@ -11,19 +13,28 @@ PLAY_PADDING_SEC = 1.0  # a little context before/after the matched words
 
 
 @router.post("/search", response_model=SearchResponse)
-def search(body: SearchRequest, service: SearchDep, storage: StorageDep) -> SearchResponse:
+def search(body: SearchRequest, service: SearchDep, storage: StorageDep, understanding: UnderstandingDep) -> SearchResponse:
     """Quoted text → phrase search over transcripts (exact → slop → fuzzy).
     Otherwise hybrid: keyword (BM25 over transcripts, captions, titles) + vector (CLIP over keyframes), fused with RRF."""
     try:
-        result = service.search(
-            body.query,
-            video_id=body.video_id,
-            kind=body.kind,
-            source=body.source,
-            size=body.size,
-            group_by_video=body.group_by_video,
-            mode=body.mode,
-        )
+        if body.understand:
+            intent = understanding.understand(body.query).intent
+            if not intent.has_subject:  # nothing to search for (as /ask would ask back)
+                result = SearchResult(parsed=ParsedQuery(body.query, None, body.query), strategy="none")
+            else:
+                result = service.search_intent(
+                    intent, video_id=body.video_id, source=body.source, size=body.size, group_by_video=body.group_by_video
+                )
+        else:
+            result = service.search(
+                body.query,
+                video_id=body.video_id,
+                kind=body.kind,
+                source=body.source,
+                size=body.size,
+                group_by_video=body.group_by_video,
+                mode=body.mode,
+            )
     except (OpenSearchException, SearchUnavailable) as exc:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=f"Search unavailable: {exc}") from exc
 

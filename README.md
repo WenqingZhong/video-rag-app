@@ -17,6 +17,7 @@ multimodal retrieval approach follows the multimodal-agents-course.
 | `opensearch` / `opensearch-dashboards` | Hybrid (BM25 + vector) segment index | 9200 / 5601 |
 | `ollama` | Local models: `qwen2.5vl:3b` captions keyframes (one model loaded at a time) | 11434 |
 | `airflow` | Scheduler: daily Pexels ingestion DAG (calls the API) | 8080 |
+| `clip-worker` | Celery worker for the `clips` queue only: cuts clips (never waits behind video processing) | – |
 | `embedder` | CLIP model server (ViT-B/32): text + image → 512-d vectors | 8001 |
 
 Object storage is accessed purely through the S3 API (boto3). MinIO no longer publishes community
@@ -78,6 +79,28 @@ Pexels videos first go through `video.download_pexels` (best mp4 ≤ 720p, max 6
 - Schema changes use **Alembic** (`src/db/migrations`), applied automatically at startup.
   New migration: `uv run alembic revision --autogenerate -m "..."`.
 
+## Ask: a request in, a clip out (Week 5)
+
+`POST /api/v1/ask {"query": "...", "video_id"?: "...", "max_clips"?: 1}`
+
+```text
+request ─▶ understand (qwen2.5vl:3b via Ollama JSON schema → quote | topic | visual + exclusions; guards; rule fallback)
+        ─▶ search by intent (quote: phrase + word times · topic: speech keywords · visual: hybrid over keyframes; exclusions filtered)
+        ─▶ cut the clip (clip-worker, ffmpeg re-encode, cached in S3 clips/) ─▶ template answer
+```
+
+| Request | Answer |
+|---|---|
+| "Give me the part where the host says AI is changing everything" | an MP4 cut at the exact words + *At 0:09–0:11 in "host_talk": "AI is changing everything."* |
+| "give me a clip of a dog" | an MP4 of a dog + title, Pexels credit, caption |
+| "a beach with no people" | the **empty** beach (negation understood) |
+| "show me a dragon breathing fire" | `no_match`: *No moment matched footage of "a dragon breathing fire".* (no clip) |
+| "exclude people" / "hi" | `needs_subject`: *What would you like to see or hear?* |
+
+- `POST /api/v1/clips {video_id, start_sec, end_sec}`: cut any range (word-accurate, cached).
+- `POST /api/v1/search {"understand": true}`: the same understanding, without cutting.
+- `make eval-intents`: understanding accuracy (LLM vs rules) on `eval/intents.json`.
+
 ## Search quality & design decisions
 
 Retrieval changes are judged with a labelled evaluation set, not by eyeballing results:
@@ -87,11 +110,15 @@ Retrieval changes are judged with a labelled evaluation set, not by eyeballing r
   `color`, `negation`.
 - `make eval`: Recall@5 and MRR for keyword / vector / hybrid, overall and **per category**.
 
-| mode | Recall@5 | MRR | style | detail | synonym |
-|---|---|---|---|---|---|
-| keyword | 0.717 | 0.722 | 0.33 | 1.00 | 0.00 |
-| vector (CLIP) | 0.989 | 0.926 | 1.00 | 0.83 | 1.00 |
-| **hybrid** | **0.989** | **0.940** | 0.83 | 1.00 | 1.00 |
+| mode | Recall@5 | MRR | style | detail | synonym | negation | false answers |
+|---|---|---|---|---|---|---|---|
+| keyword | 0.717 | 0.722 | 0.33 | 1.00 | 0.00 | 0.50 | 4 / 12 |
+| vector (CLIP) | 0.989 | 0.940 | 1.00 | 0.83 | 1.00 | 0.50 | 9 / 12 |
+| hybrid | 0.970 | 0.940 | 0.83 | 1.00 | 1.00 | 0.50 | 7 / 12 |
+| **understood** (`/ask`) | **0.970** | **0.954** | 0.83 | 1.00 | 1.00 | **1.00** | **2 / 12** |
+
+*False answers:* requests that should return nothing ([`eval/no_answer.json`](eval/no_answer.json): greetings, and things
+not in the library).
 
 Decisions backed by experiments live in [`docs/decisions/`](docs/decisions/):
 
@@ -99,6 +126,11 @@ Decisions backed by experiments live in [`docs/decisions/`](docs/decisions/):
   captions as a third retriever changed 2 of 36 queries (one better, one worse) and lowered hard-query MRR
   (0.917 → 0.902). Keyword and CLIP already complement each other, and caption embeddings inherit caption errors.
   Reproduce: `make experiment-captions` → [`eval/results/caption_embeddings.json`](eval/results/caption_embeddings.json).
+- [ADR 0002: Request understanding](docs/decisions/0002-query-understanding.md). A local LLM checked by plain-code
+  guards, with rules as fallback. Rules alone: 1.00 on phrasings they were written for, 0.17 on free phrasing. The guards
+  and a vector-only similarity cut-off (0.20, chosen by a sweep) cut false answers from 7 to 2 of 12.
+- [ADR 0003: Clip delivery](docs/decisions/0003-clip-delivery.md). Real MP4s, re-encoded for word accuracy (verified
+  by transcribing a clip back), cached, cut on a dedicated queue so users never wait behind video processing.
 
 Requires `PEXELS_API_KEY` in `.env` (free at https://www.pexels.com/api/). Attribution (author, page URL) is stored per video.
 
@@ -140,12 +172,19 @@ src/
   services/captioning/ # Ollama vision-model captioner
   services/processing/visual.py  # keyframes -> vectors + captions (pipeline + backfill)
   services/search/fusion.py      # Reciprocal Rank Fusion
+  services/understanding/        # request → intent: LLM (Ollama JSON schema) + guards + rule fallback
+  services/clips/                # clip boundaries, cache keys, get-or-cut
+  services/answering/            # /ask orchestration + template answers
+  routers/ask.py, routers/clips.py  # /ask, /clips
   db/migrations/       # Alembic migrations + startup runner
 embedder/              # CLIP embedding service (own image: torch CPU + open_clip)
 eval/queries.json      # labelled search queries (relevance by Pexels id, with categories)
 eval/results/          # saved experiment results (evidence for docs/decisions)
 docs/decisions/        # architecture decision records (ADRs)
-scripts/evaluate_search.py  # Recall@k / MRR per search mode and category (make eval)
+scripts/evaluate_search.py  # Recall@k / MRR per mode and category + false answers (make eval)
+scripts/evaluate_intents.py # understanding accuracy, LLM vs rules (make eval-intents)
+eval/intents.json           # 58 labelled requests (incl. held-out, free phrasing, no subject)
+eval/no_answer.json         # requests that should return no clip
 scripts/experiment_caption_embeddings.py  # caption-embedding experiment (make experiment-captions)
 airflow/dags/          # pexels_ingestion DAG
 infra/airflow/start.sh # creates the airflow metadata DB, runs `airflow standalone`

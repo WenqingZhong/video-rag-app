@@ -94,6 +94,7 @@ def fake_services(settings, database, storage):
         "opensearch_service": opensearch,
         "embedding_client": embedder,
         "captioner": captioner,
+        "understanding": MagicMock(),
     }
 
 

@@ -6,14 +6,17 @@ from sqlalchemy.orm import Session
 
 from src.config import Settings
 from src.db.interfaces.base import BaseDatabase
+from src.services.answering import AskService
 from src.services.cache import CacheClient
 from src.services.captioning import Captioner
+from src.services.clips import ClipService
 from src.services.embeddings import EmbeddingClient
 from src.services.ingestion import IngestionService
 from src.services.opensearch import OpenSearchService
 from src.services.pexels import PexelsClient
 from src.services.search import SearchService
 from src.services.storage import StorageClient
+from src.services.understanding import QueryUnderstanding
 
 
 def get_settings(request: Request) -> Settings:
@@ -67,6 +70,22 @@ def get_search_service(
     return SearchService(opensearch, settings, embedder=embedder)
 
 
+def _cut_on_clip_worker(timeout: float):
+    def cut(video_id: str, start_sec: float, end_sec: float) -> str:
+        from src.worker.tasks import cut_clip
+
+        # Someone is waiting: block (in FastAPI's thread pool) until the clip worker returns the S3 key.
+        return cut_clip.delay(video_id, start_sec, end_sec).get(timeout=timeout)
+
+    return cut
+
+
+def get_clip_service(
+    storage: Annotated[StorageClient, Depends(get_storage_client)], settings: Annotated[Settings, Depends(get_settings)]
+) -> ClipService:
+    return ClipService(storage, cut=_cut_on_clip_worker(settings.clip_timeout))
+
+
 def _enqueue_process(video_id: str) -> str:
     from src.worker.tasks import process_video
 
@@ -98,3 +117,21 @@ OpenSearchDep = Annotated[OpenSearchService, Depends(get_opensearch_service)]
 SearchDep = Annotated[SearchService, Depends(get_search_service)]
 EmbedderDep = Annotated[EmbeddingClient | None, Depends(get_embedding_client)]
 CaptionerDep = Annotated[Captioner | None, Depends(get_captioner)]
+ClipDep = Annotated[ClipService, Depends(get_clip_service)]
+
+
+def get_query_understanding(request: Request) -> QueryUnderstanding:
+    return request.app.state.understanding
+
+
+def get_ask_service(
+    understanding: Annotated[QueryUnderstanding, Depends(get_query_understanding)],
+    search: Annotated[SearchService, Depends(get_search_service)],
+    clips: Annotated[ClipService, Depends(get_clip_service)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> AskService:
+    return AskService(understanding, search, clips, settings)
+
+
+UnderstandingDep = Annotated[QueryUnderstanding, Depends(get_query_understanding)]
+AskDep = Annotated[AskService, Depends(get_ask_service)]

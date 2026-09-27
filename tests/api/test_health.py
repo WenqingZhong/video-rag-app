@@ -9,7 +9,7 @@ HEALTHY = {"status": "healthy", "message": "ok"}
 def external_ok():
     with (
         patch("src.routers.ping._check_http", return_value=HEALTHY),
-        patch("src.routers.ping._check_worker", return_value=HEALTHY),
+        patch("src.routers.ping._ping_workers", return_value={"worker@a": {"ok": "pong"}, "clips@b": {"ok": "pong"}}),
     ):
         yield
 
@@ -25,7 +25,9 @@ def test_health_all_healthy(client, external_ok):
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "ok"
-    assert set(body["services"]) == {"database", "redis", "object_storage", "opensearch", "embedder", "ollama", "worker"}
+    assert set(body["services"]) == {
+        "database", "redis", "object_storage", "opensearch", "embedder", "ollama", "worker", "clip_worker"
+    }  # fmt: skip
     assert body["services"]["database"]["message"] == "Connected successfully"
 
 
@@ -42,3 +44,14 @@ def test_health_degraded_when_a_dependency_is_down(client, fake_services, extern
 
 def test_health_is_only_served_under_api_prefix(client):
     assert client.get("/health").status_code == 404
+
+
+def test_missing_clip_worker_degrades_health(client):
+    with (
+        patch("src.routers.ping._check_http", return_value=HEALTHY),
+        patch("src.routers.ping._ping_workers", return_value={"worker@a": {"ok": "pong"}}),
+    ):
+        body = client.get("/api/v1/health").json()
+    assert body["status"] == "degraded"
+    assert body["services"]["clip_worker"] == {"status": "unhealthy", "message": "No clip worker responded"}
+    assert body["services"]["worker"]["status"] == "healthy"
