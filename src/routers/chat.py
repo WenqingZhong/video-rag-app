@@ -5,8 +5,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
 
-from src.dependencies import ChatDep, SettingsDep, StorageDep
+from src.dependencies import ChatDep, Limited, LimiterDep, SettingsDep, StorageDep, ViewerDep, principal_for, too_many
 from src.schemas.api.chat import ChatResponse, ChatUpdateResponse
+from src.services.limits import LimitExceeded
 from src.services.metrics import observe_chat
 from src.services.tracing import current_trace_id, discard_trace
 
@@ -16,11 +17,13 @@ MAX_IMAGE_BYTES = 10 * 1024 * 1024
 VIDEO_EXTENSIONS = {".mp4", ".mov", ".m4v", ".mkv", ".webm", ".avi"}
 
 
-@router.post("/chat", response_model=ChatResponse)
+@router.post("/chat", response_model=ChatResponse, dependencies=[Limited])
 def chat(
     service: ChatDep,
     storage: StorageDep,
     settings: SettingsDep,
+    viewer: ViewerDep,
+    limiter: LimiterDep,
     message: Annotated[str, Form(max_length=500)] = "",
     conversation_id: Annotated[str | None, Form(max_length=64)] = None,
     image: Annotated[UploadFile | None, File(description="Optional photo: find the clip that looks like it")] = None,
@@ -45,6 +48,11 @@ def chat(
             raise HTTPException(
                 status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail=f"Video larger than {settings.upload_max_mb} MB"
             )
+        if limiter is not None:
+            try:
+                limiter.use_upload(principal_for(viewer))
+            except LimitExceeded as exc:
+                raise too_many(exc) from exc
         upload = (video.file, video.filename, video.content_type, video.size)
     if not message.strip() and image_key is None and upload is None:
         raise HTTPException(status_code=422, detail="Send a message, an image or a video")

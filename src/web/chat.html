@@ -61,6 +61,7 @@
     <div>
       <h1>Video RAG</h1>
       <p>Find the exact moment you need inside a video.</p>
+      <p id="usage" title="Your daily allowance of AI tokens (resets at midnight UTC)"></p>
     </div>
     <div>
       <button class="ghost" id="about" type="button">About</button>
@@ -131,6 +132,8 @@ function showHint() {
     list("Answers take about 5–15 s: the language model runs locally, on this computer's CPU.",
          "An uploaded video takes a minute or two to process (longer for long videos); I'll tell you when it's ready.",
          "Clips are a few seconds long: the moment itself, not the whole scene.",
+         "Videos you upload (up to 10 minutes) are private to you (this browser) and deleted after 7 days. Say “delete my video” to remove one sooner.",
+         "To keep this free for everyone, each person gets a daily allowance of AI tokens: plenty for about a hundred requests or a few videos. What's left is shown at the top; it resets every day.",
          "Nothing is downloaded from Pexels without your “yes”. Stock clips credit their Pexels authors.")));
 }
 
@@ -228,6 +231,7 @@ form.onsubmit = async (event) => {
     const r = await fetch(`${API}/chat`, { method: "POST", body: data });
     const body = await r.json();
     thinking.remove();
+    if (r.status === 429) { botMessage({ reply: body.detail }); return; }  // a limit, explained in words
     if (!r.ok) { botMessage({ reply: `Error ${r.status}: ${body.detail || "request failed"}` }); return; }
     conversationId = body.conversation_id;
     saveId(conversationId);
@@ -240,8 +244,18 @@ form.onsubmit = async (event) => {
   } finally {
     send.disabled = false;
     text.focus();
+    showUsage();
   }
 };
+
+async function showUsage() {
+  try {
+    const u = await (await fetch(`${API}/me/usage`)).json();
+    document.getElementById("usage").textContent =
+      `Today: ${u.tokens_left.toLocaleString()} of ${u.tokens_limit.toLocaleString()} tokens left`;
+  } catch {}
+}
+showUsage();
 
 showHint();
 text.focus();

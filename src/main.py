@@ -4,18 +4,20 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from botocore.exceptions import BotoCoreError, ClientError
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Request, Response
 from fastapi.responses import FileResponse
 from opensearchpy.exceptions import OpenSearchException
 
-from src.config import get_settings
+from src.config import check_production, get_settings
 from src.db.factory import make_database
-from src.routers import admin, ask, chat, clips, ping, search, traces, videos
+from src.routers import admin, ask, chat, clips, me, ping, search, traces, videos
 from src.services.agent import ConversationStore, LLMRouter
 from src.services.answering.cache import AnswerCache
 from src.services.cache import IndexVersion, make_cache_client
 from src.services.captioning import make_captioner
 from src.services.embeddings import make_embedding_client
+from src.services.identity import PrincipalMiddleware, ensure_viewer
+from src.services.limits import Limiter
 from src.services.llm import make_chat_model
 from src.services.metrics import render as render_metrics
 from src.services.opensearch import make_opensearch_service
@@ -41,6 +43,7 @@ async def lifespan(app: FastAPI):
     logger.info("Starting Video RAG API...")
 
     settings = get_settings()
+    check_production(settings)
     app.state.settings = settings
     app.state.database = make_database()
     app.state.trace_store = TraceStore(app.state.database) if settings.tracing_enabled else None
@@ -69,7 +72,8 @@ async def lifespan(app: FastAPI):
     app.state.captioner = make_captioner(settings)
     # LLM client only: no call at startup. Each call's tokens go to the llm_calls table.
     # Each model call's tokens go to llm_calls; understood requests are cached in Redis.
-    recorder = make_usage_recorder(settings, app.state.database, origin="api")
+    app.state.limiter = Limiter(app.state.cache_client, settings)
+    recorder = make_usage_recorder(settings, app.state.database, origin="api", limiter=app.state.limiter)
     app.state.usage_recorder = recorder
     # Question answering: same local model, answers only from transcript/caption excerpts.
     app.state.router = (
@@ -83,8 +87,9 @@ async def lifespan(app: FastAPI):
     )
     app.state.understanding = make_query_understanding(settings, recorder, cache=app.state.cache_client)
     # Whole answers, per index version (bumped by the workers on every index write).
+    app.state.index_version = IndexVersion(app.state.cache_client)
     app.state.answer_cache = (
-        AnswerCache(app.state.cache_client, IndexVersion(app.state.cache_client), settings) if settings.cache_enabled else None
+        AnswerCache(app.state.cache_client, app.state.index_version, settings) if settings.cache_enabled else None
     )
 
     # Placeholder for later weeks
@@ -117,6 +122,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(PrincipalMiddleware)  # who each request is for: limits count per viewer and address
 app.add_middleware(TracingMiddleware)  # every request is a trace; its id comes back as X-Request-ID
 
 app.include_router(ping.router, prefix=API_PREFIX)
@@ -127,6 +133,7 @@ app.include_router(clips.router, prefix=API_PREFIX)
 app.include_router(ask.router, prefix=API_PREFIX)
 app.include_router(traces.router, prefix=API_PREFIX)
 app.include_router(chat.router, prefix=API_PREFIX)
+app.include_router(me.router, prefix=API_PREFIX)
 
 
 @app.get("/metrics", include_in_schema=False)
@@ -137,9 +144,11 @@ def metrics() -> Response:
 
 
 @app.get("/app", include_in_schema=False)
-def chat_page() -> FileResponse:
+def chat_page(request: Request) -> FileResponse:
     """The web chat: one static page calling /api/v1/chat."""
-    return FileResponse(Path(__file__).parent / "web" / "chat.html", media_type="text/html")
+    response = FileResponse(Path(__file__).parent / "web" / "chat.html", media_type="text/html")
+    ensure_viewer(request, response, app.state.settings)  # the anonymous session starts with the page
+    return response
 
 
 @app.get("/", include_in_schema=False)

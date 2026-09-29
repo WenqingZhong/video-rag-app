@@ -10,3 +10,10 @@ htmlcov/
 .DS_Store
 notebooks/
 eval/images/
+# Terraform: state holds the generated app secrets; never commit it
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+crash.log
+bundle.tgz

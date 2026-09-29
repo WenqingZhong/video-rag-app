@@ -133,3 +133,24 @@ def test_a_video_over_20_mb_is_refused_politely(bot):
 
 def test_the_greeting_leads_with_uploading_a_video():
     assert HELP.index("Got a video?") < HELP.index("Need some footage?") and "20 MB" in HELP
+
+
+def test_each_user_is_sent_as_themselves_and_limits_are_shown_in_words(bot):
+    limited = httpx.Response(429, json={"detail": "You've used today's allowance of 50,000 tokens."},
+                             request=httpx.Request("POST", "http://api/api/v1/chat"))  # fmt: skip
+    bot.api.post.return_value.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "429", request=limited.request, response=limited
+    )
+    bot.handle({"chat": {"id": 7}, "from": {"id": 42}, "text": "a dog"})
+    assert bot.api.post.call_args.kwargs["headers"] == {"x-user-id": "tg:42"}
+    assert sent(bot, "sendMessage")[0]["text"] == "You've used today's allowance of 50,000 tokens."
+
+
+def test_usage_command(bot):
+    bot.api.get.return_value = api_reply({"tokens_used": 1234, "tokens_limit": 50000, "tokens_left": 48766, "uploads_used": 1,
+                                          "uploads_limit": 5, "pexels_used": 0, "pexels_limit": 3, "resets_in_sec": 3 * 3600 + 120})  # fmt: skip
+    bot.handle({"chat": {"id": 7}, "from": {"id": 42}, "text": "/usage"})
+    assert sent(bot, "sendMessage")[0]["text"] == (
+        "Today you've used 1,234 of your 50,000 tokens (48,766 left), 1 of 5 video uploads, and 0 of 3 stock-footage "
+        "downloads. Everything resets in 3 h 2 min."
+    )

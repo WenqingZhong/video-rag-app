@@ -9,12 +9,14 @@ def _make_s3(settings: Settings, endpoint_url):
     return boto3.client(
         "s3",
         endpoint_url=endpoint_url,
-        aws_access_key_id=settings.s3_access_key,
-        aws_secret_access_key=settings.s3_secret_key,
+        # No keys on AWS: boto3 falls back to the instance's IAM role
+        aws_access_key_id=settings.s3_access_key or None,
+        aws_secret_access_key=settings.s3_secret_key or None,
         region_name=settings.s3_region,
         config=Config(
             signature_version="s3v4",
-            s3={"addressing_style": "path"},
+            # A local S3 server needs path-style URLs; real S3 prefers bucket.s3.<region>.amazonaws.com
+            s3={"addressing_style": "path" if endpoint_url else "virtual"},
             connect_timeout=3,
             read_timeout=30,
             retries={"max_attempts": 3, "mode": "standard"},

@@ -10,6 +10,7 @@ from src.config import Settings
 from src.db.interfaces.base import BaseDatabase
 from src.models import SegmentKind, VideoStatus
 from src.repositories import VideoRepository
+from src.services.limits import Principal, acting_for
 from src.services.processing import ffmpeg
 from src.services.processing.segmentation import build_shots, build_speech_windows
 from src.services.processing.transcription import Transcriber
@@ -18,6 +19,14 @@ from src.services.storage import StorageClient
 from src.services.tracing import Span, span
 
 logger = logging.getLogger(__name__)
+
+
+class VideoTooLong(ValueError):
+    """A user's upload over UPLOAD_MAX_DURATION_SEC. Not retried."""
+
+
+def mmss(seconds: float) -> str:
+    return f"{int(seconds // 60)}:{int(seconds % 60):02d}"
 
 
 def frames_prefix(video_id: str) -> str:
@@ -67,8 +76,12 @@ class VideoPipeline:
                 raise ValueError(f"video {video_id} not found")
             if not video.s3_key:
                 raise ValueError(f"video {video_id} has no stored file")
-            s3_key = video.s3_key
+            s3_key, owner = video.s3_key, video.owner_id
+        # Model calls made while processing (captions) count against the uploader's daily tokens.
+        with acting_for(Principal(viewer=owner)):
+            return self._process(video_id, s3_key, owner)
 
+    def _process(self, video_id: str, s3_key: str, owner: str | None) -> dict:
         with tempfile.TemporaryDirectory(prefix=f"video-{video_id[:8]}-") as tmp:
             workdir = Path(tmp)
 
@@ -78,6 +91,9 @@ class VideoPipeline:
             with self._stage(video_id, "probing") as step:
                 meta = ffmpeg.probe(source)
                 step.set(duration_sec=meta.duration_sec, has_audio=meta.has_audio)
+                longest = self.settings.upload_max_duration_sec
+                if owner is not None and meta.duration_sec > longest:  # before any model call: nothing is spent
+                    raise VideoTooLong(f"it's {mmss(meta.duration_sec)} long, and uploads can be up to {mmss(longest)}")
                 with self.database.get_session() as session:
                     VideoRepository(session).update(
                         video_id,

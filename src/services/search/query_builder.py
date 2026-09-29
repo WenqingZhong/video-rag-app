@@ -13,8 +13,23 @@ HIGHLIGHT = {
 }
 
 
-def build_filters(video_id: str | None = None, kind: str | None = None, source: str | None = None) -> list[dict[str, Any]]:
-    filters = []
+def visibility_filter(viewer: str | None) -> dict[str, Any]:
+    """The shared library (no owner) plus this viewer's own uploads. Applied inside every query, kNN included."""
+    library = {"bool": {"must_not": {"exists": {"field": "owner_id"}}}}
+    if viewer is None:
+        return library
+    return {"bool": {"should": [library, {"term": {"owner_id": viewer}}], "minimum_should_match": 1}}
+
+
+def build_filters(
+    video_id: str | None = None,
+    kind: str | None = None,
+    source: str | None = None,
+    viewer: str | None = None,
+    everyone: bool = False,
+) -> list[dict[str, Any]]:
+    """`everyone`: skip the visibility filter (evaluation scripts and admin jobs only)."""
+    filters = [] if everyone else [visibility_filter(viewer)]
     if video_id:
         filters.append({"term": {"video_id": video_id}})
     if kind:

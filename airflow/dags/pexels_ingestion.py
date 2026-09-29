@@ -13,6 +13,7 @@ import requests
 from airflow.sdk import Param, dag, get_current_context, task
 
 API_URL = os.environ.get("VIDEO_RAG_API_URL", "http://api:8000")
+ADMIN = {"x-admin-token": os.environ.get("ADMIN_TOKEN", "dev-only-admin-token-change-me")}
 REQUIRED_SERVICES = ("database", "redis", "object_storage", "worker")
 
 logger = logging.getLogger(__name__)
@@ -54,7 +55,9 @@ def pexels_ingestion():
     @task(max_active_tis_per_dag=2)  # stay gentle with the Pexels rate limit
     def ingest_topic(topic: str) -> dict:
         per_topic = get_current_context()["params"]["per_topic"]
-        response = requests.post(f"{API_URL}/api/v1/videos/pexels", json={"query": topic, "count": per_topic}, timeout=120)
+        response = requests.post(
+            f"{API_URL}/api/v1/videos/pexels", json={"query": topic, "count": per_topic}, timeout=120, headers=ADMIN
+        )
         response.raise_for_status()
         body = response.json()
         return {

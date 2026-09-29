@@ -88,7 +88,7 @@ class QAService:
         if video_id is not None:
             with self.database.get_session() as session:
                 repo = VideoRepository(session)
-                video = repo.get(video_id)
+                video = repo.get_visible(video_id, getattr(self.search, "viewer", None))  # same visibility as search
                 if video is None:
                     return []
                 title = video.title or video.original_filename or video_id

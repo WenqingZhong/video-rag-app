@@ -12,6 +12,7 @@ Checks that cached answers are identical to fresh ones, so the speed-up doesn't 
 
 import argparse
 import json
+import os
 import statistics
 import sys
 import time
@@ -26,6 +27,7 @@ sys.path.insert(0, str(ROOT))
 from src.config import Settings
 
 API = "http://localhost:8000/api/v1"
+ADMIN = {"x-admin-token": os.environ.get("ADMIN_TOKEN", "dev-only-admin-token-change-me")}  # no limits; library uploads
 
 
 def clear_caches(settings: Settings) -> int:
@@ -74,7 +76,7 @@ def main() -> None:
     queries += json.loads((ROOT / "eval" / "no_answer.json").read_text())["queries"]
     print(f"cleared {clear_caches(settings)} cache entries · {len(queries)} requests\n")
 
-    http = httpx.Client(timeout=120)
+    http = httpx.Client(timeout=120, headers=ADMIN)
     ask(http, "warm up the model")  # so pass 1 isn't charged for loading the model
     clear_caches(settings)
 

@@ -40,3 +40,9 @@ class TraceOut(BaseModel):
     spans: list[SpanOut]
     llm: TraceLLM = Field(..., description="Model calls made for this trace (from llm_calls)")
     waterfall: str = Field(..., description="Text timeline: one line per span, children indented")
+
+
+class UploadCleanupResponse(BaseModel):
+    deleted: int
+    video_ids: list[str]
+    retention_days: int

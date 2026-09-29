@@ -1,0 +1,86 @@
+# main → tests → ARM images in ECR → deploy to the server over SSM.
+#
+# AWS access is short-lived (OIDC, no stored keys): the role only trusts main of this repository
+# (infra/aws/terraform/github.tf). Repository variables come from `terraform output github_variables`.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false  # never interrupt a deploy halfway
+
+permissions:
+  contents: read
+  id-token: write  # to request the OIDC token
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  images:
+    needs: test
+    runs-on: ubuntu-24.04-arm  # the server is ARM (Graviton): build natively, no emulation
+    strategy:
+      matrix:
+        include:
+          - { name: video-rag-app, context: . }
+          - { name: video-rag-embedder, context: embedder }
+          - { name: video-rag-ops, context: infra/ops }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - uses: aws-actions/amazon-ecr-login@v2
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          platforms: linux/arm64
+          push: true
+          tags: ${{ vars.REGISTRY }}/${{ matrix.name }}:${{ github.sha }}
+          build-args: VERSION=${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
+
+  deploy:
+    needs: images
+    runs-on: ubuntu-24.04
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Upload the deploy bundle (compose file + configuration, no code)
+        run: |
+          tar czf bundle.tgz compose.prod.yml infra/caddy infra/prometheus infra/grafana infra/aws/deploy.sh
+          aws s3 cp bundle.tgz "s3://${{ vars.BUCKET }}/deploy/${{ github.sha }}.tgz"
+      - name: Deploy on the server
+        run: |
+          set -euo pipefail
+          script="set -euo pipefail; cd /opt/video-rag; \
+            aws s3 cp s3://${{ vars.BUCKET }}/deploy/${{ github.sha }}.tgz /tmp/bundle.tgz; \
+            tar xzf /tmp/bundle.tgz -C /opt/video-rag; \
+            bash infra/aws/deploy.sh ${{ github.sha }}"
+          id=$(aws ssm send-command --instance-ids "${{ vars.INSTANCE_ID }}" --document-name AWS-RunShellScript \
+            --comment "deploy ${{ github.sha }}" --timeout-seconds 900 \
+            --parameters "commands=[\"$script\"]" --query Command.CommandId --output text)
+          echo "SSM command $id"
+          for _ in $(seq 1 90); do
+            status=$(aws ssm get-command-invocation --command-id "$id" --instance-id "${{ vars.INSTANCE_ID }}" \
+              --query Status --output text 2>/dev/null || echo Pending)
+            case "$status" in
+              Success|Failed|Cancelled|TimedOut) break ;;
+            esac
+            sleep 10
+          done
+          aws ssm get-command-invocation --command-id "$id" --instance-id "${{ vars.INSTANCE_ID }}" \
+            --query "[StandardOutputContent, StandardErrorContent]" --output text
+          test "$status" = Success

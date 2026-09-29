@@ -9,6 +9,7 @@ tokens per turn (from the turn's trace). Every conversation starts fresh; nothin
 
 import argparse
 import json
+import os
 import re
 import statistics
 import sys
@@ -19,6 +20,7 @@ import httpx
 
 ROOT = Path(__file__).resolve().parents[1]
 API = "http://localhost:8000/api/v1"
+ADMIN = {"x-admin-token": os.environ.get("ADMIN_TOKEN", "dev-only-admin-token-change-me")}  # no limits; library uploads
 
 
 def check(turn: dict, body: dict, previous_video: str | None) -> list[str]:
@@ -46,7 +48,7 @@ def main() -> None:
 
     conversations = json.loads((ROOT / "eval" / "conversations.json").read_text())["conversations"]
     images = {i.get("subject"): i["file"] for i in json.loads((ROOT / "eval" / "images.json").read_text())["images"]}
-    http = httpx.Client(timeout=300)
+    http = httpx.Client(timeout=300, headers=ADMIN)
     results = []
     for conversation in conversations:
         cid, previous_video, turns = f"eval-{int(time.time() * 1000)}", None, []

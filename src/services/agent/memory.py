@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class Conversation:
     id: str
+    owner: str | None = None  # the viewer it belongs to: someone else's conversation id starts a new conversation
     last_request: str | None = None
     last_status: str | None = None
     last_action: str | None = None  # the last tool used: follow-ups ("what about X?") repeat the same kind
@@ -37,6 +38,7 @@ class Conversation:
     upload_started: float | None = None
     focus_video_id: str | None = None  # the user's own video: searched first, then the library
     focus_title: str | None = None
+    offered_delete: list[str] = field(default_factory=list)  # the user's videos we asked "delete?" about; one turn
     shown: list[str] = field(default_factory=list)  # clips already shown ("video_id@start"): "another one" skips them
     turns: int = 0
 
@@ -51,8 +53,9 @@ class ConversationStore:
         self.cache = cache
         self.ttl = ttl_seconds
 
-    def load(self, conversation_id: str | None) -> Conversation:
-        """A new conversation when there's no id, it expired, or Redis is down (the turn still works, without memory)."""
+    def load(self, conversation_id: str | None, owner: str | None = None) -> Conversation:
+        """A new conversation when there's no id, it expired, Redis is down (the turn still works, without memory),
+        or it belongs to someone else (its memory names their videos). That one gets a new id, too."""
         if conversation_id:
             try:
                 raw = self.cache.get(f"chat:{conversation_id}")
@@ -60,8 +63,11 @@ class ConversationStore:
                 logger.warning("conversation memory unavailable: %s", exc)
                 raw = None
             if raw:
-                return Conversation(**json.loads(raw))
-        return Conversation(id=conversation_id or uuid.uuid4().hex)
+                conversation = Conversation(**json.loads(raw))
+                if conversation.owner == owner:
+                    return conversation
+                return Conversation(id=uuid.uuid4().hex, owner=owner)
+        return Conversation(id=conversation_id or uuid.uuid4().hex, owner=owner)
 
     def save(self, conversation: Conversation) -> None:
         conversation.shown = conversation.shown[-50:]

@@ -35,7 +35,7 @@ def test_image_search_keeps_only_close_keyframes():
     assert [h.source["video_id"] for h in result.hits] == ["dog"]  # 0.40 is below the image cut-off
     assert result.hits[0].scores == {"image": 0.72} and result.strategy == "image"
     body = opensearch.search.call_args.args[0]
-    assert body["query"]["knn"]["image_embedding"]["filter"]["bool"]["filter"] == [{"term": {"kind": "visual"}}]
+    assert body["query"]["knn"]["image_embedding"]["filter"]["bool"]["filter"][1:] == [{"term": {"kind": "visual"}}]
 
 
 def test_image_with_nothing_similar_returns_no_clip():

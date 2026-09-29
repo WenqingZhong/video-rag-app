@@ -22,7 +22,7 @@ class Settings(DefaultSettings):
 
     app_version: str = "0.1.0"
     debug: bool = True
-    environment: str = "development"
+    environment: str = "development"  # "production": refuses to start with development secrets (unsafe_for_production)
     service_name: str = "video-rag-api"
 
     # PostgreSQL configuration
@@ -44,8 +44,8 @@ class Settings(DefaultSettings):
     # S3-compatible object storage (SeaweedFS locally, AWS S3 in production)
     s3_endpoint_url: str | None = "http://localhost:8333"
     s3_public_endpoint_url: str | None = None
-    s3_access_key: str = "video_rag"
-    s3_secret_key: str = "video_rag_secret"
+    s3_access_key: str | None = "video_rag"  # empty on AWS: the instance's IAM role is used instead of keys
+    s3_secret_key: str | None = "video_rag_secret"
     s3_region: str = "us-east-1"
     s3_bucket: str = "video-rag"
     s3_presigned_url_ttl: int = 3600
@@ -107,6 +107,30 @@ class Settings(DefaultSettings):
     agent_router_timeout: float = 30.0
     chat_memory_ttl_sec: int = 24 * 3600
     chat_fetch_timeout_sec: int = 10 * 60  # give up waiting for downloaded Pexels videos to be processed
+
+    # Who is asking (src/services/identity.py). Uploads are private to their owner and expire after a while.
+    # SESSION_SECRET signs web session cookies and SERVICE_TOKEN lets the bot vouch for Telegram users:
+    # both must be set to long random values outside local development.
+    session_secret: str = "dev-only-session-secret-change-me"
+    service_token: str = "dev-only-service-token-change-me"
+    session_max_age_sec: int = 30 * 24 * 3600
+    cookie_secure: bool = False  # True behind HTTPS
+    upload_retention_days: int = 7
+    # ADMIN_TOKEN (header x-admin-token) opens the admin, trace and ingestion endpoints, adds uploads to the shared
+    # library, and skips the limits below (evaluation scripts, Airflow).
+    admin_token: str = "dev-only-admin-token-change-me"
+
+    # Limits per user (src/services/limits.py), counted in Redis per UTC day. A hosted model bills per token, so the
+    # allowance is in tokens: every model call a user causes counts, including captioning their uploads.
+    limits_enabled: bool = True
+    limit_tokens_per_day: int = 50_000  # ~100 requests, or a few videos
+    limit_ip_tokens_per_day: int = 200_000  # one address, however many anonymous sessions it opens
+    limit_global_tokens_per_day: int = 2_000_000  # the whole app: a ceiling on the model bill
+    limit_requests_per_min: int = 20
+    limit_ip_requests_per_min: int = 60
+    limit_uploads_per_day: int = 5
+    limit_pexels_per_day: int = 3  # downloads of new stock footage
+    upload_max_duration_sec: int = 600  # users' uploads; longer ones fail at the "probing" step
 
     # Telegram bot: a client of this API. Long-polls Telegram, so it needs no public URL.
     telegram_bot_token: str | None = None  # from @BotFather; only in .env (never committed)
@@ -176,6 +200,26 @@ class Settings(DefaultSettings):
         if isinstance(v, str):
             return [model.strip() for model in v.split(",") if model.strip()]
         return v
+
+
+def unsafe_for_production(settings: Settings) -> list[str]:
+    """What's wrong with these settings for a public deployment (empty = fine). Checked at startup when
+    ENVIRONMENT=production, so a missing secret stops the deploy instead of shipping a forgeable cookie."""
+    problems = []
+    for name in ("session_secret", "service_token", "admin_token"):
+        value = getattr(settings, name)
+        if value.startswith("dev-only") or len(value) < 32:
+            problems.append(f"{name.upper()} must be a random value of at least 32 characters")
+    if not settings.cookie_secure:
+        problems.append("COOKIE_SECURE must be true (the site is served over HTTPS)")
+    if settings.debug:
+        problems.append("DEBUG must be false")
+    return problems
+
+
+def check_production(settings: Settings) -> None:
+    if settings.environment == "production" and (problems := unsafe_for_production(settings)):
+        raise RuntimeError("Unsafe production settings: " + "; ".join(problems))
 
 
 def get_settings() -> Settings:

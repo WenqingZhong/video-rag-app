@@ -94,6 +94,15 @@ Each decision is written up with the experiment behind it in [`docs/decisions/`]
 - **Caches that can't serve stale answers.** Answer keys include an index version that every index write bumps, plus a
   fingerprint of the code and settings they depend on, so a new video or a prompt change invalidates exactly what it
   should. [ADR 0004](docs/decisions/0004-observability-and-caching.md)
+- **Private uploads, no sign-up.** A web visitor gets a signed anonymous cookie; the Telegram bot vouches for its
+  users with a service token. Uploads carry their owner, and every search (kNN included) filters to the shared
+  library plus the viewer's own videos. Uploads are deleted after 7 days, or on request ("delete my video", always
+  confirmed first): search index, files and rows. [ADR 0006](docs/decisions/0006-private-uploads.md)
+- **A daily token allowance per user.** A hosted model bills per token, so each user's limit is in tokens: every
+  model call they cause counts, including captioning their uploads (checked against the token ledger: exact match).
+  Also per-minute request limits by user and by address, uploads and stock downloads per day, and a global daily
+  budget as a ceiling on the bill. Limits come back as a sentence the chat shows as-is.
+  [ADR 0007](docs/decisions/0007-usage-limits.md)
 - **Observability built in:**
   - every request and background task is a trace, with the trace ID carried through Celery message headers;
   - every model call is recorded with its tokens and cost;
@@ -149,7 +158,9 @@ To fill the library with stock footage: `POST /api/v1/videos/pexels {"query": "d
 | `POST /api/v1/search` | ranked segments with match times (keyword, vector, hybrid, or understood) |
 | `POST /api/v1/videos` · `/videos/pexels` | upload a file, or queue Pexels videos (processed in the background) |
 | `GET /api/v1/videos/{id}` | status, processing stage, metadata |
+| `DELETE /api/v1/videos/{id}` | delete one of your own uploads (index, files, rows) |
 | `GET /api/v1/traces/{id}` | where a request spent its time, across the API and workers |
+| `GET /api/v1/me/usage` | today's tokens, uploads and downloads used and left |
 | `GET /api/v1/health` · `/metrics` | readiness per dependency · Prometheus metrics |
 
 ## Evaluation and development
@@ -185,25 +196,20 @@ Labelled sets live in [`eval/`](eval/), and saved results in [`eval/results/`](e
 
 ## Deploying to AWS
 
-The services map onto managed ones:
+One ARM EC2 instance runs [`compose.prod.yml`](compose.prod.yml): models on **Amazon Bedrock** (Claude Haiku 4.5),
+files in **S3**, HTTPS by **Caddy**, which exposes only the chat page and the chat API. Everything is **Terraform**
+([`infra/aws/terraform`](infra/aws/terraform)), and every push to `main` is tested, built into ARM images and
+deployed by **GitHub Actions** through SSM, with short-lived OIDC credentials: no AWS keys in GitHub or on the server.
+The step-by-step runbook is [`infra/aws/README.md`](infra/aws/README.md); the reasoning, including why not ECS and
+RDS yet, is [ADR 0008](docs/decisions/0008-aws-hosting.md).
 
-| Local | AWS |
+| Local | On AWS |
 |---|---|
-| API and workers | ECS (Fargate) |
-| Postgres | RDS |
-| Redis | ElastiCache |
-| SeaweedFS | S3 (already using the S3 API) |
-| OpenSearch | Amazon OpenSearch Service |
-| Airflow | EventBridge Scheduler |
-| Prometheus and Grafana | Amazon Managed Prometheus / Grafana |
-
-**Models:** set `LLM_PROVIDER=bedrock` to use Amazon Bedrock (the Converse API, with structured output through a forced
-tool call), or point Ollama at a GPU instance. The same evaluations can compare models before switching.
-
-**Before public use, it still needs:**
-- user accounts;
-- rate and upload limits per user;
-- a way to delete videos.
+| Ollama (qwen2.5vl:3b) | Bedrock, Claude Haiku 4.5 (`LLM_PROVIDER=bedrock`) |
+| SeaweedFS | S3, through the instance's IAM role |
+| Airflow | a small cron container calling the same admin endpoints, plus nightly Postgres backups to S3 |
+| `.env` | SSM Parameter Store; the app refuses to start in production with development secrets |
+| Grafana without login | Grafana with a login, reachable through an SSM tunnel only |
 
 ## Limitations
 

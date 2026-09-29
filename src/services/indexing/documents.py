@@ -14,6 +14,7 @@ def segment_documents(video: Video, segments: list[Segment]) -> list[dict[str, A
         "video_title": video.title,
         "video_source": video.source,
         "video_source_id": video.source_id,
+        "owner_id": video.owner_id,  # None is dropped at indexing: absent = shared library
         "video_author": video.author_name,
         "video_source_url": video.source_url,
         "video_s3_key": video.s3_key,

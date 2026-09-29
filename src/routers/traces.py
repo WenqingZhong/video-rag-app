@@ -2,11 +2,11 @@ from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, HTTPException, Query, status
 
-from src.dependencies import SessionDep
+from src.dependencies import AdminOnly, SessionDep
 from src.schemas.api.traces import TraceOut, TraceSummary
 from src.services.tracing import get_trace, list_traces, waterfall
 
-router = APIRouter(prefix="/traces", tags=["Traces"])
+router = APIRouter(prefix="/traces", tags=["Traces"], dependencies=[AdminOnly])
 
 
 @router.get("", response_model=list[TraceSummary])

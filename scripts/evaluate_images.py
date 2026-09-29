@@ -39,7 +39,7 @@ def main() -> None:
         pexels_id = {r.id: r.source_id or r.title for r in c.execute(text("SELECT id, source_id, title FROM videos"))}
 
     rows = []
-    filters = qb.build_filters(kind="visual")
+    filters = qb.build_filters(kind="visual")  # the shared library, as any visitor sees it
     for item in labelled:
         vector = embedder.embed_images([(ROOT / "eval" / "images" / item["file"]).read_bytes()])[0]
         raw = opensearch.search(qb.vector_query(vector, filters, 20))["hits"]["hits"]

@@ -1,0 +1,4 @@
+# m h dom mon dow  (UTC). Each job reads its settings from /etc/ops.env (entrypoint.sh).
+0  3 * * *  . /etc/ops.env && curl -fsS -X POST -H "x-admin-token: $ADMIN_TOKEN" http://api:8000/api/v1/admin/cleanup-traces > /proc/1/fd/1 2>&1
+10 3 * * *  . /etc/ops.env && curl -fsS -X POST -H "x-admin-token: $ADMIN_TOKEN" http://api:8000/api/v1/admin/cleanup-uploads > /proc/1/fd/1 2>&1
+30 3 * * *  . /etc/ops.env && /usr/local/bin/backup.sh > /proc/1/fd/1 2>&1

@@ -60,6 +60,17 @@ eval-agent: ## Chat routing: rules vs model vs rules-first, on the labelled turn
 eval-chat: ## Whole conversations through /chat (routing + tools + memory), needs the stack running
 	uv run python scripts/evaluate_conversations.py --save eval/results/conversations.json
 
+BEDROCK_MODEL ?= us.anthropic.claude-haiku-4-5-20251001-v1:0
+BEDROCK_ENV = LLM_PROVIDER=bedrock BEDROCK_TEXT_MODEL_ID=$(BEDROCK_MODEL) BEDROCK_VISION_MODEL_ID=$(BEDROCK_MODEL)
+eval-bedrock: ## The model evaluations again on Bedrock (Claude Haiku 4.5), into eval/results/bedrock/ (needs AWS credentials)
+	mkdir -p eval/results/bedrock
+	$(BEDROCK_ENV) uv run python scripts/evaluate_intents.py --save eval/results/bedrock/intents.json
+	for f in agent_turns agent_turns_heldout agent_turns_heldout2; do $(BEDROCK_ENV) uv run python scripts/evaluate_agent_turns.py --turns eval/$$f.json --save eval/results/bedrock/$$f.json; done
+	docker compose -f compose.yml -f compose.bedrock.yml up -d --wait api worker
+	uv run python scripts/evaluate_qa.py --save eval/results/bedrock/qa.json
+	uv run python scripts/evaluate_conversations.py --save eval/results/bedrock/conversations.json
+	docker compose up -d --wait api worker  # back to Ollama
+
 eval-cache: ## What the understanding and answer caches save (needs the stack running)
 	uv run python scripts/evaluate_cache.py --save eval/results/cache.json
 

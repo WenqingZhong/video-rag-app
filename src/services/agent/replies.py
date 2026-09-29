@@ -4,7 +4,8 @@ can't claim something the tools didn't return."""
 CANNED = {
     "greeting": (
         "Hi! I find moments in videos. Try “a dog on a beach”, “the part where she talks about caffeine”, "
-        "“how long is a sleep cycle?”, or send me a photo."
+        "“how long is a sleep cycle?”, or send me a photo. Videos you upload are private to you, deleted after "
+        "7 days, or sooner if you say “delete my video”."
     ),
     "ok": "Okay. What would you like to see?",
     "declined": "Okay, I won't download anything. What else would you like to see?",
@@ -90,8 +91,40 @@ def upload_ready(name: str, duration_sec: float | None, speech: bool, answering:
 
 
 def upload_failed(name: str, error: str | None) -> str:
+    if error and error.startswith("VideoTooLong: "):
+        return f"Sorry, “{name}” is too long: {error.removeprefix('VideoTooLong: ')}. Send a shorter clip."
     return f"Sorry, I couldn't process “{name}”{': ' + error[:120] if error else ''}. Try another file (MP4, MOV, WebM)."
 
 
 def no_more(request: str) -> str:
     return f"That's every matching clip I have for “{request}”."
+
+
+# ---- deleting the user's own videos ------------------------------------------------------------------------------
+NOTHING_TO_DELETE = (
+    "You haven't uploaded any videos, so there's nothing of yours to delete. "
+    "(The videos in my library are shared stock footage and stay.)"
+)
+DELETE_KEPT = "Okay, I'll keep it."
+
+
+def _names(titles: list[str]) -> str:
+    quoted = [f"“{t}”" for t in titles]
+    return quoted[0] if len(quoted) == 1 else ", ".join(quoted[:-1]) + f" and {quoted[-1]}"
+
+
+def confirm_delete(titles: list[str]) -> str:
+    what = _names(titles) if len(titles) == 1 else f"your {len(titles)} videos ({_names(titles)})"
+    return (
+        f"Delete {what}? It'll be removed from search and storage right away, and can't be undone. "
+        "Reply “yes” to delete, or “no” to keep it."
+    )
+
+
+def deleted(done: list[str], busy: list[str]) -> str:
+    parts = []
+    if done:
+        parts.append(f"Deleted {_names(done)}. {'It is' if len(done) == 1 else 'They are'} gone from search and storage.")
+    if busy:
+        parts.append(f"{_names(busy)} {'is' if len(busy) == 1 else 'are'} still being processed: ask again once it's done.")
+    return " ".join(parts) or "That video was already gone."

@@ -1,13 +1,13 @@
 from fastapi import APIRouter, HTTPException, status
 from opensearchpy.exceptions import OpenSearchException
 
-from src.dependencies import SearchDep, StorageDep, UnderstandingDep
+from src.dependencies import Limited, SearchDep, StorageDep, UnderstandingDep
 from src.schemas.api.search import SearchHitOut, SearchRequest, SearchResponse, VideoRef
 from src.services.search import SearchResult
 from src.services.search.query_parser import ParsedQuery
 from src.services.search.service import SearchUnavailable
 
-router = APIRouter(tags=["Search"])
+router = APIRouter(tags=["Search"], dependencies=[Limited])
 
 PLAY_PADDING_SEC = 1.0  # a little context before/after the matched words
 

@@ -1,0 +1,217 @@
+# Production on one EC2 instance (see infra/aws/ and docs/decisions/0008-aws-hosting.md).
+#
+# Differences from compose.yml (local development):
+# - images come from ECR (built by GitHub Actions), not built here;
+# - models run on Amazon Bedrock and files live in Amazon S3: no Ollama, no SeaweedFS. Both are reached with the
+#   instance's IAM role, so no AWS keys exist on the machine;
+# - Caddy is the only service with public ports (80/443, automatic HTTPS). It forwards the chat page and the chat
+#   API only; admin endpoints, API docs, Grafana and Prometheus are reachable through an SSM tunnel only;
+# - no Airflow: the two nightly jobs (and the database backup) run in the small `ops` container;
+# - every service has a memory limit, so one can't starve the others on an 8 GB machine.
+#
+# Values come from /opt/video-rag/.env, written at deploy time from SSM Parameter Store (infra/aws/deploy.sh).
+
+x-app: &app
+  image: ${IMAGE_REGISTRY}/video-rag-app:${IMAGE_TAG}
+  env_file: [.env]
+  restart: unless-stopped
+  logging: &logging
+    driver: json-file
+    options: { max-size: "20m", max-file: "5" }
+
+x-app-env: &app-env
+  ENVIRONMENT: production
+  DEBUG: "false"
+  COOKIE_SECURE: "true"
+  POSTGRES_DATABASE_URL: postgresql+psycopg2://video_rag:${POSTGRES_PASSWORD}@postgres:5432/video_rag
+  REDIS_URL: redis://redis:6379/0
+  CELERY_BROKER_URL: redis://redis:6379/1
+  CELERY_RESULT_BACKEND: redis://redis:6379/2
+  S3_ENDPOINT_URL: ""  # real S3
+  S3_ACCESS_KEY: ""  # the instance role instead of keys
+  S3_SECRET_KEY: ""
+  OPENSEARCH_HOST: http://opensearch:9200
+  EMBEDDER_URL: http://embedder:8000
+  LLM_PROVIDER: bedrock
+
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    ports: ["80:80", "443:443", "443:443/udp"]
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS}
+    volumes:
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data  # certificates: kept across restarts (Let's Encrypt rate-limits re-issuing)
+    depends_on: [api]
+    restart: unless-stopped
+    mem_limit: 128m
+    logging: *logging
+
+  api:
+    <<: *app
+    # --proxy-headers: the client address comes from Caddy's X-Forwarded-For (the per-address limits need it).
+    # Safe to trust any forwarder: the API has no published port, only Caddy can reach it.
+    command: ["sh", "-c", "rm -rf $$PROMETHEUS_MULTIPROC_DIR && mkdir -p $$PROMETHEUS_MULTIPROC_DIR && exec uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 2 --proxy-headers --forwarded-allow-ips='*'"]
+    environment:
+      <<: *app-env
+      PROMETHEUS_MULTIPROC_DIR: /tmp/prometheus
+    ports: ["127.0.0.1:8000:8000"]  # for SSM tunnels (admin, docs); not public
+    depends_on:
+      postgres: { condition: service_healthy }
+      opensearch: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/ping')\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    mem_limit: 1g
+
+  worker:
+    <<: *app
+    command: ["celery", "-A", "src.worker.celery_app", "worker", "--loglevel=INFO", "--concurrency=1", "-Q", "celery", "-n", "worker@%h"]
+    environment:
+      <<: *app-env
+      HF_HOME: /models
+    volumes: [whisper_models:/models]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      embedder: { condition: service_healthy }
+    mem_limit: 2g  # Whisper "small" on the CPU
+
+  clip-worker:
+    <<: *app
+    command: ["celery", "-A", "src.worker.celery_app", "worker", "--loglevel=INFO", "--concurrency=2", "-Q", "clips", "-n", "clips@%h"]
+    environment: *app-env
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    mem_limit: 512m
+
+  telegram-bot:
+    <<: *app
+    command: ["python", "-m", "src.bot.telegram"]
+    environment:
+      <<: *app-env
+      BOT_API_URL: http://api:8000
+    depends_on:
+      api: { condition: service_healthy }
+    mem_limit: 256m
+
+  embedder:
+    image: ${IMAGE_REGISTRY}/video-rag-embedder:${IMAGE_TAG}
+    environment:
+      CLIP_MODEL: ViT-B-32
+      CLIP_PRETRAINED: laion2b_s34b_b79k
+      TORCH_THREADS: "2"
+    volumes: [embedder_models:/models]
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 180s
+    restart: unless-stopped
+    mem_limit: 1536m
+    logging: *logging
+
+  # Nightly: delete old traces and expired uploads (the same admin endpoints Airflow calls locally), and back up
+  # Postgres to S3. The search index needs no backup: it's rebuilt from Postgres (POST /admin/reindex).
+  ops:
+    image: ${IMAGE_REGISTRY}/video-rag-ops:${IMAGE_TAG}  # postgres client + curl + AWS CLI (infra/ops)
+    environment:
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      BACKUP_BUCKET: ${S3_BUCKET}
+    depends_on: [api, postgres]
+    restart: unless-stopped
+    mem_limit: 128m
+    logging: *logging
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: video_rag
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: video_rag
+    volumes: [postgres_data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U video_rag -d video_rag"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    mem_limit: 512m
+    logging: *logging
+
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "200mb", "--maxmemory-policy", "noeviction"]
+    volumes: [redis_data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    mem_limit: 256m
+    logging: *logging
+
+  opensearch:
+    image: opensearchproject/opensearch:2.19.0
+    environment:
+      - discovery.type=single-node
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      - DISABLE_SECURITY_PLUGIN=true  # no published port: only the app containers can reach it
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock: { soft: -1, hard: -1 }
+    volumes: [opensearch_data:/usr/share/opensearch/data]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+    mem_limit: 1280m
+    logging: *logging
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=15d"]
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+    mem_limit: 256m
+    logging: *logging
+
+  grafana:
+    image: grafana/grafana-oss:12.1.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}  # a login, unlike local dev
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/tokens_and_cost.json
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./infra/grafana/provisioning-prod:/etc/grafana/provisioning:ro
+      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    ports: ["127.0.0.1:3000:3000"]  # SSM tunnel only
+    depends_on: [prometheus, postgres]
+    restart: unless-stopped
+    mem_limit: 256m
+    logging: *logging
+
+volumes:
+  caddy_data:
+  whisper_models:
+  embedder_models:
+  postgres_data:
+  redis_data:
+  opensearch_data:
+  prometheus_data:
+  grafana_data:

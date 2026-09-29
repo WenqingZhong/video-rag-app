@@ -46,6 +46,8 @@ class Video(Base):
     content_type: Mapped[str | None] = mapped_column(String(128))
     size_bytes: Mapped[int | None] = mapped_column(BigInteger)
     s3_key: Mapped[str | None] = mapped_column(Text)
+    # Who can see it: None = the shared library (Pexels, demo content); otherwise only this user (an upload)
+    owner_id: Mapped[str | None] = mapped_column(String(64))
 
     # Filled in by the pipeline (ffprobe / whisper)
     duration_sec: Mapped[float | None] = mapped_column(Float)
@@ -73,6 +75,7 @@ class Video(Base):
         UniqueConstraint("source", "source_id", name="uq_videos_source_source_id"),
         Index("ix_videos_status", "status"),
         Index("ix_videos_created_at", "created_at"),
+        Index("ix_videos_owner_id", "owner_id"),
     )
 
 

@@ -17,17 +17,23 @@ upload           a video attached to a message: it becomes the conversation's fo
 Downloading and processing take minutes, so a turn never waits for them: clients poll (GET /chat/{id}/updates).
 """
 
+import re
 import time
 from typing import Any, TypedDict
 
 from langgraph.graph import END, START, StateGraph
 
 from src.services.agent import replies
-from src.services.agent.decide import Decision, LLMRouter, decide
+from src.services.agent.decide import _NO, _YES, Decision, LLMRouter, decide
 from src.services.agent.memory import Conversation
 from src.services.agent.tools import Toolbox, ToolResult
 from src.services.tracing import span
 from src.services.usage import UsageRecorder
+
+_DELETE = re.compile(
+    r"\b(?:delete|remove|erase)\b.*\b(?:videos?|uploads?|files?|it|them|mine|everything|footage)\b", re.IGNORECASE
+)
+_ALL = re.compile(r"\b(?:all|every|everything|them)\b", re.IGNORECASE)
 
 
 class TurnState(TypedDict, total=False):
@@ -36,6 +42,7 @@ class TurnState(TypedDict, total=False):
     kind: str  # poll: "upload" | "fetch": what finished
     status_text: str  # poll, upload in progress: which step, for how long
     queued: str  # a request that must wait for the user's video: the reply saying so
+    direct: str  # a reply decided before any tool (deleting the user's videos)
     update: str  # poll only: "idle" (nothing fetching) | "pending" | "done" | "timed_out"
     progress: dict[str, int]  # poll only: ready / pending / failed
     message: str
@@ -99,6 +106,9 @@ class ChatGraph:
     # ---- nodes -------------------------------------------------------------------------------------------------
     def _decide(self, state: TurnState) -> dict[str, Any]:
         conversation = state["conversation"]
+        deleting = self._deleting(conversation, state["message"].strip())
+        if deleting is not None:
+            return {"decision": Decision("reply", reply="delete", confident=True), "direct": deleting}
         with span("agent.decide") as step:
             decision = decide(state["message"], conversation.context(bool(state.get("image_key"))), self.router)
             step.set(
@@ -107,6 +117,41 @@ class ChatGraph:
         if decision.llm_call is not None and self.recorder is not None:
             self.recorder.record(decision.llm_call, _route_outcome(decision))
         return {"decision": decision}
+
+    def _deleting(self, conversation: Conversation, message: str) -> str | None:
+        """Deleting the user's own videos: plain rules, never the model, and always a yes/no confirmation first.
+        None: the message isn't about deleting; the turn goes on as usual."""
+        offered, conversation.offered_delete = conversation.offered_delete, []  # the question is open for one turn
+        if offered and _YES.match(message) and len(message.split()) <= 4:
+            with span("agent.delete", videos=len(offered)):
+                titles = {v["id"]: v["title"] for v in self.toolbox.my_videos()}
+                outcome = {vid: self.toolbox.delete_video(vid) for vid in offered}
+            gone = [vid for vid, o in outcome.items() if o in ("deleted", "missing")]
+            for vid in gone:
+                if conversation.focus_video_id == vid:
+                    conversation.focus_video_id, conversation.focus_title = None, None
+                if conversation.uploading == vid:
+                    conversation.uploading, conversation.upload_request = None, None
+                if conversation.last_video_id == vid:
+                    conversation.last_video, conversation.last_video_id = None, None
+            conversation.shown = [c for c in conversation.shown if c.split("@")[0] not in gone]
+            done = [titles.get(vid, "your video") for vid, o in outcome.items() if o == "deleted"]
+            busy = [titles.get(vid, "your video") for vid, o in outcome.items() if o == "busy"]
+            return replies.deleted(done, busy)
+        if offered and _NO.match(message):
+            return replies.DELETE_KEPT
+        if not _DELETE.search(message):
+            return None
+        mine = self.toolbox.my_videos()
+        if not mine:
+            return replies.NOTHING_TO_DELETE
+        if _ALL.search(message):
+            targets = mine
+        else:  # the video this conversation is about, else the newest
+            current = conversation.focus_video_id or conversation.uploading or conversation.last_video_id
+            targets = [v for v in mine if v["id"] == current] or mine[:1]
+        conversation.offered_delete = [v["id"] for v in targets]
+        return replies.confirm_delete([v["title"] for v in targets])
 
     def _act(self, state: TurnState) -> dict[str, Any]:
         decision, conversation = state["decision"], state["conversation"]
@@ -213,9 +258,9 @@ class ChatGraph:
 
     def _respond(self, state: TurnState) -> dict[str, Any]:
         decision, conversation, result = state["decision"], state["conversation"], state.get("result")
-        if state.get("queued"):  # waiting for the user's video to finish processing
+        if state.get("queued") or state.get("direct"):  # waiting for the user's video / about deleting videos
             conversation.turns += 1
-            return {"reply": state["queued"], "clips": [], "citations": [], "videos": []}
+            return {"reply": state.get("queued") or state["direct"], "clips": [], "citations": [], "videos": []}
         conversation.turns += 1
         offered, conversation.offered_fetch = conversation.offered_fetch, None  # an offer is open for one turn only
         out: dict[str, Any] = {"clips": [], "citations": [], "videos": []}
@@ -286,7 +331,9 @@ class ChatGraph:
                 conversation.last_video, conversation.last_video_id = first["title"], first["video_id"]
         elif decision.action == "fetch_from_pexels":
             ids = data.get("video_ids", [])
-            if ids:
+            if data.get("limited"):
+                out["reply"] = data["limited"]
+            elif ids:
                 conversation.fetching = ids
                 conversation.fetch_request = conversation.last_request if offered else decision.text
                 conversation.fetch_subject, conversation.fetch_started = data["query"], time.time()

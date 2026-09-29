@@ -42,9 +42,16 @@ class FakeRedis:
         self.data[key], self.ttl[key] = value, ex
 
     def incr(self, key):
+        return self.incrby(key, 1)
+
+    def incrby(self, key, amount):
         self._check()
-        self.data[key] = str(int(self.data.get(key, 0)) + 1)
+        self.data[key] = str(int(self.data.get(key, 0)) + amount)
         return int(self.data[key])
+
+    def expire(self, key, seconds):
+        self._check()
+        self.ttl[key] = seconds
 
 
 @pytest.fixture

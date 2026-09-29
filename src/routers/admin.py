@@ -3,15 +3,15 @@ from datetime import UTC, datetime, timedelta
 from celery.result import AsyncResult
 from fastapi import APIRouter, status
 
-from src.dependencies import SessionDep, SettingsDep
+from src.dependencies import AdminOnly, DeletionDep, SessionDep, SettingsDep
 from src.models import VideoStatus
 from src.repositories import VideoRepository
 from src.schemas.api.search import EnrichRequest, EnrichResponse, JobStatus, ReindexRequest
-from src.schemas.api.traces import CleanupRequest, CleanupResponse
+from src.schemas.api.traces import CleanupRequest, CleanupResponse, UploadCleanupResponse
 from src.services.tracing import delete_spans_before
 from src.worker.celery_app import celery_app
 
-router = APIRouter(prefix="/admin", tags=["Admin"])
+router = APIRouter(prefix="/admin", tags=["Admin"], dependencies=[AdminOnly])
 
 
 @router.post("/reindex", response_model=JobStatus, status_code=status.HTTP_202_ACCEPTED)
@@ -32,7 +32,7 @@ def enrich(session: SessionDep, body: EnrichRequest | None = None) -> EnrichResp
     if body.video_id:
         ids = [body.video_id]
     else:
-        videos, _ = VideoRepository(session).list_videos(limit=100_000, status=VideoStatus.READY)
+        videos, _ = VideoRepository(session).list_videos(limit=100_000, status=VideoStatus.READY, everything=True)
         ids = [v.id for v in videos]
     jobs = [enrich_visual.delay(video_id, force=body.force).id for video_id in ids]
     return EnrichResponse(queued=len(jobs), job_ids=jobs)
@@ -44,6 +44,14 @@ def cleanup_traces(session: SessionDep, settings: SettingsDep, body: CleanupRequ
     days = (body.older_than_days if body else None) or settings.trace_retention_days
     before = datetime.now(UTC) - timedelta(days=days)
     return CleanupResponse(deleted_spans=delete_spans_before(session, before), before=before)
+
+
+@router.post("/cleanup-uploads", response_model=UploadCleanupResponse)
+def cleanup_uploads(deletion: DeletionDep, settings: SettingsDep) -> UploadCleanupResponse:
+    """Delete users' uploads older than UPLOAD_RETENTION_DAYS (the shared library never expires). Run daily by Airflow."""
+    deleted = deletion.delete_expired(settings.upload_retention_days)
+    return UploadCleanupResponse(deleted=len(deleted), video_ids=[d.video_id for d in deleted],
+                                 retention_days=settings.upload_retention_days)  # fmt: skip
 
 
 @router.get("/jobs/{job_id}", response_model=JobStatus)

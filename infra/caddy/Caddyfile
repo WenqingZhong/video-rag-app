@@ -1,0 +1,31 @@
+# The only public entrance (compose.prod.yml). HTTPS certificates are issued and renewed automatically.
+# SITE_ADDRESS is a hostname: a free one like 3-91-10-20.sslip.io (it resolves to that IP) or your own domain.
+{$SITE_ADDRESS} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	# What the public may use: the chat page, the chat API and one's own usage.
+	@public path /app /api/v1/chat /api/v1/chat/* /api/v1/me/* /api/v1/health
+	handle @public {
+		reverse_proxy api:8000
+	}
+	handle / {
+		redir * /app
+	}
+	# Everything else (admin, traces, search, docs, metrics) stays inside: reach it through an SSM tunnel.
+	handle {
+		respond "Not found" 404
+	}
+
+	# Uploads: the API also checks size and length.
+	request_body {
+		max_size 100MB
+	}
+}

@@ -8,6 +8,7 @@ limitation noted in the results. ffmpeg runs inside the worker container (the Ma
 """
 
 import argparse
+import os
 import subprocess
 import sys
 import tempfile
@@ -17,6 +18,7 @@ from pathlib import Path
 import httpx
 
 API = "http://localhost:8000/api/v1"
+ADMIN = {"x-admin-token": os.environ.get("ADMIN_TOKEN", "dev-only-admin-token-change-me")}  # no limits; library uploads
 WORKER = "video-rag-worker"
 # Plain backgrounds, one per third of the talk. Avoids the colours the search evaluation asks for (orange, turquoise).
 SCENES = ("dimgray", "darkolivegreen", "maroon")
@@ -53,11 +55,13 @@ def main() -> None:
 
     with open(tmp / f"{name}.mp4", "rb") as fh:
         video = (
-            httpx.post(f"{API}/videos", files={"file": (f"{name}.mp4", fh, "video/mp4")}, timeout=300).raise_for_status().json()
+            httpx.post(f"{API}/videos", files={"file": (f"{name}.mp4", fh, "video/mp4")}, timeout=300, headers=ADMIN)
+            .raise_for_status()
+            .json()
         )
     print(f"uploaded → {video['id']}, processing", end="", flush=True)
     for _ in range(120):
-        status = httpx.get(f"{API}/videos/{video['id']}", timeout=30).json()
+        status = httpx.get(f"{API}/videos/{video['id']}", timeout=30, headers=ADMIN).json()
         if status["status"] in ("ready", "failed"):
             break
         print(".", end="", flush=True)

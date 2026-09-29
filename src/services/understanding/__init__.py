@@ -12,12 +12,14 @@ from src.services.usage import UsageRecorder
 def make_query_understanding(
     settings: Settings, recorder: UsageRecorder | None = None, cache: CacheClient | None = None
 ) -> QueryUnderstanding:
-    llm = None
+    llm, model = None, settings.understanding_model
     if settings.understanding_enabled:
-        llm = LLMIntentParser(make_chat_model(settings, "text", timeout=settings.understanding_timeout))
+        chat = make_chat_model(settings, "text", timeout=settings.understanding_timeout)
+        llm, model = LLMIntentParser(chat), chat.name  # the model actually used: an Ollama name or a Bedrock id
     understanding_cache = None
     if cache is not None and settings.cache_enabled:
-        understanding_cache = UnderstandingCache(cache, settings.understanding_model, settings.understanding_cache_ttl_sec)
+        # Keyed by model: switching models (e.g. to Bedrock) must not serve the old model's understandings
+        understanding_cache = UnderstandingCache(cache, model, settings.understanding_cache_ttl_sec)
     return QueryUnderstanding(llm, recorder, understanding_cache)
 
 

@@ -18,14 +18,15 @@ from typing import Any
 
 import httpx
 
-from src.config import Settings
+from src.config import Settings, check_production
+from src.services.identity import SERVICE_TOKEN_HEADER, USER_HEADER
 from src.services.storage import StorageClient, make_storage_client
 
 logger = logging.getLogger("telegram-bot")
 
 HELP = (
     "Hi! I find the exact moment you're looking for in a video and send it back as a short clip.\n\n"
-    "🎥 Got a video? Send it to me (up to 20 MB), then tell me which part you want, for example:\n"
+    "🎥 Got a video? Send it to me (up to 20 MB and 10 minutes), then tell me which part you want, for example:\n"
     "“the part where she says thank you”\n"
     "No need to wait: ask right away, and I'll send the clip as soon as your video is ready (usually a minute or two).\n\n"
     "🔎 Need some footage? Just describe it, like “a dog playing in the snow”. If I don't have it, I can look for free "
@@ -33,6 +34,9 @@ HELP = (
     "❓ Have a question, like “how long is a sleep cycle?”? I'll look through the videos in my library for one that "
     "answers it and send you that clip. If none of them does, I'll tell you.\n\n"
     "🖼 Send me a photo and I'll find the scene that looks most like it.\n\n"
+    "🔒 Videos you send are private to you and deleted after 7 days. Type /delete to remove yours sooner.\n\n"
+    "⚖️ To keep this free for everyone, each person gets a daily allowance of AI tokens: plenty for about a hundred "
+    "requests or a few videos. It resets every day, and /usage shows how much you have left.\n\n"
     "Type /new to start over."
 )
 MAX_UPLOAD_BYTES = 45 * 1024 * 1024  # Telegram bots may upload up to 50 MB
@@ -56,9 +60,17 @@ class RedactToken(logging.Filter):
 
 
 class TelegramBot:
-    def __init__(self, token: str, api_url: str, storage: StorageClient, allowed_chat_ids: set[int] | None = None):
+    def __init__(
+        self,
+        token: str,
+        api_url: str,
+        storage: StorageClient,
+        allowed_chat_ids: set[int] | None = None,
+        service_token: str = "",
+    ):
         self.telegram = httpx.Client(base_url=f"https://api.telegram.org/bot{token}", timeout=70)
-        self.api = httpx.Client(base_url=api_url, timeout=300)
+        # The service token lets the API trust the user id we send: each Telegram user owns their uploads.
+        self.api = httpx.Client(base_url=api_url, timeout=300, headers={SERVICE_TOKEN_HEADER: service_token})
         self.storage = storage
         self.allowed = allowed_chat_ids or set()
         self.conversations: dict[int, str] = {}  # Telegram chat → our conversation id
@@ -113,6 +125,11 @@ class TelegramBot:
     def conversation(self, chat_id: int) -> str:
         return self.conversations.setdefault(chat_id, f"tg-{chat_id}-{uuid.uuid4().hex[:8]}")
 
+    @staticmethod
+    def user(message: dict[str, Any]) -> dict[str, str]:
+        """Who sent it, as the API's viewer id: their uploads are private to them."""
+        return {USER_HEADER: f"tg:{(message.get('from') or {}).get('id') or message['chat']['id']}"}
+
     def handle(self, message: dict[str, Any]) -> None:
         chat_id = message["chat"]["id"]
         if self.allowed and chat_id not in self.allowed:
@@ -122,6 +139,11 @@ class TelegramBot:
         if text in ("/start", "/help"):
             self.send_text(chat_id, HELP)
             return
+        if text == "/usage":
+            self.send_text(chat_id, self.usage_text(message))
+            return
+        if text == "/delete":
+            text = "delete my video"
         if text == "/new":
             self.conversations.pop(chat_id, None)
             self.send_text(chat_id, "New conversation. What would you like to see?")
@@ -145,7 +167,14 @@ class TelegramBot:
         self.call("sendChatAction", chat_id=chat_id, action="typing")
         data = {"message": text, "conversation_id": self.conversation(chat_id)}
         try:
-            reply = self.api.post("/api/v1/chat", data=data, files=files).raise_for_status().json()
+            reply = self.api.post("/api/v1/chat", data=data, files=files, headers=self.user(message)).raise_for_status().json()
+        except httpx.HTTPStatusError as exc:
+            if exc.response.status_code == 429:  # a limit: the API explains it in words
+                self.send_text(chat_id, exc.response.json().get("detail") or "You've reached a limit. Try again later.")
+                return
+            logger.warning("chat request failed: %s", exc)
+            self.send_text(chat_id, "Sorry, something went wrong. Try again in a moment.")
+            return
         except httpx.HTTPError as exc:
             logger.warning("chat request failed: %s", exc)
             self.send_text(chat_id, "Sorry, something went wrong. Try again in a moment.")
@@ -153,7 +182,21 @@ class TelegramBot:
         self.deliver(chat_id, reply)
         if (reply.get("fetching") or reply.get("uploading")) and reply["conversation_id"] not in self.watching:
             self.watching.add(reply["conversation_id"])
-            threading.Thread(target=self.wait_for_download, args=(chat_id, reply["conversation_id"]), daemon=True).start()
+            threading.Thread(
+                target=self.wait_for_download, args=(chat_id, reply["conversation_id"], self.user(message)), daemon=True
+            ).start()
+
+    def usage_text(self, message: dict[str, Any]) -> str:
+        try:
+            u = self.api.get("/api/v1/me/usage", headers=self.user(message)).raise_for_status().json()
+        except httpx.HTTPError:
+            return "Sorry, I couldn't check your usage right now."
+        hours, minutes = u["resets_in_sec"] // 3600, u["resets_in_sec"] % 3600 // 60
+        return (
+            f"Today you've used {u['tokens_used']:,} of your {u['tokens_limit']:,} tokens ({u['tokens_left']:,} left), "
+            f"{u['uploads_used']} of {u['uploads_limit']} video uploads, and {u['pexels_used']} of {u['pexels_limit']} "
+            f"stock-footage downloads. Everything resets in {hours} h {minutes} min."
+        )
 
     def deliver(self, chat_id: int, reply: dict[str, Any]) -> None:
         clips = reply.get("clips") or []
@@ -166,7 +209,14 @@ class TelegramBot:
             self.call("sendChatAction", chat_id=chat_id, action="upload_video")
             self.send_clip(chat_id, clip)
 
-    def wait_for_download(self, chat_id: int, conversation_id: str, every_sec: float = 10, give_up_sec: float = 45 * 60) -> None:
+    def wait_for_download(
+        self,
+        chat_id: int,
+        conversation_id: str,
+        user: dict[str, str] | None = None,
+        every_sec: float = 10,
+        give_up_sec: float = 45 * 60,
+    ) -> None:
         """Poll until the upload (or Pexels download) is processed, keeping ONE status message up to date, so a long
         wait never looks like a dead bot. Then deliver the result (and any request that was waiting for it)."""
         started = time.time()
@@ -176,7 +226,7 @@ class TelegramBot:
             while time.time() - started < give_up_sec:
                 time.sleep(every_sec)
                 try:
-                    update = self.api.get(f"/api/v1/chat/{conversation_id}/updates").raise_for_status().json()
+                    update = self.api.get(f"/api/v1/chat/{conversation_id}/updates", headers=user).raise_for_status().json()
                 except httpx.HTTPError:
                     continue
                 elapsed = time.time() - started
@@ -230,6 +280,7 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     logging.getLogger("httpx").setLevel(logging.WARNING)  # its INFO lines include the URL, i.e. the bot token
     settings = Settings()
+    check_production(settings)
     if settings.telegram_bot_token:
         for handler in logging.getLogger().handlers:
             handler.addFilter(RedactToken(settings.telegram_bot_token))
@@ -237,7 +288,8 @@ def main() -> None:
         logger.warning("TELEGRAM_BOT_TOKEN is not set: the bot is off")  # exit 0: compose doesn't restart it
         return
     allowed = {int(x) for x in settings.telegram_allowed_chat_ids.split(",") if x.strip()}
-    TelegramBot(settings.telegram_bot_token, settings.bot_api_url, make_storage_client(settings), allowed).run()
+    storage = make_storage_client(settings)
+    TelegramBot(settings.telegram_bot_token, settings.bot_api_url, storage, allowed, settings.service_token).run()
 
 
 if __name__ == "__main__":

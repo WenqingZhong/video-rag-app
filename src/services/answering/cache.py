@@ -21,7 +21,8 @@ logger = logging.getLogger(__name__)
 
 # The code an answer depends on. Settings: thresholds, clip lengths, anything that changes results.
 _PACKAGES = ("services/understanding", "services/search", "services/answering", "services/clips")
-_SETTING_PREFIXES = ("search_", "clip_", "understanding_model", "opensearch_index")
+# Includes where the model runs: answers from one model are never served for another
+_SETTING_PREFIXES = ("search_", "clip_", "understanding_model", "opensearch_index", "llm_provider", "bedrock_text_model")
 
 
 class AnswerCache:
@@ -32,14 +33,15 @@ class AnswerCache:
         relevant = {k: v for k, v in settings.model_dump().items() if k.startswith(_SETTING_PREFIXES)}
         self.prefix = f"answer:{code_fingerprint(*_PACKAGES, settings=relevant)}"
 
-    def key(self, query: str, video_id: str | None, source: str | None, max_clips: int) -> str | None:
+    def key(self, query: str, video_id: str | None, source: str | None, max_clips: int, scope: str | None = None) -> str | None:
         """None when Redis is down: the request is answered without the cache."""
         try:
             version = self.versions.current()
         except redis.RedisError as exc:
             logger.warning("answer cache unavailable: %s", exc)
             return None
-        return f"{self.prefix}:v{version}:{digest(normalize_request(query), video_id, source, max_clips)}"
+        # scope: a viewer with their own uploads gets their own entries; everyone else shares the library's
+        return f"{self.prefix}:v{version}:{digest(normalize_request(query), video_id, source, max_clips, scope)}"
 
     def get(self, key: str) -> dict | None:
         try:

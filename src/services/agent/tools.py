@@ -15,7 +15,8 @@ from src.db.interfaces.base import BaseDatabase
 from src.models import VideoStatus
 from src.repositories import VideoRepository
 from src.services.answering import Answer, AnsweredClip, AskService, ImageAskService, mmss
-from src.services.ingestion import IngestionService
+from src.services.ingestion import DeletionService, IngestionService, VideoBusy
+from src.services.limits import Limiter, LimitExceeded, Principal, current_principal
 from src.services.pexels import PexelsClient
 from src.services.qa import QAService
 from src.services.storage import StorageClient
@@ -117,6 +118,9 @@ class Toolbox:
         qa: QAService,
         make_ingestion: Callable[[Any], IngestionService],  # session → IngestionService
         pexels: PexelsClient | None,
+        viewer: str | None = None,  # who is chatting: owns their uploads, sees the library plus those
+        deletion: DeletionService | None = None,
+        limiter: Limiter | None = None,
     ):
         self.database = database
         self.storage = storage
@@ -125,6 +129,9 @@ class Toolbox:
         self.qa = qa
         self.make_ingestion = make_ingestion
         self.pexels = pexels
+        self.viewer = viewer
+        self.deletion = deletion
+        self.limiter = limiter
 
     def run(self, name: str, arguments: dict[str, Any]) -> ToolResult:
         handler = getattr(self, f"_{name}", None)
@@ -144,7 +151,7 @@ class Toolbox:
     # ---- not for the model: called by the graph when a video is attached ------------------------------
     def upload_video(self, fileobj: Any, filename: str | None, content_type: str | None, size: int | None) -> str:
         with span("tool.upload_video", filename=filename, size=size), self.database.get_session() as session:
-            return self.make_ingestion(session).create_upload(fileobj, filename, content_type, size).id
+            return self.make_ingestion(session).create_upload(fileobj, filename, content_type, size, owner_id=self.viewer).id
 
     def video_status(self, video_id: str) -> dict[str, Any]:
         with self.database.get_session() as session:
@@ -153,6 +160,24 @@ class Toolbox:
                 return {"status": "missing"}
             return {"status": video.status, "stage": video.stage, "title": video.title, "duration_sec": video.duration_sec,
                     "speech": bool(video.language), "error": video.error}  # fmt: skip
+
+    def my_videos(self) -> list[dict[str, Any]]:
+        """This viewer's own uploads, newest first (what "delete my video" can mean)."""
+        if self.viewer is None:
+            return []
+        with self.database.get_session() as session:
+            return [{"id": v.id, "title": v.title or v.original_filename or "your video", "status": v.status}
+                    for v in VideoRepository(session).owned_by(self.viewer)]  # fmt: skip
+
+    def delete_video(self, video_id: str) -> str:
+        """ "deleted" | "busy" | "missing" | "unavailable". Only the owner's own uploads: checked here, not by the caller."""
+        if self.deletion is None or not any(v["id"] == video_id for v in self.my_videos()):
+            return "missing" if self.deletion is not None else "unavailable"
+        with span("tool.delete_video", video_id=video_id):
+            try:
+                return "deleted" if self.deletion.delete(video_id) else "missing"
+            except VideoBusy:
+                return "busy"
 
     # ---- tools -----------------------------------------------------------------------------------------
     def _find_clip(self, request: str, video_id: str | None = None, max_clips: int = 1) -> ToolResult:
@@ -208,6 +233,11 @@ class Toolbox:
         if self.pexels is None:
             return ToolResult(False, "Pexels is not configured (no API key).")
         count = max(1, min(int(count), 5))
+        if self.limiter is not None:
+            try:
+                self.limiter.use_pexels(current_principal() or Principal(viewer=self.viewer))
+            except LimitExceeded as exc:
+                return ToolResult(True, exc.message, {"query": query, "video_ids": [], "limited": exc.message})
         with self.database.get_session() as session:
             result = self.make_ingestion(session).ingest_pexels(self.pexels, query, count)
             ids = [v.id for v in result.queued]
@@ -228,7 +258,9 @@ class Toolbox:
 
     def _list_videos(self, source: str | None = None) -> ToolResult:
         with self.database.get_session() as session:
-            videos, total = VideoRepository(session).list_videos(limit=50, status=VideoStatus.READY, source=source)
+            videos, total = VideoRepository(session).list_videos(
+                limit=50, status=VideoStatus.READY, source=source, visible_to=self.viewer
+            )
             items = [
                 {
                     "id": v.id,

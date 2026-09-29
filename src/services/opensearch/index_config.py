@@ -6,7 +6,7 @@ from Postgres and switches the alias to it atomically (blue/green), keeping the 
 
 import copy
 
-INDEX_VERSION = 2  # v1: text only · v2: + caption, CLIP image embedding
+INDEX_VERSION = 3  # v1: text only · v2: + caption, CLIP image embedding · v3: + owner_id (private uploads)
 
 
 def versioned_index_name(alias: str, version: int = INDEX_VERSION) -> str:
@@ -58,6 +58,7 @@ _BASE_BODY = {
             "video_title": {"type": "text", "analyzer": "english", "fields": {"raw": {"type": "keyword"}}},
             "video_source": {"type": "keyword"},
             "video_source_id": {"type": "keyword"},
+            "owner_id": {"type": "keyword"},  # absent: the shared library; set: visible only to that user
             "video_author": {"type": "keyword", "index": False},
             "video_source_url": {"type": "keyword", "index": False},
             "video_s3_key": {"type": "keyword", "index": False},

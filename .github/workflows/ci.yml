@@ -1,0 +1,21 @@
+# Lint and tests on every push and pull request. Also called by deploy.yml before anything ships.
+name: CI
+
+on:
+  push:
+    branches-ignore: [main]  # main is tested by deploy.yml
+  pull_request:
+  workflow_call:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --frozen --group dev --python 3.12
+      - run: uv run ruff check src tests scripts airflow
+      - run: uv run ruff format --check src tests scripts airflow
+      - run: uv run pytest -q

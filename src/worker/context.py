@@ -7,6 +7,7 @@ from src.db.factory import make_database
 from src.services.cache import IndexVersion, make_cache_client
 from src.services.captioning import make_captioner
 from src.services.embeddings import make_embedding_client
+from src.services.limits import Limiter
 from src.services.opensearch import make_opensearch_service
 from src.services.processing.transcription import Transcriber
 from src.services.processing.visual import VisualEnricher
@@ -44,7 +45,8 @@ def get_opensearch():
 @lru_cache
 def get_enricher() -> VisualEnricher:
     settings = get_settings()
-    recorder = make_usage_recorder(settings, get_database(), origin="worker")
+    limiter = Limiter(make_cache_client(settings), settings)  # captioning a user's upload counts against their tokens
+    recorder = make_usage_recorder(settings, get_database(), origin="worker", limiter=limiter)
     return VisualEnricher(make_embedding_client(settings), make_captioner(settings), recorder, settings.frame_blank_max_stddev)
 
 

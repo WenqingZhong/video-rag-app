@@ -6,6 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from src.db.interfaces.base import BaseDatabase
 from src.models.usage import LLMCallRecord
+from src.services.limits import Limiter, current_principal
 from src.services.tracing import current_trace_id
 from src.services.usage.models import LLMCall, Outcome
 from src.services.usage.pricing import Pricing
@@ -14,10 +15,11 @@ logger = logging.getLogger(__name__)
 
 
 class UsageRecorder:
-    def __init__(self, database: BaseDatabase, pricing: Pricing, origin: str):
+    def __init__(self, database: BaseDatabase, pricing: Pricing, origin: str, limiter: Limiter | None = None):
         self.database = database
         self.pricing = pricing
         self.origin = origin  # "api" | "worker" | "eval": keeps evaluation runs apart from real traffic
+        self.limiter = limiter  # counts the tokens against the user's daily allowance (limits.py)
 
     def record_saved(self, avoided: LLMCall, *, request_id: str | None = None) -> float:
         """A cache hit: the call `avoided` was not made. Returns the estimated cost saved."""
@@ -30,6 +32,8 @@ class UsageRecorder:
         """Store the call and return its estimated cost. A database outage loses the row, not the request."""
         cost = self.pricing.cost(call)
         self._store(call, outcome, video_id, request_id, cost_usd=cost)
+        if self.limiter is not None:
+            self.limiter.add_tokens(current_principal(), call.total_tokens)
         return cost
 
     def _store(

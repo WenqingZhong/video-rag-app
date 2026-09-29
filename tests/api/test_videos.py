@@ -1,7 +1,10 @@
+from src.config import Settings
 from src.dependencies import get_ingestion_service
 from src.main import app
 from src.models import VideoSource, VideoStatus
 from src.repositories import VideoRepository
+
+ADMIN = {"x-admin-token": Settings(_env_file=None).admin_token}
 
 
 def _seed(database):
@@ -66,7 +69,7 @@ def test_pexels_endpoint_maps_service_result(client, fake_services):
             return FakeResult()
 
     app.dependency_overrides[get_ingestion_service] = FakeService
-    body = client.post("/api/v1/videos/pexels", json={"query": "dog", "count": 2}).json()
+    body = client.post("/api/v1/videos/pexels", json={"query": "dog", "count": 2}, headers=ADMIN).json()
     assert body["skipped_existing"] == 2 and body["queued"] == []
 
 
@@ -79,7 +82,7 @@ def test_reprocess_requeues_failed_and_rejects_in_flight(client, database, monke
         busy = repo.create(source=VideoSource.UPLOAD, s3_key="raw/b/source.mp4", status=VideoStatus.PROCESSING)
         session.commit()
 
-    response = client.post(f"/api/v1/videos/{failed.id}/reprocess")
+    response = client.post(f"/api/v1/videos/{failed.id}/reprocess", headers=ADMIN)
     assert response.status_code == 202 and response.json()["status"] == "queued"
     assert queued == [failed.id]
-    assert client.post(f"/api/v1/videos/{busy.id}/reprocess").status_code == 409
+    assert client.post(f"/api/v1/videos/{busy.id}/reprocess", headers=ADMIN).status_code == 409

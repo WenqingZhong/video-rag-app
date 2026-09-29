@@ -21,6 +21,12 @@ class CacheClient:
     def incr(self, key: str) -> int:
         return int(self.client.incr(key))
 
+    def add(self, key: str, amount: int, ttl_seconds: int) -> int:
+        """A counter that expires: increment by `amount`, (re)set its lifetime, return the new total."""
+        total = int(self.client.incrby(key, amount))
+        self.client.expire(key, ttl_seconds)
+        return total
+
     def health_check(self) -> dict[str, Any]:
         try:
             self.client.ping()

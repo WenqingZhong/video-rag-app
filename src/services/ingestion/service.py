@@ -59,7 +59,15 @@ class IngestionService:
             raise
         self.session.commit()
 
-    def create_upload(self, fileobj: BinaryIO, filename: str | None, content_type: str | None, size_bytes: int | None) -> Video:
+    def create_upload(
+        self,
+        fileobj: BinaryIO,
+        filename: str | None,
+        content_type: str | None,
+        size_bytes: int | None,
+        owner_id: str | None = None,
+    ) -> Video:
+        """`owner_id`: who uploaded it; only they can see it (None: shared library content)."""
         video_id = str(uuid.uuid4())
         key = raw_key(video_id, filename)
         # Bytes go to durable storage first; the queue only ever carries the id.
@@ -72,6 +80,7 @@ class IngestionService:
             content_type=content_type,
             size_bytes=size_bytes,
             s3_key=key,
+            owner_id=owner_id,
             status=VideoStatus.QUEUED,
         )
         self.session.commit()

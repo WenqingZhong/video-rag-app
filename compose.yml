@@ -114,6 +114,7 @@ services:
       AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS: "True"  # local dev only: no login screen
       AIRFLOW__API_AUTH__JWT_SECRET: video-rag-local-dev-only
       VIDEO_RAG_API_URL: http://api:8000
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-dev-only-admin-token-change-me}  # the DAGs call admin endpoints
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./infra/airflow/start.sh:/opt/airflow/start.sh:ro

@@ -166,7 +166,7 @@ def rebuild_index(self: Task, video_id: str | None = None) -> dict:
         if video_id:
             ids = [video_id]
         else:
-            videos, _ = repo.list_videos(limit=100_000, status=VideoStatus.READY)
+            videos, _ = repo.list_videos(limit=100_000, status=VideoStatus.READY, everything=True)
             ids = [v.id for v in videos]
 
     opensearch = get_opensearch()

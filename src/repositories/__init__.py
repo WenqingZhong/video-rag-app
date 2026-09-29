@@ -1,3 +1,3 @@
-from src.repositories.video import VideoRepository
+from src.repositories.video import VideoRepository, can_see
 
-__all__ = ["VideoRepository"]
+__all__ = ["VideoRepository", "can_see"]

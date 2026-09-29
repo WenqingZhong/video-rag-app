@@ -84,8 +84,27 @@ def test_keyword_query_and_group_by_video():
     assert fields == ["text.stemmed", "caption", "video_title^2"]  # never the stop-word-keeping exact field
 
 
+LIBRARY = {"bool": {"must_not": {"exists": {"field": "owner_id"}}}}
+
+
 def test_build_filters():
-    assert qb.build_filters() == []
+    assert qb.build_filters() == [LIBRARY]  # anonymous: the shared library only
+    assert qb.build_filters(everyone=True) == []
     assert qb.build_filters(video_id="x", kind="visual", source="pexels") == [
-        {"term": {"video_id": "x"}}, {"term": {"kind": "visual"}}, {"term": {"video_source": "pexels"}},
+        LIBRARY, {"term": {"video_id": "x"}}, {"term": {"kind": "visual"}}, {"term": {"video_source": "pexels"}},
     ]  # fmt: skip
+
+
+def test_visibility_filter_adds_the_viewers_own_uploads():
+    assert qb.visibility_filter(None) == LIBRARY
+    assert qb.visibility_filter("web:abc") == {
+        "bool": {"should": [LIBRARY, {"term": {"owner_id": "web:abc"}}], "minimum_should_match": 1}
+    }
+
+
+def test_search_service_filters_by_its_viewer():
+    os_ = MagicMock()
+    os_.search.return_value = {"hits": {"hits": []}}
+    SearchService(os_, Settings(_env_file=None), viewer="tg:1").search("a dog", mode="keyword")
+    filters = os_.search.call_args.args[0]["query"]["bool"]["filter"]
+    assert filters[0] == qb.visibility_filter("tg:1")

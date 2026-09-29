@@ -18,6 +18,7 @@ Relevance and metrics are the same as scripts/evaluate_search.py (per video, Rec
 
 import argparse
 import json
+import os
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -33,6 +34,7 @@ from src.services.search.fusion import reciprocal_rank_fusion
 from src.services.search.visual_query import visual_query_text
 
 API = "http://localhost:8000/api/v1"
+ADMIN = {"x-admin-token": os.environ.get("ADMIN_TOKEN", "dev-only-admin-token-change-me")}  # no limits; library uploads
 TOP = 30
 K = 5
 BGE_QUERY_PREFIX = "Represent this sentence for searching relevant passages: "  # bge v1.5 convention for queries
@@ -40,7 +42,7 @@ BGE_QUERY_PREFIX = "Represent this sentence for searching relevant passages: "  
 
 def api_ranking(query: str, mode: str) -> list[str]:
     body = {"query": query, "mode": mode, "size": TOP, "source": "pexels"}
-    hits = httpx.post(f"{API}/search", json=body, timeout=60).json()["hits"]
+    hits = httpx.post(f"{API}/search", json=body, timeout=60, headers=ADMIN).json()["hits"]
     return [h["segment_id"] for h in hits]
 
 

@@ -73,10 +73,17 @@ def _cosine(opensearch_score: float) -> float:
 
 
 class SearchService:
-    def __init__(self, opensearch: OpenSearchService, settings: Settings, embedder: EmbeddingClient | None = None):
+    def __init__(
+        self,
+        opensearch: OpenSearchService,
+        settings: Settings,
+        embedder: EmbeddingClient | None = None,
+        viewer: str | None = None,
+    ):
         self.opensearch = opensearch
         self.settings = settings
         self.embedder = embedder
+        self.viewer = viewer  # who is searching: the shared library + their own uploads, nobody else's
 
     def search(
         self,
@@ -148,7 +155,7 @@ class SearchService:
         if self.embedder is None:
             raise SearchUnavailable("no embedding service configured")
         parsed = ParsedQuery(raw="<image>", phrase=None, text="")
-        filters = qb.build_filters(video_id=video_id, kind="visual", source=source)
+        filters = qb.build_filters(video_id=video_id, kind="visual", source=source, viewer=self.viewer)
         fetch = min(size * OVERFETCH, self.settings.search_max_size * OVERFETCH)
         with span("search.embed_image"):
             vector = self.embedder.embed_images([image])[0]
@@ -171,7 +178,7 @@ class SearchService:
     # ---- quotes ----------------------------------------------------------------------------------------
     def _phrase_search(self, parsed, video_id, kind, source, size, fetch, group_by_video, exclude=()) -> SearchResult:
         # A quote is something *said*: search speech unless the caller asked for a specific kind.
-        filters = qb.build_filters(video_id=video_id, kind=kind or "speech", source=source)
+        filters = qb.build_filters(video_id=video_id, kind=kind or "speech", source=source, viewer=self.viewer)
         phrase = parsed.phrase
         strategies = [
             ("exact_phrase", qb.phrase_query(phrase, filters, fetch, slop=0)),
@@ -193,7 +200,7 @@ class SearchService:
     def _semantic_search(self, parsed, video_id, kind, source, size, fetch, group_by_video, mode, exclude=()) -> SearchResult:
         # Explicit keyword/vector/hybrid mode treats quotes as plain text (no phrase pinpointing).
         parsed = ParsedQuery(raw=parsed.raw, phrase=None, text=parsed.text)
-        filters = qb.build_filters(video_id=video_id, kind=kind, source=source)
+        filters = qb.build_filters(video_id=video_id, kind=kind, source=source, viewer=self.viewer)
         use_keyword = mode in ("auto", "hybrid", "keyword")
         # Only keyframes have vectors: a speech-only search can't use the vector retriever.
         use_vector = mode in ("auto", "hybrid", "vector") and kind != "speech"

@@ -43,16 +43,18 @@ class AskService:
         clips: ClipService,
         settings: Settings,
         answers: "AnswerCache | None" = None,
+        scope: str | None = None,
     ):
         self.understanding = understanding
         self.search = search
         self.clips = clips
         self.settings = settings
         self.answers = answers  # None: every request is answered from scratch
+        self.scope = scope  # whose uploads the search can see: part of the cache key
 
     def ask(self, query: str, video_id: str | None = None, source: str | None = None, max_clips: int = 1) -> Answer:
         started = time.perf_counter()
-        key = self.answers.key(query, video_id, source, max_clips) if self.answers else None
+        key = self.answers.key(query, video_id, source, max_clips, self.scope) if self.answers else None
         if key is not None:
             with span("cache.answer") as step:
                 cached = self._cached(key)

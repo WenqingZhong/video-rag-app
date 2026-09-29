@@ -4,7 +4,7 @@ from celery.exceptions import TimeoutError as CeleryTimeout
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
 from opensearchpy.exceptions import OpenSearchException
 
-from src.dependencies import AskDep, ImageAskDep, QADep, StorageDep
+from src.dependencies import AskDep, ImageAskDep, Limited, QADep, StorageDep
 from src.schemas.api.ask import (
     AnswerRequest,
     AnswerResponse,
@@ -22,7 +22,7 @@ from src.services.metrics import observe_ask
 from src.services.search.service import SearchUnavailable
 from src.services.tracing import current_trace_id
 
-router = APIRouter(tags=["Ask"])
+router = APIRouter(tags=["Ask"], dependencies=[Limited])
 
 MAX_IMAGE_BYTES = 10 * 1024 * 1024
 

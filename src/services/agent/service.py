@@ -44,13 +44,15 @@ class ChatService:
         router: LLMRouter | None,
         recorder: UsageRecorder | None,
         fetch_timeout_sec: float = 600,
+        viewer: str | None = None,
     ):
         self.graph = ChatGraph(toolbox, router, recorder, fetch_timeout_sec)
         self.store = store
+        self.viewer = viewer
 
     def poll(self, conversation_id: str) -> ChatUpdate:
         """Anything new? After a Pexels download: the clip once the videos are processed (clients call every few s)."""
-        conversation = self.store.load(conversation_id)
+        conversation = self.store.load(conversation_id, self.viewer)
         state = self.graph.poll(conversation)
         if state["update"] != "idle":
             self.store.save(conversation)
@@ -68,7 +70,7 @@ class ChatService:
     ) -> ChatTurn:
         """`video`: (file, filename, content type, size) of a video attached to the message."""
         started = time.perf_counter()
-        conversation = self.store.load(conversation_id)
+        conversation = self.store.load(conversation_id, self.viewer)
         with span("agent.turn", conversation_id=conversation.id, turn=conversation.turns + 1) as step:
             state = self.graph.run(conversation, message, image_key, video)
             decision = state["decision"]

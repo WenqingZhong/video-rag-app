@@ -72,7 +72,9 @@ def test_vector_query_carries_filters_and_excludes_vectors_from_results():
     svc, opensearch, _ = make([], [raw(doc("s1", "v1"), cosine_score(0.3))])
     svc.search("a dog", mode="vector", source="pexels")
     body = opensearch.search.call_args.args[0]
-    assert body["query"]["knn"]["image_embedding"]["filter"] == {"bool": {"filter": [{"term": {"video_source": "pexels"}}]}}
+    assert body["query"]["knn"]["image_embedding"]["filter"] == {
+        "bool": {"filter": [{"bool": {"must_not": {"exists": {"field": "owner_id"}}}}, {"term": {"video_source": "pexels"}}]}
+    }
     assert body["_source"] == {"excludes": ["image_embedding"]}
 
 

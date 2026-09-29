@@ -11,6 +11,7 @@ Calls POST /api/v1/answer on the running API for each labelled question in eval/
 
 import argparse
 import json
+import os
 import re
 import statistics
 import sys
@@ -28,6 +29,7 @@ from src.config import Settings
 from src.services.qa import numbers_in
 
 API = "http://localhost:8000/api/v1"
+ADMIN = {"x-admin-token": os.environ.get("ADMIN_TOKEN", "dev-only-admin-token-change-me")}  # no limits; library uploads
 
 
 def contains(answer: str, alternatives: list[str]) -> bool:
@@ -56,7 +58,7 @@ def main() -> None:
         }
     questions = json.loads((ROOT / "eval" / "questions.json").read_text())["questions"]
 
-    http = httpx.Client(timeout=180)
+    http = httpx.Client(timeout=180, headers=ADMIN)
     http.post(f"{API}/answer", json={"question": "warm up"})  # load the model first
     rows = []
     for q in questions:
