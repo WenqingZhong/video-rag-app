@@ -53,3 +53,17 @@ def test_ask_needs_subject_has_no_clips(client):
 def test_ask_validates(client):
     assert client.post("/api/v1/ask", json={"query": ""}).status_code == 422
     assert client.post("/api/v1/ask", json={"query": "x", "max_clips": 9}).status_code == 422
+
+
+def test_chat_turn_returns_reply_and_conversation_id(client):
+    from src.dependencies import get_chat_service
+    from src.services.agent import ChatTurn
+
+    class FakeChat:
+        def turn(self, conversation_id, message, image_key=None, video=None):
+            return ChatTurn(conversation_id or "c1", f"you said {message}", "reply", "rules", seconds=0.01)
+
+    app.dependency_overrides[get_chat_service] = FakeChat
+    body = client.post("/api/v1/chat", data={"message": "hi"}).json()
+    assert body["conversation_id"] == "c1" and body["reply"] == "you said hi" and body["decided_by"] == "rules"
+    assert client.post("/api/v1/chat", data={"message": " "}).status_code == 422  # nothing to answer

@@ -34,7 +34,7 @@ class LLMCallRecord(Base):
     # Priced when the call is made, like a bill: a later price change does not rewrite history.
     cost_usd: Mapped[float] = mapped_column(Numeric(14, 8), nullable=False)
     price_reference: Mapped[str] = mapped_column(String(64), nullable=False)
-    # outcome "cache_hit": no tokens spent; what the avoided call would have cost (Week 6, Phase 3)
+    # outcome "cache_hit": no tokens spent; what the avoided call would have cost
     saved_tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
     saved_cost_usd: Mapped[float] = mapped_column(Numeric(14, 8), nullable=False, default=0, server_default="0")
     video_id: Mapped[str | None] = mapped_column(String(36))

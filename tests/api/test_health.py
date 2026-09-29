@@ -81,3 +81,8 @@ def test_metrics_endpoint_counts_requests_by_route(client):
     client.get("/api/v1/videos/abc")
     body = client.get("/metrics").text
     assert 'http_requests_total{method="GET",route="/api/v1/videos/{video_id}",status="404"}' in body
+
+
+def test_chat_page_is_served(client):
+    response = client.get("/app")
+    assert response.status_code == 200 and 'const API = "/api/v1"' in response.text

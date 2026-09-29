@@ -11,11 +11,11 @@
     },
     "hybrid": {
       "recall@5": 0.97,
-      "mrr": 0.94
+      "mrr": 0.935
     },
     "understood": {
       "recall@5": 0.97,
-      "mrr": 0.954
+      "mrr": 0.949
     }
   },
   "queries": [
@@ -372,11 +372,11 @@
       },
       "hybrid": {
         "recall": 1.0,
-        "first_relevant_rank": 2
+        "first_relevant_rank": 3
       },
       "understood": {
         "recall": 1.0,
-        "first_relevant_rank": 2
+        "first_relevant_rank": 3
       }
     },
     {
@@ -774,8 +774,8 @@
     "style": {
       "keyword": 0.333,
       "vector": 1.0,
-      "hybrid": 0.833,
-      "understood": 0.833
+      "hybrid": 0.778,
+      "understood": 0.778
     },
     "synonym": {
       "keyword": 0.0,

@@ -3,13 +3,15 @@
 from dataclasses import dataclass
 from typing import Literal
 
-Operation = Literal["understand", "caption"]
+Operation = Literal["understand", "caption", "answer", "route"]
 # caption:    "ok"
 # understand: "accepted" (used as is) · "adjusted" (used after the guards changed it)
 #             "rejected" (thrown away: the rules answered) · "invalid" (the reply didn't parse)
 # "rejected" and "invalid" are wasted tokens.
+# answer:     "accepted" · "not_found" (the excerpts didn't contain it) · "rejected" (a guard failed) · "invalid"
+# route:      the agent choosing an action for a chat turn: "accepted" · "rejected" (a guard sent it to the rules) · "invalid"
 # any:        "cache_hit" (no call made: a cached result was used; the row records what was saved)
-Outcome = Literal["ok", "accepted", "adjusted", "rejected", "invalid", "cache_hit"]
+Outcome = Literal["ok", "accepted", "adjusted", "rejected", "invalid", "not_found", "cache_hit"]
 WASTED: tuple[Outcome, ...] = ("rejected", "invalid")
 
 

@@ -65,3 +65,37 @@ class AskResponse(BaseModel):
     cache: dict[str, str] = Field(
         default_factory=dict, description='{"answer": hit|miss|off, "understanding": hit|miss|off|skipped}'
     )
+
+
+class ImageAskResponse(BaseModel):
+    request_id: str | None = None
+    status: Literal["answered", "no_match"]
+    answer: str
+    clips: list[ClipOut]
+    timings: dict[str, float]
+
+
+class AnswerRequest(BaseModel):
+    question: str = Field(..., min_length=1, max_length=500, examples=["How long is one sleep cycle?"])
+    video_id: str | None = Field(None, description="Answer from this video only (its whole transcript and captions)")
+
+
+class CitationOut(BaseModel):
+    video_id: str
+    title: str
+    kind: str = Field(..., description="speech: said · visual: shown (a keyframe caption)")
+    start_sec: float
+    end_sec: float
+    text: str
+
+
+class AnswerResponse(BaseModel):
+    request_id: str | None = None
+    question: str
+    status: Literal["answered", "not_found", "unavailable"]
+    answer: str
+    citations: list[CitationOut]
+    clip_url: str | None = Field(None, description="The first cited moment as a clip")
+    notes: list[str] = Field(default_factory=list, description="What the guards found")
+    usage: UsageOut = Field(default_factory=UsageOut)
+    timings: dict[str, float] = Field(default_factory=dict)

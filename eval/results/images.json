@@ -1,0 +1,630 @@
+{
+  "sweep": [
+    {
+      "cutoff": 0.4,
+      "near_duplicate_hit@1": 1.0,
+      "semantic_hit@1": 1.0,
+      "false_answers": 11,
+      "negatives": 15
+    },
+    {
+      "cutoff": 0.45,
+      "near_duplicate_hit@1": 1.0,
+      "semantic_hit@1": 1.0,
+      "false_answers": 9,
+      "negatives": 15
+    },
+    {
+      "cutoff": 0.5,
+      "near_duplicate_hit@1": 1.0,
+      "semantic_hit@1": 1.0,
+      "false_answers": 6,
+      "negatives": 15
+    },
+    {
+      "cutoff": 0.55,
+      "near_duplicate_hit@1": 1.0,
+      "semantic_hit@1": 0.9,
+      "false_answers": 0,
+      "negatives": 15
+    },
+    {
+      "cutoff": 0.6,
+      "near_duplicate_hit@1": 1.0,
+      "semantic_hit@1": 0.85,
+      "false_answers": 0,
+      "negatives": 15
+    },
+    {
+      "cutoff": 0.65,
+      "near_duplicate_hit@1": 1.0,
+      "semantic_hit@1": 0.65,
+      "false_answers": 0,
+      "negatives": 15
+    },
+    {
+      "cutoff": 0.7,
+      "near_duplicate_hit@1": 1.0,
+      "semantic_hit@1": 0.35,
+      "false_answers": 0,
+      "negatives": 15
+    },
+    {
+      "cutoff": 0.75,
+      "near_duplicate_hit@1": 1.0,
+      "semantic_hit@1": 0.15,
+      "false_answers": 0,
+      "negatives": 15
+    },
+    {
+      "cutoff": 0.8,
+      "near_duplicate_hit@1": 1.0,
+      "semantic_hit@1": 0.0,
+      "false_answers": 0,
+      "negatives": 15
+    }
+  ],
+  "rows": [
+    {
+      "file": "near_11741208.jpg",
+      "kind": "near_duplicate",
+      "relevant": [
+        "11741208"
+      ],
+      "note": "frame at 2.35s; keyframe at 4.697s",
+      "top_video": "11741208",
+      "top_similarity": 0.9522,
+      "top_relevant": true
+    },
+    {
+      "file": "near_10433645.jpg",
+      "kind": "near_duplicate",
+      "relevant": [
+        "10433645"
+      ],
+      "note": "frame at 1.4s; keyframe at 2.79s",
+      "top_video": "10433645",
+      "top_similarity": 0.9298,
+      "top_relevant": true
+    },
+    {
+      "file": "near_38978881.jpg",
+      "kind": "near_duplicate",
+      "relevant": [
+        "38978881"
+      ],
+      "note": "frame at 1.29s; keyframe at 2.59s",
+      "top_video": "38978881",
+      "top_similarity": 0.9439,
+      "top_relevant": true
+    },
+    {
+      "file": "near_11265968.jpg",
+      "kind": "near_duplicate",
+      "relevant": [
+        "11265968"
+      ],
+      "note": "frame at 1.26s; keyframe at 2.522s",
+      "top_video": "11265968",
+      "top_similarity": 0.9549,
+      "top_relevant": true
+    },
+    {
+      "file": "near_6748729.jpg",
+      "kind": "near_duplicate",
+      "relevant": [
+        "6748729"
+      ],
+      "note": "frame at 2.28s; keyframe at 4.566s",
+      "top_video": "6748729",
+      "top_similarity": 0.9134,
+      "top_relevant": true
+    },
+    {
+      "file": "near_31220532.jpg",
+      "kind": "near_duplicate",
+      "relevant": [
+        "31220532"
+      ],
+      "note": "frame at 2.13s; keyframe at 4.254s",
+      "top_video": "31220532",
+      "top_similarity": 0.9502,
+      "top_relevant": true
+    },
+    {
+      "file": "near_10976377.jpg",
+      "kind": "near_duplicate",
+      "relevant": [
+        "10976377"
+      ],
+      "note": "frame at 2.45s; keyframe at 4.907s",
+      "top_video": "10976377",
+      "top_similarity": 0.8431,
+      "top_relevant": true
+    },
+    {
+      "file": "near_37505403.jpg",
+      "kind": "near_duplicate",
+      "relevant": [
+        "37505403"
+      ],
+      "note": "frame at 1.9s; keyframe at 3.796s",
+      "top_video": "37505403",
+      "top_similarity": 0.9444,
+      "top_relevant": true
+    },
+    {
+      "file": "near_4009842.jpg",
+      "kind": "near_duplicate",
+      "relevant": [
+        "4009842"
+      ],
+      "note": "frame at 1.88s; keyframe at 3.752s",
+      "top_video": "4009842",
+      "top_similarity": 0.9854,
+      "top_relevant": true
+    },
+    {
+      "file": "near_3555556.jpg",
+      "kind": "near_duplicate",
+      "relevant": [
+        "3555556"
+      ],
+      "note": "frame at 1.93s; keyframe at 3.854s",
+      "top_video": "3555556",
+      "top_similarity": 0.934,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_144608.jpg",
+      "kind": "semantic",
+      "subject": "dog",
+      "relevant": [
+        "10587035",
+        "10976377",
+        "36609977",
+        "5340598",
+        "26864498"
+      ],
+      "url": "https://images.pexels.com/photos/144608/pexels-photo-144608.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Suvan Chowdhury on Pexels",
+      "top_video": "26864498",
+      "top_similarity": 0.6346,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_9810766.jpg",
+      "kind": "semantic",
+      "subject": "dog",
+      "relevant": [
+        "10587035",
+        "10976377",
+        "36609977",
+        "5340598",
+        "26864498"
+      ],
+      "url": "https://images.pexels.com/photos/9810766/pexels-photo-9810766.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Plato Terentev on Pexels",
+      "top_video": "5340598",
+      "top_similarity": 0.6478,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_38371070.jpg",
+      "kind": "semantic",
+      "subject": "kitten",
+      "relevant": [
+        "4009842",
+        "11741208"
+      ],
+      "url": "https://images.pexels.com/photos/38371070/pexels-photo-38371070.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Sandeep Singh on Pexels",
+      "top_video": "4009842",
+      "top_similarity": 0.6723,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_6900232.jpg",
+      "kind": "semantic",
+      "subject": "kitten",
+      "relevant": [
+        "4009842",
+        "11741208"
+      ],
+      "url": "https://images.pexels.com/photos/6900232/pexels-photo-6900232.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Abdullah Ali Mansour on Pexels",
+      "top_video": "4009842",
+      "top_similarity": 0.7093,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_7762128.jpg",
+      "kind": "semantic",
+      "subject": "ocean waves",
+      "relevant": [
+        "6748729",
+        "9620654",
+        "36301470"
+      ],
+      "url": "https://images.pexels.com/photos/7762128/pexels-photo-7762128.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Magda Ehlers on Pexels",
+      "top_video": "6748729",
+      "top_similarity": 0.7999,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_39802930.jpg",
+      "kind": "semantic",
+      "subject": "ocean waves",
+      "relevant": [
+        "6748729",
+        "9620654",
+        "36301470"
+      ],
+      "url": "https://images.pexels.com/photos/39802930/pexels-photo-39802930.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Kimmo Vainio on Pexels",
+      "top_video": "6748729",
+      "top_similarity": 0.7772,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_35786603.jpg",
+      "kind": "semantic",
+      "subject": "sandy beach",
+      "relevant": [
+        "33312503",
+        "36301470",
+        "6748729"
+      ],
+      "url": "https://images.pexels.com/photos/35786603/pexels-photo-35786603.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Jonathan Borba on Pexels",
+      "top_video": "6748729",
+      "top_similarity": 0.6923,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_30310146.jpg",
+      "kind": "semantic",
+      "subject": "sandy beach",
+      "relevant": [
+        "33312503",
+        "36301470",
+        "6748729"
+      ],
+      "url": "https://images.pexels.com/photos/30310146/pexels-photo-30310146.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Ransi Deshadi on Pexels",
+      "top_video": "6748729",
+      "top_similarity": 0.6627,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_16140588.jpg",
+      "kind": "semantic",
+      "subject": "colorful parrot",
+      "relevant": [
+        "35012714"
+      ],
+      "url": "https://images.pexels.com/photos/16140588/pexels-photo-16140588.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Ridwan Purnom on Pexels",
+      "top_video": "35012714",
+      "top_similarity": 0.7228,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_11922556.jpg",
+      "kind": "semantic",
+      "subject": "colorful parrot",
+      "relevant": [
+        "35012714"
+      ],
+      "url": "https://images.pexels.com/photos/11922556/pexels-photo-11922556.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Mehmet Turgut  Kirkgoz on Pexels",
+      "top_video": "35012714",
+      "top_similarity": 0.6954,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_6253.jpg",
+      "kind": "semantic",
+      "subject": "city traffic at night",
+      "relevant": [
+        "10433645",
+        "3555556"
+      ],
+      "url": "https://images.pexels.com/photos/6253/city-street-typography-design.jpg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Karolina Grabowska www.kaboompics.com on Pexels",
+      "top_video": "10433645",
+      "top_similarity": 0.5106,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_14780175.jpg",
+      "kind": "semantic",
+      "subject": "city traffic at night",
+      "relevant": [
+        "10433645",
+        "3555556"
+      ],
+      "url": "https://images.pexels.com/photos/14780175/pexels-photo-14780175.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Tahir Osman on Pexels",
+      "top_video": "10433645",
+      "top_similarity": 0.6402,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_4827147.jpg",
+      "kind": "semantic",
+      "subject": "cooking in a pan",
+      "relevant": [
+        "37876503",
+        "37848043"
+      ],
+      "url": "https://images.pexels.com/photos/4827147/pexels-photo-4827147.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Ketut Subiyanto on Pexels",
+      "top_video": "37876503",
+      "top_similarity": 0.7177,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_32651605.jpg",
+      "kind": "semantic",
+      "subject": "cooking in a pan",
+      "relevant": [
+        "37876503",
+        "37848043"
+      ],
+      "url": "https://images.pexels.com/photos/32651605/pexels-photo-32651605.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Hans Heemsbergen on Pexels",
+      "top_video": "37876503",
+      "top_similarity": 0.5318,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_6949865.jpg",
+      "kind": "semantic",
+      "subject": "business meeting",
+      "relevant": [
+        "8716795",
+        "35315590"
+      ],
+      "url": "https://images.pexels.com/photos/6949865/pexels-photo-6949865.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Werner Pfennig on Pexels",
+      "top_video": "8716795",
+      "top_similarity": 0.5843,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_7693692.jpg",
+      "kind": "semantic",
+      "subject": "business meeting",
+      "relevant": [
+        "8716795",
+        "35315590"
+      ],
+      "url": "https://images.pexels.com/photos/7693692/pexels-photo-7693692.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Yan Krukau on Pexels",
+      "top_video": "8716795",
+      "top_similarity": 0.6133,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_14013575.jpg",
+      "kind": "semantic",
+      "subject": "sunlight forest",
+      "relevant": [
+        "38978881",
+        "11265968"
+      ],
+      "url": "https://images.pexels.com/photos/14013575/pexels-photo-14013575.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Ana Mai on Pexels",
+      "top_video": "38978881",
+      "top_similarity": 0.7224,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_1005334.jpg",
+      "kind": "semantic",
+      "subject": "sunlight forest",
+      "relevant": [
+        "38978881",
+        "11265968"
+      ],
+      "url": "https://images.pexels.com/photos/1005334/forest-fog-nature-landscape-1005334.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "ClickerHappy on Pexels",
+      "top_video": "11265968",
+      "top_similarity": 0.6845,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_6044782.jpg",
+      "kind": "semantic",
+      "subject": "car dashboard navigation",
+      "relevant": [
+        "37505403"
+      ],
+      "url": "https://images.pexels.com/photos/6044782/pexels-photo-6044782.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Skylar Kang on Pexels",
+      "top_video": "37505403",
+      "top_similarity": 0.6576,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_15828799.jpg",
+      "kind": "semantic",
+      "subject": "car dashboard navigation",
+      "relevant": [
+        "37505403"
+      ],
+      "url": "https://images.pexels.com/photos/15828799/pexels-photo-15828799.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Daniel Andraski on Pexels",
+      "top_video": "37505403",
+      "top_similarity": 0.7513,
+      "top_relevant": true
+    },
+    {
+      "file": "photo_27116276.jpg",
+      "kind": "negative",
+      "subject": "elephant",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/27116276/pexels-photo-27116276.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Almuntadhar  Faris on Pexels",
+      "top_video": "35012714",
+      "top_similarity": 0.4452,
+      "top_relevant": false
+    },
+    {
+      "file": "photo_35671094.jpg",
+      "kind": "negative",
+      "subject": "elephant",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/35671094/pexels-photo-35671094.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "SABIK  NISAM on Pexels",
+      "top_video": "35012714",
+      "top_similarity": 0.5007,
+      "top_relevant": false
+    },
+    {
+      "file": "photo_37538883.jpg",
+      "kind": "negative",
+      "subject": "piano",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/37538883/pexels-photo-37538883.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Zulfugar Karimov on Pexels",
+      "top_video": "38978881",
+      "top_similarity": 0.5131,
+      "top_relevant": false
+    },
+    {
+      "file": "photo_14286077.jpg",
+      "kind": "negative",
+      "subject": "piano",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/14286077/pexels-photo-14286077.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Julia Barrantes on Pexels",
+      "top_video": "38978881",
+      "top_similarity": 0.4789,
+      "top_relevant": false
+    },
+    {
+      "file": "photo_13340063.jpg",
+      "kind": "negative",
+      "subject": "horse",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/13340063/pexels-photo-13340063.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Jana Malenov\u00e1 on Pexels",
+      "top_video": "26864498",
+      "top_similarity": 0.5451,
+      "top_relevant": false
+    },
+    {
+      "file": "photo_38454829.jpg",
+      "kind": "negative",
+      "subject": "football match",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/38454829/pexels-photo-38454829.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Franco Monsalvo on Pexels",
+      "top_video": "6748729",
+      "top_similarity": 0.3217,
+      "top_relevant": false
+    },
+    {
+      "file": "photo_29920213.jpg",
+      "kind": "negative",
+      "subject": "football match",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/29920213/pexels-photo-29920213.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Bechir Lachiheb on Pexels",
+      "top_video": "6748729",
+      "top_similarity": 0.3005,
+      "top_relevant": false
+    },
+    {
+      "file": "photo_6815363.jpg",
+      "kind": "negative",
+      "subject": "snowboarder",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/6815363/pexels-photo-6815363.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Yan Krukau on Pexels",
+      "top_video": "11265968",
+      "top_similarity": 0.4546,
+      "top_relevant": false
+    },
+    {
+      "file": "photo_3888007.jpg",
+      "kind": "negative",
+      "subject": "snowboarder",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/3888007/pexels-photo-3888007.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Chris F on Pexels",
+      "top_video": "11265968",
+      "top_similarity": 0.4227,
+      "top_relevant": false
+    },
+    {
+      "file": "photo_7327336.jpg",
+      "kind": "negative",
+      "subject": "rocket launch",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/7327336/pexels-photo-7327336.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Forest Katsch on Pexels",
+      "top_video": "6748729",
+      "top_similarity": 0.5498,
+      "top_relevant": false
+    },
+    {
+      "file": "photo_586054.jpg",
+      "kind": "negative",
+      "subject": "rocket launch",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/586054/pexels-photo-586054.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "SpaceX on Pexels",
+      "top_video": "37876503",
+      "top_similarity": 0.3976,
+      "top_relevant": false
+    },
+    {
+      "file": "photo_14557610.jpg",
+      "kind": "negative",
+      "subject": "giraffe",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/14557610/pexels-photo-14557610.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Mehmet Turgut  Kirkgoz on Pexels",
+      "top_video": "35012714",
+      "top_similarity": 0.5006,
+      "top_relevant": false
+    },
+    {
+      "file": "photo_7211286.jpg",
+      "kind": "negative",
+      "subject": "giraffe",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/7211286/pexels-photo-7211286.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Francesco Ungaro on Pexels",
+      "top_video": "35012714",
+      "top_similarity": 0.532,
+      "top_relevant": false
+    },
+    {
+      "file": "photo_12279545.jpg",
+      "kind": "negative",
+      "subject": "violin",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/12279545/pexels-photo-12279545.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "Roxanne Minnish on Pexels",
+      "top_video": "37848043",
+      "top_similarity": 0.3931,
+      "top_relevant": false
+    },
+    {
+      "file": "photo_5855909.jpg",
+      "kind": "negative",
+      "subject": "violin",
+      "relevant": [],
+      "url": "https://images.pexels.com/photos/5855909/pexels-photo-5855909.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "credit": "ROMAN ODINTSOV on Pexels",
+      "top_video": "31220532",
+      "top_similarity": 0.4695,
+      "top_relevant": false
+    }
+  ]
+}

@@ -6,9 +6,11 @@ import pytest
 from sqlalchemy import select
 
 from src.models import LLMCallRecord
+from src.services.llm import OllamaChat
 from src.services.processing.visual import VisualEnricher
 from src.services.understanding import LLMIntentParser, QueryUnderstanding
 from src.services.usage import LLMCall, Pricing, UsageRecorder
+from tests.unit.test_index_lifecycle import frame
 
 # A real Ollama reply's accounting fields (from a /api/chat call; durations in nanoseconds).
 OLLAMA_COUNTS = {
@@ -61,13 +63,13 @@ def test_recorder_outage_loses_the_row_not_the_request():
 
 def understanding(reply, database) -> QueryUnderstanding:
     """QueryUnderstanding whose LLM returns `reply` (a dict or raw text) with real-looking token counts."""
-    llm = LLMIntentParser("http://ollama", model="qwen2.5vl:3b")
+    llm = LLMIntentParser(OllamaChat("http://ollama", "qwen2.5vl:3b"))
 
     def handler(request):
         content = json.dumps(reply) if isinstance(reply, dict) else reply
         return httpx.Response(200, json={"message": {"content": content}, **OLLAMA_COUNTS})
 
-    llm.http = httpx.Client(base_url="http://ollama", transport=httpx.MockTransport(handler))
+    llm.chat.http = httpx.Client(base_url="http://ollama", transport=httpx.MockTransport(handler))
     return QueryUnderstanding(llm, UsageRecorder(database, PRICING, origin="api"))
 
 
@@ -105,7 +107,7 @@ def test_enricher_records_one_row_per_caption_with_the_video(database):
         ("a cat", LLMCall("caption", "qwen", 199, 36, images=1)),
     ]
     recorder = UsageRecorder(database, PRICING, origin="worker")
-    VisualEnricher(None, captioner, recorder).enrich([b"1", b"2"], video_id="v1")
+    VisualEnricher(None, captioner, recorder).enrich([frame(), frame()], video_id="v1")
     recorded = rows(database)
     assert [(r.operation, r.outcome, r.video_id, r.images) for r in recorded] == [("caption", "ok", "v1", 1)] * 2
     assert sum(r.output_tokens for r in recorded) == 71

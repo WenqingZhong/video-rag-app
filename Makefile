@@ -1,4 +1,4 @@
-.PHONY: help start stop restart status logs health setup run worker format lint eval eval-intents eval-cache experiment-captions usage trace dashboards test test-cov clean
+.PHONY: help start stop restart status logs health setup run worker format lint eval eval-intents eval-cache eval-images eval-qa eval-agent eval-chat experiment-captions usage trace dashboards test test-cov clean
 
 help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
@@ -47,6 +47,18 @@ experiment-captions: ## Re-run the caption-embedding experiment (see docs/decisi
 
 eval-intents: ## Request-understanding accuracy (LLM vs rules) on eval/intents.json
 	uv run python scripts/evaluate_intents.py --save eval/results/intents.json
+
+eval-images: ## Image queries: hit@1 and false answers per similarity cut-off (needs scripts/prepare_image_eval.py once)
+	uv run python scripts/evaluate_images.py --save eval/results/images.json
+
+eval-qa: ## Question answering: answered/not found, correct facts, citations (needs the sleep talk: scripts/make_talk_video.py)
+	uv run python scripts/evaluate_qa.py --save eval/results/qa.json
+
+eval-agent: ## Chat routing: rules vs model vs rules-first, on the labelled turns and both held-out sets
+	for f in agent_turns agent_turns_heldout agent_turns_heldout2; do uv run python scripts/evaluate_agent_turns.py --turns eval/$$f.json --save eval/results/$$f.json; done
+
+eval-chat: ## Whole conversations through /chat (routing + tools + memory), needs the stack running
+	uv run python scripts/evaluate_conversations.py --save eval/results/conversations.json
 
 eval-cache: ## What the understanding and answer caches save (needs the stack running)
 	uv run python scripts/evaluate_cache.py --save eval/results/cache.json

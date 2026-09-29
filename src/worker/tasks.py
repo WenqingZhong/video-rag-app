@@ -14,6 +14,7 @@ from src.repositories import VideoRepository
 from src.services.clips import ClipRange, clip_key
 from src.services.indexing import index_video
 from src.services.ingestion.service import raw_key
+from src.services.llm import ModelUnavailable
 from src.services.processing import ffmpeg
 from src.services.processing.pipeline import VideoPipeline
 from src.services.tracing import span
@@ -38,6 +39,7 @@ TRANSIENT_ERRORS = (
     TimeoutError,
     OpenSearchConnectionError,
     OpenSearchTimeout,
+    ModelUnavailable,  # the caption model is down, busy or throttled
 )
 MAX_RETRIES = 3
 
@@ -104,7 +106,7 @@ def download_pexels(self: Task, video_id: str) -> dict:
 
 @celery_app.task(name="video.process", bind=True, max_retries=MAX_RETRIES)
 def process_video(self: Task, video_id: str) -> dict:
-    """The Phase 2 pipeline: scenes, keyframes, transcript -> segments in Postgres, frames in S3."""
+    """The processing pipeline: scenes, keyframes, transcript -> segments in Postgres, frames in S3."""
     try:
         pipeline = VideoPipeline(
             get_database(),

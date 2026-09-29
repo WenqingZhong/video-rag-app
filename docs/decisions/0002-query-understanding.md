@@ -18,14 +18,14 @@ parses.
 **The model alone isn't reliable,** so plain-code **guards** check its answer against the user's own words, and a
 **rule parser** is the fallback.
 
-**On search quality** (the `understood` column), compared with Week 4's hybrid search:
+**On search quality** (the `understood` column), compared with hybrid search on the raw request:
 - **MRR 0.940 → 0.954**;
 - the negation query fixed (0.50 → 1.00);
 - **false answers 7 → 2 of 12** (requests that should return nothing).
 
 ## Context
 
-Week 4 searched the raw sentence. It couldn't handle quotes without quote marks, "where do they talk about…", or
+Hybrid search on the raw sentence couldn't handle quotes without quote marks, "where do they talk about…", or
 negation: "a beach with **no** people" returned the beach *with* people. It also **answered almost anything**: "hi",
 "an elephant" and "a spaceship landing on mars" each returned a clip, because vector search always returns the
 nearest keyframes.
@@ -93,8 +93,8 @@ longer an unseen score.
 
 | mode | Recall@5 | MRR | negation | false answers |
 |---|---|---|---|---|
-| hybrid, raw text (Week 4 + Fix B) | 0.970 | 0.940 | 0.50 | 7 / 12 |
-| **understood** (Week 5) | 0.970 | **0.954** | **1.00** | **2 / 12** |
+| hybrid, raw text (+ Fix B) | 0.970 | 0.940 | 0.50 | 7 / 12 |
+| **understood** (this design) | 0.970 | **0.954** | **1.00** | **2 / 12** |
 
 ## Consequences
 

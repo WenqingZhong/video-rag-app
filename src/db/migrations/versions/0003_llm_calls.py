@@ -1,4 +1,4 @@
-"""Week 6: a ledger of model calls (tokens, time, estimated cost).
+"""A ledger of model calls (tokens, time, estimated cost).
 
 Revision ID: 0003
 Revises: 0002

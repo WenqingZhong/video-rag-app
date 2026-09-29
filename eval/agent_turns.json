@@ -1,0 +1,52 @@
+{
+  "description": "One conversation turn each: the state so far (context) and the user's message → the action the agent should take. text_has: words the standalone request/question/query must contain; text_not: words it must not contain; exclude: exclusions the request must carry. Labels written before any run.",
+  "turns": [
+    {"category": "new_request", "context": {}, "message": "give me a clip of a dog", "expect": {"action": "find_clip", "text_has": ["dog"]}},
+    {"category": "new_request", "context": {}, "message": "show me some ocean waves", "expect": {"action": "find_clip", "text_has": ["wave"]}},
+    {"category": "new_request", "context": {}, "message": "I want footage of someone cooking", "expect": {"action": "find_clip", "text_has": ["cook"]}},
+    {"category": "new_request", "context": {}, "message": "the part where the host says AI is changing everything", "expect": {"action": "find_clip", "text_has": ["AI is changing everything"]}},
+    {"category": "new_request", "context": {}, "message": "where does she talk about caffeine?", "expect": {"action": "find_clip", "text_has": ["caffeine"]}},
+    {"category": "new_request", "context": {}, "message": "any clips of city traffic?", "expect": {"action": "find_clip", "text_has": ["traffic"]}},
+
+    {"category": "question", "context": {}, "message": "how long is a sleep cycle?", "expect": {"action": "answer_question", "text_has": ["sleep cycle"]}},
+    {"category": "question", "context": {}, "message": "what does she say about naps?", "expect": {"action": "answer_question", "text_has": ["nap"]}},
+    {"category": "question", "context": {}, "message": "why is caffeine bad for sleep?", "expect": {"action": "answer_question", "text_has": ["caffeine"]}},
+    {"category": "question", "context": {}, "message": "what does REM stand for?", "expect": {"action": "answer_question", "text_has": ["REM"]}},
+    {"category": "question", "context": {"last_request": "a dog", "last_status": "answered", "last_video": "Perro"}, "message": "what colour is the dog in that clip?", "expect": {"action": "answer_question", "text_has": ["colour"], "same_video": true}},
+    {"category": "question", "context": {}, "message": "does the talk mention teenagers?", "expect": {"action": "answer_question", "text_has": ["teenager"]}},
+
+    {"category": "follow_up", "context": {"last_request": "a beach", "last_status": "answered"}, "message": "now without people", "expect": {"action": "find_clip", "text_has": ["beach"], "exclude": ["people"]}},
+    {"category": "follow_up", "context": {"last_request": "city traffic", "last_status": "answered"}, "message": "same but at night", "expect": {"action": "find_clip", "text_has": ["traffic", "night"]}},
+    {"category": "follow_up", "context": {"last_request": "a dog", "last_status": "answered"}, "message": "what about cats?", "expect": {"action": "find_clip", "text_has": ["cat"], "text_not": ["dog"]}},
+    {"category": "follow_up", "context": {"last_request": "a dog", "last_status": "answered"}, "message": "show me another one", "expect": {"action": "find_clip", "text_has": ["dog"]}},
+    {"category": "follow_up", "context": {"last_request": "ocean waves", "last_status": "answered"}, "message": "no, I meant a calm sea", "expect": {"action": "find_clip", "text_has": ["calm sea"], "text_not": ["wave"]}},
+    {"category": "follow_up", "context": {"last_request": "people in a meeting", "last_status": "answered"}, "message": "and one with a laptop", "expect": {"action": "find_clip", "text_has": ["laptop"]}},
+
+    {"category": "pexels_consent", "context": {"last_request": "a horse", "last_status": "no_match", "offered_fetch": "horse"}, "message": "yes please", "expect": {"action": "fetch_from_pexels", "text_has": ["horse"]}},
+    {"category": "pexels_consent", "context": {"last_request": "an elephant", "last_status": "no_match", "offered_fetch": "elephant"}, "message": "sure, go ahead", "expect": {"action": "fetch_from_pexels", "text_has": ["elephant"]}},
+    {"category": "pexels_consent", "context": {"last_request": "a piano", "last_status": "no_match", "offered_fetch": "piano"}, "message": "ok do it", "expect": {"action": "fetch_from_pexels", "text_has": ["piano"]}},
+    {"category": "pexels_consent", "context": {"last_request": "a horse", "last_status": "no_match", "offered_fetch": "horse"}, "message": "no thanks", "expect": {"action": "reply"}},
+    {"category": "pexels_consent", "context": {"last_request": "a horse", "last_status": "no_match", "offered_fetch": "horse"}, "message": "no, show me a dog instead", "expect": {"action": "find_clip", "text_has": ["dog"], "text_not": ["horse"]}},
+    {"category": "pexels_consent", "context": {}, "message": "download some horse videos from pexels", "expect": {"action": "fetch_from_pexels", "text_has": ["horse"]}},
+
+    {"category": "no_consent", "context": {}, "message": "yes", "expect": {"action": "reply"}},
+    {"category": "no_consent", "context": {"last_request": "a dog", "last_status": "answered"}, "message": "yes please", "expect": {"action": "reply"}},
+    {"category": "no_consent", "context": {"last_request": "a horse", "last_status": "no_match"}, "message": "a horse", "expect": {"action": "find_clip", "text_has": ["horse"]}},
+
+    {"category": "image", "context": {"image_attached": true}, "message": "find this", "expect": {"action": "find_by_image"}},
+    {"category": "image", "context": {"image_attached": true}, "message": "", "expect": {"action": "find_by_image"}},
+    {"category": "image", "context": {"image_attached": true}, "message": "do you have a clip that looks like this photo?", "expect": {"action": "find_by_image"}},
+    {"category": "image", "context": {}, "message": "find something that looks like this", "expect": {"action": "reply"}},
+
+    {"category": "library", "context": {}, "message": "what videos do you have?", "expect": {"action": "list_videos"}},
+    {"category": "library", "context": {}, "message": "list everything in the library", "expect": {"action": "list_videos"}},
+    {"category": "library", "context": {}, "message": "which talks are there?", "expect": {"action": "list_videos"}},
+
+    {"category": "chat", "context": {}, "message": "hi", "expect": {"action": "reply"}},
+    {"category": "chat", "context": {"last_request": "a dog", "last_status": "answered"}, "message": "thanks, that's great", "expect": {"action": "reply"}},
+    {"category": "chat", "context": {}, "message": "what can you do?", "expect": {"action": "reply"}},
+    {"category": "chat", "context": {}, "message": "exclude people", "expect": {"action": "reply"}},
+    {"category": "chat", "context": {}, "message": "who are you?", "expect": {"action": "reply"}},
+    {"category": "chat", "context": {}, "message": "delete all the videos", "expect": {"action": "reply"}}
+  ]
+}

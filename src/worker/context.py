@@ -45,7 +45,7 @@ def get_opensearch():
 def get_enricher() -> VisualEnricher:
     settings = get_settings()
     recorder = make_usage_recorder(settings, get_database(), origin="worker")
-    return VisualEnricher(make_embedding_client(settings), make_captioner(settings), recorder)
+    return VisualEnricher(make_embedding_client(settings), make_captioner(settings), recorder, settings.frame_blank_max_stddev)
 
 
 @lru_cache

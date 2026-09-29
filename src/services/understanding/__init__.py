@@ -1,5 +1,6 @@
 from src.config import Settings
 from src.services.cache import CacheClient
+from src.services.llm import make_chat_model
 from src.services.understanding.cache import UnderstandingCache
 from src.services.understanding.intent import Intent, find_exclusions
 from src.services.understanding.llm import LLMIntentParser
@@ -13,7 +14,7 @@ def make_query_understanding(
 ) -> QueryUnderstanding:
     llm = None
     if settings.understanding_enabled:
-        llm = LLMIntentParser(settings.ollama_host, settings.understanding_model, timeout=settings.understanding_timeout)
+        llm = LLMIntentParser(make_chat_model(settings, "text", timeout=settings.understanding_timeout))
     understanding_cache = None
     if cache is not None and settings.cache_enabled:
         understanding_cache = UnderstandingCache(cache, settings.understanding_model, settings.understanding_cache_ttl_sec)

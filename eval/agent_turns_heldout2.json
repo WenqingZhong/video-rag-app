@@ -1,0 +1,25 @@
+{
+  "description": "Second held-out set, written and labelled before the rules-first design was run on anything (the first held-out set informed one fix, so it is no longer unseen). Free phrasing. Same format.",
+  "turns": [
+    {"category": "held_out_2", "context": {}, "message": "got any clips of a parrot on a branch?", "expect": {"action": "find_clip", "text_has": ["parrot"]}},
+    {"category": "held_out_2", "context": {}, "message": "I'd love to see the moment she says sleep well", "expect": {"action": "find_clip", "text_has": ["sleep well"]}},
+    {"category": "held_out_2", "context": {}, "message": "take me to the bit about screens and light", "expect": {"action": "find_clip", "text_has": ["screen"]}},
+    {"category": "held_out_2", "context": {}, "message": "a sunny forest, nothing with people", "expect": {"action": "find_clip", "text_has": ["forest"], "exclude": ["people"]}},
+    {"category": "held_out_2", "context": {}, "message": "what time of day should I stop drinking coffee, per the talk?", "expect": {"action": "answer_question", "text_has": ["coffee"]}},
+    {"category": "held_out_2", "context": {}, "message": "according to the video, when does dreaming happen", "expect": {"action": "answer_question", "text_has": ["dream"]}},
+    {"category": "held_out_2", "context": {}, "message": "tell me what deep sleep is good for", "expect": {"action": "answer_question", "text_has": ["deep sleep"]}},
+    {"category": "held_out_2", "context": {"last_request": "a parrot", "last_status": "answered", "last_video": "Vibrant green turaco perched in jungle"}, "message": "what bird is that?", "expect": {"action": "answer_question", "text_has": ["bird"], "same_video": true}},
+    {"category": "held_out_2", "context": {"last_request": "a forest", "last_status": "answered"}, "message": "try it with fog", "expect": {"action": "find_clip", "text_has": ["forest", "fog"]}},
+    {"category": "held_out_2", "context": {"last_request": "cooking food in a pan", "last_status": "answered"}, "message": "something similar but with vegetables being chopped", "expect": {"action": "find_clip", "text_has": ["vegetable"]}},
+    {"category": "held_out_2", "context": {"last_request": "a cat", "last_status": "answered"}, "message": "and a different cat?", "expect": {"action": "find_clip", "text_has": ["cat"]}},
+    {"category": "held_out_2", "context": {"last_request": "a zebra", "last_status": "no_match", "offered_fetch": "zebra"}, "message": "yes, get two", "expect": {"action": "fetch_from_pexels", "text_has": ["zebra"]}},
+    {"category": "held_out_2", "context": {"last_request": "a zebra", "last_status": "no_match", "offered_fetch": "zebra"}, "message": "nah", "expect": {"action": "reply"}},
+    {"category": "held_out_2", "context": {"last_request": "a zebra", "last_status": "no_match", "offered_fetch": "zebra"}, "message": "forget zebras, show me the ocean", "expect": {"action": "find_clip", "text_has": ["ocean"], "text_not": ["zebra"]}},
+    {"category": "held_out_2", "context": {}, "message": "please download a few mountain videos from pexels", "expect": {"action": "fetch_from_pexels", "text_has": ["mountain"]}},
+    {"category": "held_out_2", "context": {}, "message": "ok", "expect": {"action": "reply"}},
+    {"category": "held_out_2", "context": {"image_attached": true}, "message": "where is this from?", "expect": {"action": "find_by_image"}},
+    {"category": "held_out_2", "context": {}, "message": "what do you have about sleep?", "expect": {"action": "list_videos"}},
+    {"category": "held_out_2", "context": {}, "message": "thank you so much!", "expect": {"action": "reply"}},
+    {"category": "held_out_2", "context": {}, "message": "write me a poem about cats", "expect": {"action": "reply"}}
+  ]
+}

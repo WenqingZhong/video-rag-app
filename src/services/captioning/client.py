@@ -1,11 +1,10 @@
-import base64
 import io
 import logging
 from typing import Any
 
-import httpx
 from PIL import Image
 
+from src.services.llm import ChatModel, ModelRejected
 from src.services.usage import LLMCall
 
 logger = logging.getLogger(__name__)
@@ -25,46 +24,34 @@ def downscale_jpeg(image: bytes, max_side: int) -> bytes:
 
 
 class Captioner:
-    """One-sentence keyframe descriptions from a vision-language model served by Ollama."""
+    """One-sentence keyframe descriptions from a vision-language model (Ollama locally, Bedrock on AWS)."""
 
-    def __init__(self, ollama_host: str, model: str, prompt: str, max_side: int = 448, timeout: float = 180.0):
-        self.http = httpx.Client(base_url=ollama_host, timeout=timeout)
-        self.model = model
+    def __init__(self, chat: ChatModel, prompt: str, max_side: int = 448):
+        self.chat = chat
         self.prompt = prompt
         self.max_side = max_side
+
+    @property
+    def model(self) -> str:
+        return self.chat.name
 
     def caption(self, image: bytes) -> str:
         return self.caption_with_usage(image)[0]
 
     def caption_with_usage(self, image: bytes) -> tuple[str, LLMCall]:
-        payload = {
-            "model": self.model,
-            "prompt": self.prompt,
-            "images": [base64.b64encode(downscale_jpeg(image, self.max_side)).decode()],
-            "stream": False,
-            "options": {"temperature": 0, "num_predict": 80},  # deterministic, one sentence
-        }
-        response = self.http.post("/api/generate", json=payload)
-        if response.status_code >= 500:
-            response.raise_for_status()  # retryable
-        if response.status_code >= 400:
-            raise CaptionError(f"Ollama rejected the request: {response.text[:200]}")
-        body = response.json()
-        text = " ".join(body.get("response", "").split())
+        """ModelUnavailable (retryable) propagates; a rejected request or an empty caption is a CaptionError."""
+        try:
+            # deterministic, one sentence
+            text, call = self.chat.describe_image(self.prompt, downscale_jpeg(image, self.max_side), "caption", max_tokens=80)
+        except ModelRejected as exc:
+            raise CaptionError(str(exc)) from exc
+        text = " ".join(text.split())
         if not text:
             raise CaptionError("empty caption")
-        return text, LLMCall.from_ollama(body, "caption", self.model, images=1)
+        return text, call
 
     def health_check(self) -> dict[str, Any]:
-        try:
-            response = self.http.get("/api/tags", timeout=5)
-            response.raise_for_status()
-            models = {m["name"] for m in response.json().get("models", [])}
-        except httpx.HTTPError as exc:
-            return {"status": "unhealthy", "message": f"Ollama check failed: {exc}"}
-        if self.model not in models:
-            return {"status": "unhealthy", "message": f"caption model '{self.model}' not pulled (ollama pull {self.model})"}
-        return {"status": "healthy", "message": f"caption model {self.model} available"}
+        return self.chat.health()
 
     def close(self) -> None:
-        self.http.close()
+        self.chat.close()

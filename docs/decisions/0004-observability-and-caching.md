@@ -7,7 +7,7 @@
 
 ## In one minute
 
-Week 5 answered requests but couldn't say what they cost, where the time went, or avoid repeating work. Now:
+The app answered requests but couldn't say what they cost, where the time went, or avoid repeating work. Now:
 - every model call is recorded with its tokens and an **estimated cost**;
 - every request and Celery task is a **trace** of timed steps, across the API and the workers;
 - **Grafana** shows both, next to live request metrics from **Prometheus**;
@@ -31,7 +31,7 @@ We needed to know:
 
 | Option | Verdict |
 |---|---|
-| **Langfuse, self-hosted** (the course's choice) | Rejected: version 3 needs ClickHouse plus several more containers, on a Mac that already stalled Docker |
+| **Langfuse, self-hosted** (a common choice for LLM tracing) | Rejected: version 3 needs ClickHouse plus several more containers, on a Mac that already stalled Docker |
 | **Langfuse Cloud** | Rejected: requests would leave the machine, one of the reasons for a local model |
 | **OpenTelemetry + Jaeger/Tempo** | Not needed yet: two more services for a system with one API host. Revisit if it grows |
 | **Our own: Postgres tables + Prometheus + Grafana** | **Chosen:** two light containers; tokens and traces in SQL we control; the workers report too |
@@ -102,8 +102,8 @@ Grafana    "Tokens & cost" (Postgres) · "Requests & latency" (Prometheus + Post
   the dashboard shows the real hit rate.
 
 **Found by the new dashboards:** the "Recent errors" table showed a failed `video.process` every few minutes, each
-for a video that didn't exist. A test (since Week 2) was sending real jobs to the running broker; the worker picked them
-up. Tests now never reach the broker.
+for a video that didn't exist. A test (since the upload endpoint was written) was sending real jobs to the running
+broker, and the worker picked them up. Tests now never reach the broker.
 
 ## Consequences
 

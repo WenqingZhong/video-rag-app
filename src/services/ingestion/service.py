@@ -1,4 +1,4 @@
-"""Getting videos *into* the system (Phase 1). Heavy work is handed to the worker via Celery."""
+"""Getting videos *into* the system: store and queue. Heavy work is handed to the worker via Celery."""
 
 import logging
 import uuid
@@ -62,7 +62,7 @@ class IngestionService:
     def create_upload(self, fileobj: BinaryIO, filename: str | None, content_type: str | None, size_bytes: int | None) -> Video:
         video_id = str(uuid.uuid4())
         key = raw_key(video_id, filename)
-        # Phase 1: bytes go to durable storage first; the queue only ever carries the id.
+        # Bytes go to durable storage first; the queue only ever carries the id.
         self.storage.upload_fileobj(fileobj, key, content_type=content_type)
         video = self.repo.create(
             id=video_id,

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from src.config import Settings
 from src.services.answering.templates import ask_for_subject, explain, no_match
-from src.services.clips import ClipRange, ClipService, clip_range
+from src.services.clips import ClipRange, ClipService, best_sentence, clip_range
 from src.services.search import SearchHit, SearchService
 from src.services.tracing import span
 from src.services.understanding import QueryUnderstanding, Understanding
@@ -126,6 +126,8 @@ class AskService:
         for hit in result.hits[:max_clips]:
             doc = hit.source
             is_quote = doc["kind"] == "speech" and hit.match_score is not None  # word-level times available
+            # A topic found in speech: the sentence about it, not the whole 15 s window.
+            focus = best_sentence(doc.get("words"), intent.text) if doc["kind"] == "speech" and not is_quote else None
             clip = clip_range(
                 is_quote=is_quote,
                 match_start=hit.match_start_sec,
@@ -136,13 +138,15 @@ class AskService:
                 video_duration=doc.get("video_duration_sec"),
                 padding=self.settings.clip_padding_sec,
                 max_len=self.settings.clip_max_sec,
+                visual_len=self.settings.clip_visual_sec,
+                focus=focus,
             )
             key, cached = self.clips.get_or_cut(doc["video_id"], clip)
             # Quotes describe the matched words; everything else describes the clip.
             start, end = (hit.match_start_sec, hit.match_end_sec) if is_quote else (clip.start_sec, clip.end_sec)
-            answered.append(
-                AnsweredClip(hit, clip, key, cached, explain(intent, doc, start, end, hit.matched_text, hit.match_score))
-            )
+            # A topic clip quotes its sentence, not the whole transcript window.
+            said = focus[2] if focus else hit.matched_text
+            answered.append(AnsweredClip(hit, clip, key, cached, explain(intent, doc, start, end, said, hit.match_score)))
         timings["clips"] = time.perf_counter() - t0
         return finish(
             understanding=understood, status="answered", strategy=result.strategy, answer=answered[0].explanation, clips=answered

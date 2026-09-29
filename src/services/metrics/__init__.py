@@ -19,6 +19,7 @@ ASK_REQUESTS = Counter(
     ["status", "understood_by", "answer_cache", "understanding_cache"],
 )
 ASK_STAGE_SECONDS = Histogram("ask_stage_seconds", "/ask time per stage", ["stage"], buckets=_SECONDS)
+CHAT_TURNS = Counter("chat_turns_total", "Chat turns by the action taken and what decided it", ["action", "decided_by"])
 
 
 def observe_request(method: str, route: str, status: int, seconds: float) -> None:
@@ -31,6 +32,10 @@ def observe_ask(status: str, understood_by: str, cache: dict[str, str], timings:
     for stage, seconds in timings.items():
         if stage != "total":
             ASK_STAGE_SECONDS.labels(stage).observe(seconds)
+
+
+def observe_chat(action: str, decided_by: str) -> None:
+    CHAT_TURNS.labels(action, decided_by).inc()
 
 
 def render() -> tuple[bytes, str]:

@@ -4,6 +4,7 @@ from types import SimpleNamespace
 import httpx
 import pytest
 
+from src.services.llm import OllamaChat
 from src.services.tracing import TraceStore, current_trace_id, get_trace, list_traces, span, start_trace, waterfall
 from src.services.understanding import LLMIntentParser, QueryUnderstanding
 from src.services.usage import LLMCall, Pricing, UsageRecorder
@@ -75,10 +76,10 @@ def test_store_round_trip_with_usage_and_waterfall(database):
 
 # ---- request understanding ------------------------------------------------------------------------------------
 def test_understanding_spans_carry_tokens_and_outcome():
-    llm = LLMIntentParser("http://ollama", model="qwen2.5vl:3b")
+    llm = LLMIntentParser(OllamaChat("http://ollama", "qwen2.5vl:3b"))
     body = {"type": "visual", "phrase": None, "visual": "a dog", "topic": None, "exclude": []}
     reply = {"message": {"content": json.dumps(body)}, "prompt_eval_count": 423, "eval_count": 22}
-    llm.http = httpx.Client(transport=httpx.MockTransport(lambda r: httpx.Response(200, json=reply)), base_url="http://o")
+    llm.chat.http = httpx.Client(transport=httpx.MockTransport(lambda r: httpx.Response(200, json=reply)), base_url="http://o")
     saved, save = collect()
     with start_trace("POST /api/v1/ask", service="api", save=save):
         QueryUnderstanding(llm).understand("a dog")
@@ -89,8 +90,8 @@ def test_understanding_spans_carry_tokens_and_outcome():
 
 
 def test_understanding_span_records_an_llm_failure():
-    llm = LLMIntentParser("http://ollama", model="qwen2.5vl:3b")
-    llm.http = httpx.Client(transport=httpx.MockTransport(lambda r: httpx.Response(503)), base_url="http://o")
+    llm = LLMIntentParser(OllamaChat("http://ollama", "qwen2.5vl:3b"))
+    llm.chat.http = httpx.Client(transport=httpx.MockTransport(lambda r: httpx.Response(503)), base_url="http://o")
     saved, save = collect()
     with start_trace("POST /api/v1/ask", service="api", save=save):
         result = QueryUnderstanding(llm).understand("a dog")

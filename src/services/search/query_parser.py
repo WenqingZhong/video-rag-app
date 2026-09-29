@@ -1,4 +1,4 @@
-"""Find the quoted phrase in a natural-language request (no LLM yet: that's Week 5)."""
+"""Find the quoted phrase in a natural-language request, with plain rules (the LLM-based version: services/understanding)."""
 
 import re
 from dataclasses import dataclass

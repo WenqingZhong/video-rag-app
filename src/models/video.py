@@ -21,7 +21,7 @@ class VideoStatus(enum.StrEnum):
     QUEUED = "queued"  # row exists, waiting for a worker
     DOWNLOADING = "downloading"  # Pexels only: fetching the file into S3
     PROCESSING = "processing"  # worker is running the pipeline (see `stage`)
-    READY = "ready"  # segments stored; searchable once indexed (Week 3)
+    READY = "ready"  # segments stored and indexed: searchable
     FAILED = "failed"  # see `error`
 
 

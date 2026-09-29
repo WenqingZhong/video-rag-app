@@ -1,10 +1,9 @@
 {
   "uid": "video-rag-tokens",
   "title": "Tokens & cost",
-  "description": "Model calls recorded in llm_calls (Week 6). Cost is an estimate at a hosted model's list price.",
+  "description": "Model calls recorded in llm_calls. Cost is an estimate at a hosted model's list price.",
   "tags": [
-    "video-rag",
-    "week6"
+    "video-rag"
   ],
   "timezone": "browser",
   "schemaVersion": 41,

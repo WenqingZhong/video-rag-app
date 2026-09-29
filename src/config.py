@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -62,6 +64,9 @@ class Settings(DefaultSettings):
     visual_min_segment_sec: float = 1.0  # shots shorter than this merge into the previous one
     visual_max_segment_sec: float = 10.0  # longer shots are split so each segment has a representative keyframe
     frame_max_side: int = 640  # keyframes fit within 640×640 (portrait and landscape alike)
+    # Keyframes this uniform (grey-level std dev, 0–255) are blank: not captioned or embedded. Blank frames 0.0,
+    # least varied real frame in the library 13.5 (a plain sky).
+    frame_blank_max_stddev: float = 4.0
     speech_window_sec: float = 15.0
     speech_stride_sec: float = 10.0  # window - stride = overlap, so a quote spanning a boundary is in one window
 
@@ -92,6 +97,22 @@ class Settings(DefaultSettings):
     understanding_model: str = "qwen2.5vl:3b"
     understanding_timeout: float = 30.0
 
+    # Question answering: the model answers only from these excerpts, citing them.
+    qa_enabled: bool = True
+    qa_max_excerpts: int = 8  # transcript chunks (~20 s) + keyframe captions shown to the model
+    qa_timeout: float = 60.0
+
+    # Chat agent: rules first, the model (router) only when the rules can't decide.
+    agent_router_enabled: bool = True
+    agent_router_timeout: float = 30.0
+    chat_memory_ttl_sec: int = 24 * 3600
+    chat_fetch_timeout_sec: int = 10 * 60  # give up waiting for downloaded Pexels videos to be processed
+
+    # Telegram bot: a client of this API. Long-polls Telegram, so it needs no public URL.
+    telegram_bot_token: str | None = None  # from @BotFather; only in .env (never committed)
+    telegram_allowed_chat_ids: str = ""  # comma-separated; empty = anyone who finds the bot
+    bot_api_url: str = "http://localhost:8000"  # where the bot reaches the API (compose: http://api:8000)
+
     # Token usage (every model call is written to the llm_calls table). The models run locally for free; cost is
     # an ESTIMATE: our token counts at a hosted model's list price. Change the reference here or in .env.
     usage_tracking_enabled: bool = True
@@ -110,8 +131,11 @@ class Settings(DefaultSettings):
     answer_cache_ttl_sec: int = 24 * 3600  # request (+ filters) → the full /ask answer
 
     # Clips (cut by the dedicated clip-worker, cached in S3 under clips/)
-    clip_padding_sec: float = 0.75  # context around quoted words
-    clip_max_sec: float = 15.0  # visual/topic clips longer than this are centred on the keyframe
+    clip_padding_sec: float = 0.75  # context around quoted words (and around the sentence of an answer or topic)
+    # A clip is a moment, not a scene: visual clips are this long, centred on the matched keyframe (whole shots,
+    # up to 10 s, felt like short videos rather than clips).
+    clip_visual_sec: float = 5.0
+    clip_max_sec: float = 8.0  # upper bound for any non-quote clip (a topic or answer sentence, or a fallback)
     clip_timeout: float = 60.0  # how long the API waits for the clip worker
 
     # OpenSearch configuration
@@ -127,6 +151,18 @@ class Settings(DefaultSettings):
     # Hybrid: a result found ONLY by vector search (no keyword support) must be at least this similar.
     # 0.20 chosen by a sweep (ADR 0002): false answers 5 → 2 of 12, MRR unchanged, one relevant video lost.
     search_vector_only_min_similarity: float = 0.20
+    # Image queries (photo → keyframes). Photo-to-frame cosine runs far higher than text-to-frame: its own cut-off.
+    # 0.57 chosen by make eval-images: 0.55–0.58 all give semantic hit@1 0.90 and 0/15 false answers (strongest
+    # unrelated photo 0.550, weakest found match above it 0.584); 0.57 sits in the middle of that plateau.
+    search_image_min_similarity: float = 0.57
+
+    # Where the models run: "ollama" locally (the models above, by name) or "bedrock" on AWS.
+    # Bedrock model ids come from the Bedrock console (Model catalog → the model's "Model ID", or an inference
+    # profile id like "us.<model id>"); the account must have access to them. Credentials: the usual AWS chain.
+    llm_provider: Literal["ollama", "bedrock"] = "ollama"
+    bedrock_region: str = "us-east-1"
+    bedrock_text_model_id: str | None = None  # understanding, answers, chat routing
+    bedrock_vision_model_id: str | None = None  # keyframe captions (must accept images)
 
     # Ollama configuration
     ollama_host: str = "http://localhost:11434"

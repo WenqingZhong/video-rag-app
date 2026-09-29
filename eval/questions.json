@@ -1,0 +1,29 @@
+{
+  "description": "Question answering. video: answer from this video only (by title); null = the whole library. expect: answered | not_found. must: every group needs one of its alternatives in the answer (case-insensitive; numbers as digits or words). cite: text one cited excerpt must contain. Facts come from eval/talks/sleep_talk.txt (the script), host_talk (a short uploaded talk) and keyframe captions. Labels written before any run.",
+  "questions": [
+    {"category": "fact", "video": "sleep_talk", "question": "How long does one sleep cycle last?", "expect": "answered", "must": [["90", "ninety"]], "cite": "90 minutes"},
+    {"category": "fact", "video": "sleep_talk", "question": "How many sleep cycles do most adults go through?", "expect": "answered", "must": [["4", "four"], ["6", "six"]], "cite": "4 to 6 cycles"},
+    {"category": "fact", "video": "sleep_talk", "question": "What does REM stand for?", "expect": "answered", "must": [["rapid eye movement"]], "cite": "rapid eye movement"},
+    {"category": "fact", "video": "sleep_talk", "question": "During which stage does most dreaming happen?", "expect": "answered", "must": [["REM", "rapid eye movement"]], "cite": "dreaming"},
+    {"category": "fact", "video": "sleep_talk", "question": "What does the body do during deep sleep?", "expect": "answered", "must": [["growth hormone", "repair"]], "cite": "growth hormone"},
+    {"category": "fact", "video": "sleep_talk", "question": "How many hours of sleep do adults need?", "expect": "answered", "must": [["7", "seven"], ["9", "nine"]], "cite": "7 to 9 hours"},
+    {"category": "fact", "video": "sleep_talk", "question": "How much sleep do teenagers need?", "expect": "answered", "must": [["8", "eight"], ["10", "ten"]], "cite": "Teenagers"},
+    {"category": "fact", "video": "sleep_talk", "question": "Why does sleep help memory?", "expect": "answered", "must": [["long-term", "long term", "replay", "replace", "learned", "learn"]], "cite": "memory"},
+    {"category": "fact", "video": "sleep_talk", "question": "What is the half-life of caffeine?", "expect": "answered", "must": [["5", "five"]], "cite": "half-life"},
+    {"category": "fact", "video": "sleep_talk", "question": "Why is screen light bad in the evening?", "expect": "answered", "must": [["melatonin"]], "cite": "melatonin"},
+    {"category": "fact", "video": "sleep_talk", "question": "How long should a nap be?", "expect": "answered", "must": [["20", "twenty"]], "cite": "nap"},
+    {"category": "fact", "video": "sleep_talk", "question": "What is the speaker's one piece of advice?", "expect": "answered", "must": [["wake"]], "cite": "wake-up time"},
+    {"category": "library", "video": null, "question": "What does the host say AI is changing?", "expect": "answered", "must": [["everything"]], "cite": "changing everything"},
+    {"category": "library", "video": null, "question": "How long is a sleep cycle?", "expect": "answered", "must": [["90", "ninety"]], "cite": "90 minutes"},
+    {"category": "library", "video": null, "question": "What is the half-life of caffeine?", "expect": "answered", "must": [["5", "five"]], "cite": "half-life"},
+    {"category": "not_in_video", "video": "sleep_talk", "question": "How much water should I drink per day?", "expect": "not_found"},
+    {"category": "not_in_video", "video": "sleep_talk", "question": "Does alcohol affect sleep?", "expect": "not_found"},
+    {"category": "not_in_video", "video": "sleep_talk", "question": "How many hours do babies sleep?", "expect": "not_found"},
+    {"category": "not_in_video", "video": "sleep_talk", "question": "What is the name of the speaker?", "expect": "not_found"},
+    {"category": "not_in_video", "video": "sleep_talk", "question": "Which mattress brand is recommended?", "expect": "not_found"},
+    {"category": "not_in_library", "video": null, "question": "What is the capital of France?", "expect": "not_found"},
+    {"category": "not_in_library", "video": null, "question": "Who won the football match?", "expect": "not_found"},
+    {"category": "visual", "video": "Perro", "question": "What colour is the dog?", "expect": "answered", "must": [["black", "brown"]], "cite": "dog"},
+    {"category": "visual", "video": "Waves of the ocean", "question": "What is shown in this video?", "expect": "answered", "must": [["wave", "ocean", "sea", "water"]], "cite": ""}
+  ]
+}

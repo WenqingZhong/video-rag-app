@@ -1,4 +1,4 @@
-"""Week 6: record cache hits in llm_calls (tokens and cost the cache saved).
+"""Record cache hits in llm_calls (tokens and cost the cache saved).
 
 Revision ID: 0005
 Revises: 0004

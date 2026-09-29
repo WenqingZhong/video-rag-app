@@ -27,6 +27,16 @@ def explain(intent: Intent, doc: dict, start: float, end: float, matched_text: s
     return f'"{title}"{credit}, {when}' + (f": {caption}" if caption else "")
 
 
+def explain_image(doc: dict, start: float, end: float, similarity: float) -> str:
+    """The clip that looks most like the user's photo."""
+    title = doc.get("video_title") or "untitled video"
+    credit = f" (Pexels, by {doc['video_author']})" if doc.get("video_source") == "pexels" and doc.get("video_author") else ""
+    caption = (doc.get("caption") or "").strip()
+    return f'Closest match to your image: "{title}"{credit}, {mmss(start)}–{mmss(end)} (similarity {similarity:.2f})' + (
+        f": {caption}" if caption else ""
+    )
+
+
 def no_match(intent: Intent) -> str:
     what = {"quote": "anyone saying", "topic": "a discussion of", "visual": "footage of"}[intent.type]
     without = f" without {', '.join(intent.exclude)}" if intent.exclude else ""

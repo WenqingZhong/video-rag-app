@@ -130,7 +130,24 @@ services:
     networks:
       - rag-network
 
-  # Monitoring (Week 6): Prometheus scrapes the API; Grafana shows it next to tokens/cost/traces from Postgres.
+  # Telegram bot: a client of the API (POST /api/v1/chat), long-polling Telegram. Off without TELEGRAM_BOT_TOKEN.
+  telegram-bot:
+    build: .
+    container_name: video-rag-telegram-bot
+    command: ["python", "-m", "src.bot.telegram"]
+    depends_on:
+      api:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      <<: *app-env
+      BOT_API_URL: http://api:8000
+    restart: on-failure
+    networks:
+      - rag-network
+
+  # Monitoring: Prometheus scrapes the API; Grafana shows it next to tokens/cost/traces from Postgres.
   prometheus:
     image: prom/prometheus:v3.5.0
     container_name: video-rag-prometheus
@@ -283,7 +300,7 @@ services:
     image: ollama/ollama:0.11.2
     container_name: video-rag-ollama
     environment:
-      OLLAMA_MAX_LOADED_MODELS: "1"  # one model in RAM at a time (captioning now, the LLM in Week 5)
+      OLLAMA_MAX_LOADED_MODELS: "1"  # one model in RAM at a time: the same model captions and understands requests
       OLLAMA_KEEP_ALIVE: 10m
     ports:
       - "11434:11434"

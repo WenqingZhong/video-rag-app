@@ -1,4 +1,4 @@
-"""Week 6: trace spans (timed steps of each request and task).
+"""Trace spans (timed steps of each request and task).
 
 Revision ID: 0004
 Revises: 0003

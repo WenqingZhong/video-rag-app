@@ -24,7 +24,7 @@ ALLOWED_EXTENSIONS = {".mp4", ".mov", ".m4v", ".mkv", ".webm", ".avi"}
 
 @router.post("", response_model=VideoSummary, status_code=status.HTTP_202_ACCEPTED)
 def upload_video(ingestion: IngestionDep, settings: SettingsDep, file: Annotated[UploadFile, File()]) -> VideoSummary:
-    """Phase 1 of ingestion: store the file in S3, create the row, queue processing. Returns immediately (202)."""
+    """Store the file in S3, create the row, queue processing. Returns immediately (202); the worker does the rest."""
     extension = Path(file.filename or "").suffix.lower()
     is_video_type = (file.content_type or "").startswith("video/")
     if extension not in ALLOWED_EXTENSIONS and not is_video_type:

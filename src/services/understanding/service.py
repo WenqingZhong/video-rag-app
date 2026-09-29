@@ -5,9 +5,9 @@ import re
 import time
 from dataclasses import dataclass, field
 
-import httpx
 from pydantic import ValidationError
 
+from src.services.llm import ModelError
 from src.services.tracing import span
 from src.services.understanding.cache import UnderstandingCache
 from src.services.understanding.intent import Intent, find_exclusions, is_placeholder
@@ -164,7 +164,7 @@ class QueryUnderstanding:
                 llm_span.fail(exc)
                 logger.warning("LLM reply invalid, using rules: %s", exc)
                 failure = f"LLM reply invalid: {exc}"
-            except (httpx.HTTPError, ValidationError, ValueError, KeyError) as exc:
+            except (ModelError, ValidationError, ValueError, KeyError) as exc:
                 llm_span.fail(exc)
                 logger.warning("LLM understanding failed, using rules: %s", exc)
                 failure = f"LLM error: {exc}"
@@ -184,7 +184,7 @@ class QueryUnderstanding:
         # Guard 2 (fields): keep only the field for the type; the model fills the others with guesses.
         text = raw.text
         field_name = {"quote": "phrase", "topic": "topic", "visual": "visual"}[intent_type]
-        # "No subject" (visual null, or just "anything") is a valid answer: Phase 3 asks the user instead of searching.
+        # "No subject" (visual null, or just "anything") is a valid answer: /ask then asks the user instead of searching.
         no_subject = intent_type == "visual" and is_placeholder(text)
         if no_subject:
             text = None

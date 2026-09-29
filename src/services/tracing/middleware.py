@@ -12,7 +12,9 @@ REQUEST_ID_HEADER = "x-request-id"
 # A caller may send its own id (to find its request later); anything odd is replaced by a fresh one.
 _VALID_ID = re.compile(r"^[A-Za-z0-9._-]{8,64}$")
 # Health checks run every few seconds and reading traces shouldn't create more: not traced.
-UNTRACED = ("/api/v1/ping", "/api/v1/health", "/api/v1/traces", "/health", "/metrics", "/docs", "/redoc", "/openapi.json")
+UNTRACED = (
+    "/api/v1/ping", "/api/v1/health", "/api/v1/traces", "/health", "/metrics", "/docs", "/redoc", "/openapi.json", "/app",
+)  # fmt: skip
 
 
 def _template(path: str, params: dict) -> str:

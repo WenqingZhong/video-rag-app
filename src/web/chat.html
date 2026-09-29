@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video RAG Chat</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232f5bd3'/%3E%3Cpath d='M6 4.5v7l5.5-3.5z' fill='white'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #ffffff; --text: #1d2330; --muted: #6b7280; --line: #e3e6eb;
+    --user: #2f5bd3; --user-text: #ffffff; --bot: #ffffff; --accent: #2f5bd3; --chip: #eef1f6; --warn: #b45309;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12151b; --panel: #1a1e26; --text: #e6e9ef; --muted: #9aa3b2; --line: #2a303b;
+      --user: #3b6be0; --user-text: #ffffff; --bot: #1f242e; --accent: #7aa2ff; --chip: #262c37; --warn: #f0a24a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .app { max-width: 820px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding: 0 16px; }
+  header { display: flex; align-items: center; justify-content: space-between; padding: 16px 0 12px; border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 17px; margin: 0; }
+  header p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+  button { font: inherit; cursor: pointer; }
+  .ghost { background: none; border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 6px 10px; }
+  #log { flex: 1; padding: 16px 0; display: flex; flex-direction: column; gap: 12px; }
+  .msg { max-width: 88%; padding: 10px 12px; border-radius: 12px; word-wrap: break-word; }
+  .user { align-self: flex-end; background: var(--user); color: var(--user-text); border-bottom-right-radius: 4px; }
+  .user img { display: block; max-width: 220px; border-radius: 8px; margin-bottom: 6px; }
+  .bot { align-self: flex-start; background: var(--bot); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+  .bot video { display: block; width: 100%; max-width: 520px; max-height: 360px; object-fit: contain; margin-top: 8px; border-radius: 8px; background: #000; }
+  a { color: var(--accent); }
+  .meta { margin-top: 6px; color: var(--muted); font-size: 12px; }
+  .chip { display: inline-block; background: var(--chip); border-radius: 6px; padding: 1px 6px; margin-right: 4px; }
+  .cites { margin: 8px 0 0; padding-left: 18px; font-size: 13px; color: var(--muted); }
+  .progress { color: var(--warn); }
+  .intro { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin-top: 4px; }
+  .intro h2 { font-size: 16px; margin: 0 0 6px; }
+  .intro p { margin: 0 0 12px; color: var(--muted); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-bottom: 12px; }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .card b { display: block; margin-bottom: 4px; }
+  .card span { color: var(--muted); font-size: 13px; }
+  .card button { margin-top: 8px; font-size: 13px; }
+  .intro h3 { font-size: 14px; margin: 12px 0 4px; }
+  .intro ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+  .intro li { margin: 2px 0; }
+  form { position: sticky; bottom: 0; background: var(--bg); padding: 10px 0 16px; display: flex; gap: 8px; align-items: center; }
+  #text { flex: 1; min-width: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--text); font: inherit; }
+  #send { background: var(--accent); color: #fff; border: 0; border-radius: 10px; padding: 10px 14px; }
+  #send:disabled { opacity: .5; cursor: default; }
+  #photo-label { border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; cursor: pointer; background: var(--panel); }
+  #photo { display: none; }
+  #attached { font-size: 12px; color: var(--muted); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <h1>Video RAG</h1>
+      <p>Find the exact moment you need inside a video.</p>
+    </div>
+    <div>
+      <button class="ghost" id="about" type="button">About</button>
+      <button class="ghost" id="new" type="button">New conversation</button>
+    </div>
+  </header>
+  <main id="log" aria-live="polite"></main>
+  <form id="composer">
+    <label id="photo-label" title="Attach a video (to add it) or a photo (to find a similar clip)">📎<input id="photo" type="file" accept="video/*,image/*"></label>
+    <span id="attached"></span>
+    <input id="text" autocomplete="off" placeholder="e.g. a dog in the snow, or attach your video">
+    <button id="send" type="submit">Send</button>
+  </form>
+</div>
+<script>
+const API = "/api/v1";
+const log = document.getElementById("log");
+const form = document.getElementById("composer");
+const text = document.getElementById("text");
+const photo = document.getElementById("photo");
+const attached = document.getElementById("attached");
+const send = document.getElementById("send");
+
+// The conversation id is a convenience: losing it only starts a new conversation.
+function loadId() { try { return localStorage.getItem("chat-id"); } catch { return null; } }
+function saveId(id) { try { id ? localStorage.setItem("chat-id", id) : localStorage.removeItem("chat-id"); } catch {} }
+let conversationId = loadId();
+
+function el(tag, attrs = {}, ...children) {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) k === "class" ? (node.className = v) : node.setAttribute(k, v);
+  for (const child of children) if (child != null) node.append(child);
+  return node;
+}
+function scrollDown() { window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); }
+function mmss(s) { s = Math.round(s); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; }
+
+function showHint() {
+  const card = (title, text, action) => {
+    const c = el("div", { class: "card" }, el("b", {}, title), el("span", {}, text));
+    if (action) c.append(action);
+    return c;
+  };
+  const example = (label, message) => {
+    const b = el("button", { class: "ghost", type: "button" }, label);
+    b.onclick = () => { text.value = message; form.requestSubmit(); };
+    return b;
+  };
+  const upload = el("button", { class: "ghost", type: "button" }, "Choose a video…");
+  upload.onclick = () => photo.click();
+  const list = (...items) => { const ul = el("ul"); for (const i of items) ul.append(el("li", {}, i)); return ul; };
+  log.append(el("section", { class: "hint intro" },
+    el("h2", {}, "What is this?"),
+    el("p", {}, "A search engine for moments inside videos. It indexes what each video shows (its frames) and what people " +
+      "say in it (its speech), so instead of scrubbing through footage you ask for a moment and get back just that clip."),
+    el("div", { class: "cards" },
+      card("1. Your own video", "Attach a video with 📎, then ask for a moment: “the part where the host says AI is changing everything”. You can ask while it's still processing.", upload),
+      card("2. Stock footage", "Ask for what you want to see. If it isn't in the library, I'll offer to fetch it from Pexels.",
+        example("a dog in the snow", "a dog in the snow")),
+      card("3. Questions", "Ask what the videos say. You get an answer plus the moment it came from.",
+        example("how long is a sleep cycle?", "how long is a sleep cycle?")),
+      card("4. Search by photo", "Attach a photo with 📎 and I'll find the clip that looks most like it.")),
+    el("h3", {}, "How to use it"),
+    list("Type a request, or attach a video or photo with 📎, then press Send.",
+         "Follow up naturally: “another one”, “now without people”, “what colour is it in that clip?”.",
+         "“What videos do you have?” lists the library."),
+    el("h3", {}, "Good to know"),
+    list("Answers take about 5–15 s: the language model runs locally, on this computer's CPU.",
+         "An uploaded video takes a minute or two to process (longer for long videos); I'll tell you when it's ready.",
+         "Clips are a few seconds long: the moment itself, not the whole scene.",
+         "Nothing is downloaded from Pexels without your “yes”. Stock clips credit their Pexels authors.")));
+}
+
+function userMessage(message, file) {
+  const bubble = el("div", { class: "msg user" });
+  if (file && file.type.startsWith("video/")) bubble.append(el("div", {}, `🎬 ${file.name} (${(file.size / 1048576).toFixed(1)} MB)`));
+  else if (file) bubble.append(el("img", { src: URL.createObjectURL(file), alt: "your photo" }));
+  if (message) bubble.append(message);
+  log.append(bubble);
+}
+
+function botMessage(body) {
+  const bubble = el("div", { class: "msg bot" }, el("div", {}, body.reply));
+  for (const clip of body.clips || []) {
+    const video = el("video", { controls: "", preload: "metadata", playsinline: "", src: clip.url });
+    bubble.append(video);
+    if (clip.source_url) bubble.append(el("div", { class: "meta" }, el("a", { href: clip.source_url, target: "_blank", rel: "noopener" }, "Source on Pexels")));
+  }
+  if (body.citations && body.citations.length) {
+    const list = el("ul", { class: "cites" });
+    for (const c of body.citations) list.append(el("li", {}, `${c.title} ${mmss(c.start_sec)}–${mmss(c.end_sec)}: “${c.text.slice(0, 140)}${c.text.length > 140 ? "…" : ""}”`));
+    bubble.append(list);
+  }
+  if (body.action) {
+    const meta = el("div", { class: "meta" }, el("span", { class: "chip" }, body.action), el("span", { class: "chip" }, `decided by ${body.decided_by}`));
+    if (body.seconds != null) meta.append(`${body.seconds.toFixed(1)} s`);
+    if (body.notes && body.notes.length) meta.title = body.notes.join("\n");
+    bubble.append(meta);
+  }
+  log.append(bubble);
+  scrollDown();
+  return bubble;
+}
+
+let waiting = false;  // one progress bubble per conversation, however many requests wait for the same video
+
+async function waitForDownload(label) {
+  if (waiting) return;
+  waiting = true;
+  const status = el("div", { class: "msg bot progress" }, `⏳ ${label}`);
+  log.append(status);
+  scrollDown();
+  const started = Date.now();
+  while (Date.now() - started < 15 * 60 * 1000) {
+    await new Promise(r => setTimeout(r, 5000));
+    let update;
+    try {
+      const r = await fetch(`${API}/chat/${conversationId}/updates`);
+      if (!r.ok) continue;
+      update = await r.json();
+    } catch { continue; }
+    if (update.status === "pending") {
+      const p = update.progress;
+      const total = p.ready + p.pending + p.failed;
+      const elapsed = mmss((Date.now() - started) / 1000);
+      status.textContent = "⏳ " + (update.status_text || (total > 1 ? `${label.replace("…", "")}: ${p.ready} of ${total} ready · ${elapsed}` : `${label} · ${elapsed}`));
+    } else {
+      status.textContent = `✅ Processed in ${mmss((Date.now() - started) / 1000)}`;
+      waiting = false;
+      if (update.reply) botMessage(update);
+      return;
+    }
+  }
+  waiting = false;
+  status.textContent = "Still processing. Ask me again in a few minutes.";
+}
+
+photo.onchange = () => { attached.textContent = photo.files[0] ? photo.files[0].name : ""; };
+document.getElementById("about").onclick = () => {
+  const intro = log.querySelector(".intro");
+  if (intro) { intro.remove(); return; }
+  showHint();
+  log.prepend(log.querySelector(".intro"));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+document.getElementById("new").onclick = () => { conversationId = null; saveId(null); waiting = false; log.replaceChildren(); showHint(); text.focus(); };
+
+form.onsubmit = async (event) => {
+  event.preventDefault();
+  const message = text.value.trim();
+  const file = photo.files[0];
+  if (!message && !file) return;
+  log.querySelector(".intro")?.remove();
+  userMessage(message, file);
+  const data = new FormData();
+  data.append("message", message);
+  if (conversationId) data.append("conversation_id", conversationId);
+  if (file) data.append(file.type.startsWith("video/") ? "video" : "image", file);
+  text.value = ""; photo.value = ""; attached.textContent = "";
+  send.disabled = true;
+  const thinking = el("div", { class: "msg bot meta" }, file && file.type.startsWith("video/") ? "Uploading your video…" : "…");
+  log.append(thinking);
+  scrollDown();
+  try {
+    const r = await fetch(`${API}/chat`, { method: "POST", body: data });
+    const body = await r.json();
+    thinking.remove();
+    if (!r.ok) { botMessage({ reply: `Error ${r.status}: ${body.detail || "request failed"}` }); return; }
+    conversationId = body.conversation_id;
+    saveId(conversationId);
+    botMessage(body);
+    if (body.fetching && body.fetching.length) waitForDownload(`Processing ${body.fetching.length} downloaded videos…`);
+    if (body.uploading) waitForDownload("Processing your video…");  // also when a request is waiting for it
+  } catch (err) {
+    thinking.remove();
+    botMessage({ reply: `Couldn't reach the server: ${err}` });
+  } finally {
+    send.disabled = false;
+    text.focus();
+  }
+};
+
+showHint();
+text.focus();
+</script>
+</body>
+</html>

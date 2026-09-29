@@ -2,9 +2,9 @@
 
 import json
 
-import httpx
 from pydantic import ValidationError
 
+from src.services.llm import ChatModel
 from src.services.understanding.intent import Intent
 from src.services.usage import LLMCall
 
@@ -53,28 +53,19 @@ class InvalidReply(ValueError):
 
 
 class LLMIntentParser:
-    def __init__(self, ollama_host: str, model: str, timeout: float = 30.0):
-        self.http = httpx.Client(base_url=ollama_host, timeout=timeout)
-        self.model = model
+    def __init__(self, chat: ChatModel):
+        self.chat = chat  # Ollama locally, Bedrock on AWS (src/services/llm)
+
+    @property
+    def model(self) -> str:
+        return self.chat.name
 
     def parse(self, query: str) -> tuple[Intent, LLMCall]:
-        response = self.http.post(
-            "/api/chat",
-            json={
-                "model": self.model,
-                "stream": False,
-                "format": SCHEMA,
-                "options": {"temperature": 0},
-                "messages": [{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": query}],
-            },
-        )
-        response.raise_for_status()
-        body = response.json()
-        call = LLMCall.from_ollama(body, "understand", self.model)
+        text, call = self.chat.json_reply(SYSTEM_PROMPT, query, SCHEMA, "understand")
         try:
-            return Intent.model_validate(json.loads(body["message"]["content"])), call
+            return Intent.model_validate(json.loads(text)), call
         except (ValidationError, ValueError, KeyError) as exc:
             raise InvalidReply(f"{type(exc).__name__}: {exc}", call) from exc
 
     def close(self) -> None:
-        self.http.close()
+        self.chat.close()

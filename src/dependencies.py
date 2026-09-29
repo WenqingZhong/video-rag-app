@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 
 from src.config import Settings
 from src.db.interfaces.base import BaseDatabase
-from src.services.answering import AskService
+from src.services.agent import ChatService, Toolbox
+from src.services.answering import AskService, ImageAskService
 from src.services.cache import CacheClient
 from src.services.captioning import Captioner
 from src.services.clips import ClipService
@@ -14,6 +15,7 @@ from src.services.embeddings import EmbeddingClient
 from src.services.ingestion import IngestionService
 from src.services.opensearch import OpenSearchService
 from src.services.pexels import PexelsClient
+from src.services.qa import QAService
 from src.services.search import SearchService
 from src.services.storage import StorageClient
 from src.services.understanding import QueryUnderstanding
@@ -134,5 +136,53 @@ def get_ask_service(
     return AskService(understanding, search, clips, settings, answers=getattr(request.app.state, "answer_cache", None))
 
 
+def get_image_ask_service(
+    search: Annotated[SearchService, Depends(get_search_service)],
+    clips: Annotated[ClipService, Depends(get_clip_service)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> ImageAskService:
+    return ImageAskService(search, clips, settings)
+
+
+def get_qa_service(
+    request: Request,
+    database: Annotated[BaseDatabase, Depends(get_database)],
+    search: Annotated[SearchService, Depends(get_search_service)],
+    clips: Annotated[ClipService, Depends(get_clip_service)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> QAService:
+    state = request.app.state
+    return QAService(
+        database, search, getattr(state, "answerer", None), settings, getattr(state, "usage_recorder", None), clips=clips
+    )
+
+
+def get_chat_service(
+    request: Request,
+    database: Annotated[BaseDatabase, Depends(get_database)],
+    storage: Annotated[StorageClient, Depends(get_storage_client)],
+    ask: Annotated[AskService, Depends(get_ask_service)],
+    image_ask: Annotated[ImageAskService, Depends(get_image_ask_service)],
+    qa: Annotated[QAService, Depends(get_qa_service)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> ChatService:
+    state = request.app.state
+
+    def make_ingestion(session: Session) -> IngestionService:
+        return IngestionService(session, storage, settings, enqueue_process=_enqueue_process, enqueue_download=_enqueue_download)
+
+    toolbox = Toolbox(database, storage, ask, image_ask, qa, make_ingestion, getattr(state, "pexels_client", None))
+    return ChatService(
+        toolbox,
+        state.conversations,
+        getattr(state, "router", None),
+        getattr(state, "usage_recorder", None),
+        settings.chat_fetch_timeout_sec,
+    )
+
+
 UnderstandingDep = Annotated[QueryUnderstanding, Depends(get_query_understanding)]
+ImageAskDep = Annotated[ImageAskService, Depends(get_image_ask_service)]
+QADep = Annotated[QAService, Depends(get_qa_service)]
+ChatDep = Annotated[ChatService, Depends(get_chat_service)]
 AskDep = Annotated[AskService, Depends(get_ask_service)]

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 MIGRATIONS_DIR = Path(__file__).parent
 SCHEMA_LOCK_KEY = 7_311_2024  # app-wide id for pg_advisory_lock: one process migrates, the others wait
-BASELINE_REVISION = "0001"  # schema that existed before Alembic was introduced (Weeks 2-3)
+BASELINE_REVISION = "0001"  # schema that existed before Alembic was introduced
 
 
 def _config(connection) -> Config:

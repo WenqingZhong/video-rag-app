@@ -22,7 +22,7 @@ def test_documents_denormalise_video_fields_and_match_the_strict_mapping():
     docs = segment_documents(video, segments)
 
     assert [d["segment_id"] for d in docs] == ["s1", "s2"]
-    assert docs[0]["video_title"] == "Dogs playing"  # visual segments findable by title until Week 4 captions
+    assert docs[0]["video_title"] == "Dogs playing"  # visual segments without a caption are findable by title
     assert docs[1]["words"][0]["word"] == "hello"
     mapped = set(build_index_body(512)["mappings"]["properties"])
     assert all(set(d) <= mapped for d in docs)  # "dynamic: strict" would reject unknown fields

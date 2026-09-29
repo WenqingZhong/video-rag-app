@@ -8,6 +8,7 @@ from PIL import Image
 
 from src.services.captioning import Captioner, CaptionError, downscale_jpeg
 from src.services.embeddings import EmbeddingClient, EmbeddingError
+from src.services.llm import OllamaChat
 
 
 def jpeg(width: int, height: int) -> bytes:
@@ -49,8 +50,8 @@ def test_embedder_4xx_is_permanent_5xx_is_retryable():
 
 
 def captioner(handler) -> Captioner:
-    c = Captioner("http://ollama", model="qwen2.5vl:3b", prompt="Describe.", max_side=448)
-    c.http = httpx.Client(base_url="http://ollama", transport=httpx.MockTransport(handler))
+    c = Captioner(OllamaChat("http://ollama", "qwen2.5vl:3b"), prompt="Describe.", max_side=448)
+    c.chat.http = httpx.Client(base_url="http://ollama", transport=httpx.MockTransport(handler))
     return c
 
 

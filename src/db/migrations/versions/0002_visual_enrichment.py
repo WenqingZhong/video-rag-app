@@ -1,4 +1,4 @@
-"""Week 4: caption + CLIP image embedding on visual segments.
+"""Visual enrichment: caption + CLIP image embedding on visual segments.
 
 Revision ID: 0002
 Revises: 0001

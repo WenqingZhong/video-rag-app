@@ -56,6 +56,7 @@ class Trace:
     trace_id: str
     service: str
     spans: list[Span] = field(default_factory=list)
+    discard: bool = False  # set by discard_trace(): nothing worth keeping happened (e.g. an empty poll)
 
 
 class _NoSpan:
@@ -77,6 +78,13 @@ _current: ContextVar[Span | None] = ContextVar("current_span", default=None)
 def current_trace_id() -> str | None:
     trace = _trace.get()
     return trace.trace_id if trace else None
+
+
+def discard_trace() -> None:
+    """Don't save the current trace: a routine request (a poll that found nothing new) would only add noise."""
+    trace = _trace.get()
+    if trace is not None:
+        trace.discard = True
 
 
 def current_span_id() -> str | None:
@@ -129,6 +137,8 @@ class ActiveTrace:
             self.save(save)
 
     def save(self, save: Callable[[list[Span]], None]) -> None:
+        if self.trace.discard:
+            return
         try:
             save(self.trace.spans)
         except Exception as exc:  # noqa: BLE001 - losing a trace must never fail the request or task

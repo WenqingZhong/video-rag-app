@@ -1,0 +1,57 @@
+{
+  "description": "Whole conversations through POST /api/v1/chat (routing + tools + memory + replies). Written and labelled before any run. Per turn: action (one of), clip_title (regex the first clip's video title must match), reply_has (regex the reply must match), reply_not (regex it must not match), new_video (the clip must come from a different video than the previous turn's). image: a file in eval/images/. No turn downloads from Pexels.",
+  "conversations": [
+    {"name": "dog, another, question about it", "turns": [
+      {"message": "give me a clip of a dog", "expect": {"action": ["find_clip"], "clip_title": "dog|perro|pupp"}},
+      {"message": "another one", "expect": {"action": ["find_clip"], "clip_title": "dog|perro|pupp", "new_video": true}},
+      {"message": "what colour is the dog in that clip?", "expect": {"action": ["answer_question"], "reply_not": "couldn't find"}}
+    ]},
+    {"name": "beach, refined", "turns": [
+      {"message": "a beach", "expect": {"action": ["find_clip"], "clip_title": "beach|sea|coast|bazar|ocean|wave"}},
+      {"message": "now without people", "expect": {"action": ["find_clip"], "clip_title": "beach|sea|coast|bazar|ocean|wave"}}
+    ]},
+    {"name": "the sleep talk", "turns": [
+      {"message": "the part where she talks about caffeine", "expect": {"action": ["find_clip"], "clip_title": "sleep_talk"}},
+      {"message": "how long does caffeine stay half active?", "expect": {"action": ["answer_question"], "reply_has": "\\b5\\b|five"}},
+      {"message": "and how long should a nap be?", "expect": {"action": ["answer_question"], "reply_has": "\\b20\\b|twenty"}}
+    ]},
+    {"name": "missing subject, declined, switch", "turns": [
+      {"message": "a unicorn", "expect": {"action": ["find_clip"], "reply_has": "Pexels"}},
+      {"message": "no thanks", "expect": {"action": ["reply"], "reply_not": "Downloading"}},
+      {"message": "show me cats instead", "expect": {"action": ["find_clip"], "clip_title": "cat|kitten|siamese"}}
+    ]},
+    {"name": "photo, then a question about it", "turns": [
+      {"message": "find this", "image": "kitten", "expect": {"action": ["find_by_image"], "clip_title": "cat|kitten|siamese"}},
+      {"message": "what is the cat doing in that clip?", "expect": {"action": ["answer_question"], "reply_not": "couldn't find"}}
+    ]},
+    {"name": "small talk and the library", "turns": [
+      {"message": "hi", "expect": {"action": ["reply"]}},
+      {"message": "what videos do you have?", "expect": {"action": ["list_videos"], "reply_has": "videos"}},
+      {"message": "what does the host say about AI?", "expect": {"action": ["answer_question", "find_clip"], "reply_has": "AI|changing"}}
+    ]},
+    {"name": "yes with nothing offered", "turns": [
+      {"message": "yes", "expect": {"action": ["reply"], "reply_not": "Downloading"}},
+      {"message": "exclude people", "expect": {"action": ["reply", "find_clip"], "reply_has": "What would you like|what to show|see or hear"}}
+    ]},
+    {"name": "kitchen, switch dish", "turns": [
+      {"message": "someone chopping vegetables", "expect": {"action": ["find_clip"], "clip_title": "vegetable|kitchen"}},
+      {"message": "what about frying?", "expect": {"action": ["find_clip"], "clip_title": "fry|cook"}}
+    ]},
+    {"name": "city at night, then daylight", "turns": [
+      {"message": "busy city streets at night", "expect": {"action": ["find_clip"], "clip_title": "traffic|city|street|junction|london"}},
+      {"message": "same but in daylight", "expect": {"action": ["find_clip"]}}
+    ]},
+    {"name": "REM", "turns": [
+      {"message": "where does she explain REM sleep?", "expect": {"action": ["find_clip"], "clip_title": "sleep_talk"}},
+      {"message": "what does REM stand for?", "expect": {"action": ["answer_question"], "reply_has": "rapid eye movement"}}
+    ]},
+    {"name": "birds and balloons", "turns": [
+      {"message": "a colourful parrot", "expect": {"action": ["find_clip"], "clip_title": "turaco|parrot|bird"}},
+      {"message": "and a hot air balloon", "expect": {"action": ["find_clip"], "clip_title": "balloon|baloon"}}
+    ]},
+    {"name": "answer, then show it", "turns": [
+      {"message": "tell me what melatonin does", "expect": {"action": ["answer_question"], "reply_has": "melatonin|rest|night|sleep"}},
+      {"message": "show me that part", "expect": {"action": ["find_clip"], "clip_title": "sleep_talk"}}
+    ]}
+  ]
+}

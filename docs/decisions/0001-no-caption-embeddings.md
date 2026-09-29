@@ -49,7 +49,7 @@ Results are fused with Reciprocal Rank Fusion (RRF, k = 60).
 
   | Category | n | Designed to test | Example |
   |---|---|---|---|
-  | basic | 16 | the Week 4 baseline | "give me a clip of a dog" |
+  | basic | 16 | the baseline | "give me a clip of a dog" |
   | style | 3 | camera/look: in the pixels, **never in captions** | "drone footage above the coast" |
   | detail | 6 | small objects/actions **named in captions** | "a bird eating from a metal bowl" |
   | synonym | 4 | words in **no** title or caption | "canine", "feline", "seashore" |
@@ -124,7 +124,7 @@ Results are fused with Reciprocal Rank Fusion (RRF, k = 60).
 ## Decision
 
 Keep **keyword + CLIP** hybrid search. Captions stay: they feed keyword search (the "detail" wins above) and they're
-the text Week 5's LLM reads, but they are **not** embedded.
+the text the request-understanding LLM reads, but they are **not** embedded.
 
 ## Consequences
 
@@ -132,7 +132,7 @@ the text Week 5's LLM reads, but they are **not** embedded.
 - The evaluation set now has categorised hard queries, and `make eval` reports MRR per category, so future changes
   are judged per weakness, not only by one average.
 - **Negation is unsolved by every retriever** ("a beach with no people" returns the beach *with* people first). That's
-  a query-understanding problem for Week 5's LLM, not a retrieval one.
+  a query-understanding problem (ADR 0002), not a retrieval one.
 
 ## Limitations of this evidence
 

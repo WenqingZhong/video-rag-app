@@ -1,7 +1,7 @@
 """Strip request phrasing before embedding a query ("give me a clip of a dog" → "a dog").
 
 CLIP compares the text with images; words like "give me" or "clip" describe the REQUEST, not the picture,
-and only add noise. This is a small heuristic; Week 5's LLM will extract what the user wants properly.
+and only add noise. This is a small heuristic; /ask's request understanding (services/understanding) extracts what the user wants properly.
 """
 
 import re

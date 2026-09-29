@@ -12,6 +12,7 @@ from src.services.answering import AskService
 from src.services.answering.cache import AnswerCache
 from src.services.cache import CacheClient, IndexVersion, code_fingerprint, normalize_request
 from src.services.indexing import indexer
+from src.services.llm import OllamaChat
 from src.services.search import SearchHit, SearchResult
 from src.services.search.query_parser import ParsedQuery
 from src.services.tracing import start_trace
@@ -87,8 +88,8 @@ def llm_that_counts(reply: dict | int):
             return httpx.Response(reply)
         return httpx.Response(200, json={"message": {"content": json.dumps(reply)}, "prompt_eval_count": 423, "eval_count": 22})
 
-    llm = LLMIntentParser("http://ollama", model="qwen2.5vl:3b")
-    llm.http = httpx.Client(base_url="http://ollama", transport=httpx.MockTransport(handler))
+    llm = LLMIntentParser(OllamaChat("http://ollama", "qwen2.5vl:3b"))
+    llm.chat.http = httpx.Client(base_url="http://ollama", transport=httpx.MockTransport(handler))
     return llm, calls
 
 

@@ -1,0 +1,530 @@
+{
+  "summary": {
+    "questions": 24,
+    "status_accuracy": 1.0,
+    "answered_correctly": 0.941,
+    "cited_correctly": 1.0,
+    "made_up": 0,
+    "should_not_answer": 7,
+    "refused_answerable": 0,
+    "p50_seconds": 1.9,
+    "tokens_per_question": 515,
+    "rejected_by_guards": 0
+  },
+  "by_category": {
+    "fact": 1.0,
+    "library": 0.67,
+    "not_in_library": 1.0,
+    "not_in_video": 1.0,
+    "visual": 1.0
+  },
+  "rows": [
+    {
+      "category": "fact",
+      "video": "sleep_talk",
+      "question": "How long does one sleep cycle last?",
+      "expect": "answered",
+      "must": [
+        [
+          "90",
+          "ninety"
+        ]
+      ],
+      "cite": "90 minutes",
+      "status": "answered",
+      "answer": "Each cycle lasts about 90 minutes.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 7.62,
+      "tokens": 638,
+      "outcome": "accepted"
+    },
+    {
+      "category": "fact",
+      "video": "sleep_talk",
+      "question": "How many sleep cycles do most adults go through?",
+      "expect": "answered",
+      "must": [
+        [
+          "4",
+          "four"
+        ],
+        [
+          "6",
+          "six"
+        ]
+      ],
+      "cite": "4 to 6 cycles",
+      "status": "answered",
+      "answer": "Most adults go through 4 to 6 cycles before waking.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 1.72,
+      "tokens": 644,
+      "outcome": "accepted"
+    },
+    {
+      "category": "fact",
+      "video": "sleep_talk",
+      "question": "What does REM stand for?",
+      "expect": "answered",
+      "must": [
+        [
+          "rapid eye movement"
+        ]
+      ],
+      "cite": "rapid eye movement",
+      "status": "answered",
+      "answer": "REM stands for rapid eye movement.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 1.92,
+      "tokens": 634,
+      "outcome": "accepted"
+    },
+    {
+      "category": "fact",
+      "video": "sleep_talk",
+      "question": "During which stage does most dreaming happen?",
+      "expect": "answered",
+      "must": [
+        [
+          "REM",
+          "rapid eye movement"
+        ]
+      ],
+      "cite": "dreaming",
+      "status": "answered",
+      "answer": "Most vivid dreaming happens during REM sleep.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 2.56,
+      "tokens": 637,
+      "outcome": "accepted"
+    },
+    {
+      "category": "fact",
+      "video": "sleep_talk",
+      "question": "What does the body do during deep sleep?",
+      "expect": "answered",
+      "must": [
+        [
+          "growth hormone",
+          "repair"
+        ]
+      ],
+      "cite": "growth hormone",
+      "status": "answered",
+      "answer": "During deep sleep, the body releases growth hormone and repairs tissue.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 1.8,
+      "tokens": 643,
+      "outcome": "accepted"
+    },
+    {
+      "category": "fact",
+      "video": "sleep_talk",
+      "question": "How many hours of sleep do adults need?",
+      "expect": "answered",
+      "must": [
+        [
+          "7",
+          "seven"
+        ],
+        [
+          "9",
+          "nine"
+        ]
+      ],
+      "cite": "7 to 9 hours",
+      "status": "answered",
+      "answer": "Most adults need 7 to 9 hours of sleep.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 2.2,
+      "tokens": 642,
+      "outcome": "accepted"
+    },
+    {
+      "category": "fact",
+      "video": "sleep_talk",
+      "question": "How much sleep do teenagers need?",
+      "expect": "answered",
+      "must": [
+        [
+          "8",
+          "eight"
+        ],
+        [
+          "10",
+          "ten"
+        ]
+      ],
+      "cite": "Teenagers",
+      "status": "answered",
+      "answer": "Teenagers need about 8 to 10 hours of sleep.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 1.77,
+      "tokens": 642,
+      "outcome": "accepted"
+    },
+    {
+      "category": "fact",
+      "video": "sleep_talk",
+      "question": "Why does sleep help memory?",
+      "expect": "answered",
+      "must": [
+        [
+          "long-term",
+          "long term",
+          "replay",
+          "replace",
+          "learned",
+          "learn"
+        ]
+      ],
+      "cite": "memory",
+      "status": "answered",
+      "answer": "During deep sleep, the brain replaces what we learned during the day and moves it into long-term memory.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 2.22,
+      "tokens": 648,
+      "outcome": "accepted"
+    },
+    {
+      "category": "fact",
+      "video": "sleep_talk",
+      "question": "What is the half-life of caffeine?",
+      "expect": "answered",
+      "must": [
+        [
+          "5",
+          "five"
+        ]
+      ],
+      "cite": "half-life",
+      "status": "answered",
+      "answer": "Caffeine has a half-life of about 5 hours.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 1.76,
+      "tokens": 642,
+      "outcome": "accepted"
+    },
+    {
+      "category": "fact",
+      "video": "sleep_talk",
+      "question": "Why is screen light bad in the evening?",
+      "expect": "answered",
+      "must": [
+        [
+          "melatonin"
+        ]
+      ],
+      "cite": "melatonin",
+      "status": "answered",
+      "answer": "Screen light delays the release of melatonin, the hormone that tells your body it is time to rest.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 2.37,
+      "tokens": 651,
+      "outcome": "accepted"
+    },
+    {
+      "category": "fact",
+      "video": "sleep_talk",
+      "question": "How long should a nap be?",
+      "expect": "answered",
+      "must": [
+        [
+          "20",
+          "twenty"
+        ]
+      ],
+      "cite": "nap",
+      "status": "answered",
+      "answer": "A short nap of about 20 minutes can improve alertness without making you groggy.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 1.89,
+      "tokens": 648,
+      "outcome": "accepted"
+    },
+    {
+      "category": "fact",
+      "video": "sleep_talk",
+      "question": "What is the speaker's one piece of advice?",
+      "expect": "answered",
+      "must": [
+        [
+          "wake"
+        ]
+      ],
+      "cite": "wake-up time",
+      "status": "answered",
+      "answer": "Keep the same wake-up time every day, even on weekends.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 2.02,
+      "tokens": 644,
+      "outcome": "accepted"
+    },
+    {
+      "category": "library",
+      "video": null,
+      "question": "What does the host say AI is changing?",
+      "expect": "answered",
+      "must": [
+        [
+          "everything"
+        ]
+      ],
+      "cite": "changing everything",
+      "status": "answered",
+      "answer": "AI is changing how we write, how we code, and how we learn.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": false,
+      "citation_ok": true,
+      "seconds": 4.02,
+      "tokens": 304,
+      "outcome": "accepted"
+    },
+    {
+      "category": "library",
+      "video": null,
+      "question": "How long is a sleep cycle?",
+      "expect": "answered",
+      "must": [
+        [
+          "90",
+          "ninety"
+        ]
+      ],
+      "cite": "90 minutes",
+      "status": "answered",
+      "answer": "A full period of sleep is not one long state. It is made of cycles, and each cycle lasts about 90 minutes.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 5.86,
+      "tokens": 462,
+      "outcome": "accepted"
+    },
+    {
+      "category": "library",
+      "video": null,
+      "question": "What is the half-life of caffeine?",
+      "expect": "answered",
+      "must": [
+        [
+          "5",
+          "five"
+        ]
+      ],
+      "cite": "half-life",
+      "status": "answered",
+      "answer": "The half-life of caffeine is about 5 hours.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 4.51,
+      "tokens": 286,
+      "outcome": "accepted"
+    },
+    {
+      "category": "not_in_video",
+      "video": "sleep_talk",
+      "question": "How much water should I drink per day?",
+      "expect": "not_found",
+      "status": "not_found",
+      "answer": "I couldn't find that in the videos.",
+      "notes": [
+        "the model found no answer in the excerpts"
+      ],
+      "status_ok": true,
+      "facts_ok": false,
+      "citation_ok": false,
+      "seconds": 6.65,
+      "tokens": 628,
+      "outcome": "not_found"
+    },
+    {
+      "category": "not_in_video",
+      "video": "sleep_talk",
+      "question": "Does alcohol affect sleep?",
+      "expect": "not_found",
+      "status": "not_found",
+      "answer": "I couldn't find that in the videos.",
+      "notes": [
+        "the model found no answer in the excerpts"
+      ],
+      "status_ok": true,
+      "facts_ok": false,
+      "citation_ok": false,
+      "seconds": 1.36,
+      "tokens": 624,
+      "outcome": "not_found"
+    },
+    {
+      "category": "not_in_video",
+      "video": "sleep_talk",
+      "question": "How many hours do babies sleep?",
+      "expect": "not_found",
+      "status": "not_found",
+      "answer": "I couldn't find that in the videos.",
+      "notes": [
+        "the model found no answer in the excerpts"
+      ],
+      "status_ok": true,
+      "facts_ok": false,
+      "citation_ok": false,
+      "seconds": 1.11,
+      "tokens": 626,
+      "outcome": "not_found"
+    },
+    {
+      "category": "not_in_video",
+      "video": "sleep_talk",
+      "question": "What is the name of the speaker?",
+      "expect": "not_found",
+      "status": "not_found",
+      "answer": "I couldn't find that in the videos.",
+      "notes": [
+        "the model found no answer in the excerpts"
+      ],
+      "status_ok": true,
+      "facts_ok": false,
+      "citation_ok": false,
+      "seconds": 1.28,
+      "tokens": 627,
+      "outcome": "not_found"
+    },
+    {
+      "category": "not_in_video",
+      "video": "sleep_talk",
+      "question": "Which mattress brand is recommended?",
+      "expect": "not_found",
+      "status": "not_found",
+      "answer": "I couldn't find that in the videos.",
+      "notes": [
+        "the model found no answer in the excerpts"
+      ],
+      "status_ok": true,
+      "facts_ok": false,
+      "citation_ok": false,
+      "seconds": 1.03,
+      "tokens": 625,
+      "outcome": "not_found"
+    },
+    {
+      "category": "not_in_library",
+      "video": null,
+      "question": "What is the capital of France?",
+      "expect": "not_found",
+      "status": "not_found",
+      "answer": "I couldn't find that in the videos.",
+      "notes": [
+        "no excerpts matched the question"
+      ],
+      "status_ok": true,
+      "facts_ok": false,
+      "citation_ok": false,
+      "seconds": 0.03,
+      "tokens": 0,
+      "outcome": null
+    },
+    {
+      "category": "not_in_library",
+      "video": null,
+      "question": "Who won the football match?",
+      "expect": "not_found",
+      "status": "not_found",
+      "answer": "I couldn't find that in the videos.",
+      "notes": [
+        "no excerpts matched the question"
+      ],
+      "status_ok": true,
+      "facts_ok": false,
+      "citation_ok": false,
+      "seconds": 0.0,
+      "tokens": 0,
+      "outcome": null
+    },
+    {
+      "category": "visual",
+      "video": "Perro",
+      "question": "What colour is the dog?",
+      "expect": "answered",
+      "must": [
+        [
+          "black",
+          "brown"
+        ]
+      ],
+      "cite": "dog",
+      "status": "answered",
+      "answer": "The dog is black and brown.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 1.88,
+      "tokens": 181,
+      "outcome": "accepted"
+    },
+    {
+      "category": "visual",
+      "video": "Waves of the ocean",
+      "question": "What is shown in this video?",
+      "expect": "answered",
+      "must": [
+        [
+          "wave",
+          "ocean",
+          "sea",
+          "water"
+        ]
+      ],
+      "cite": "",
+      "status": "answered",
+      "answer": "The video shows close-up views of turbulent ocean waves with white foam and dark blue water, capturing the dynamic movement of waves and the frothy white foam created by the crashing waves.",
+      "notes": [],
+      "status_ok": true,
+      "facts_ok": true,
+      "citation_ok": true,
+      "seconds": 3.94,
+      "tokens": 283,
+      "outcome": "accepted"
+    }
+  ]
+}

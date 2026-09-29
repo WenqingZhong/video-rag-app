@@ -1,4 +1,4 @@
-"""Initial schema: videos and segments (as of Week 3).
+"""Initial schema: videos and segments.
 
 Revision ID: 0001
 Revises:

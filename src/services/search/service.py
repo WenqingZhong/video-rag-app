@@ -102,7 +102,7 @@ class SearchService:
         size: int = 10,
         group_by_video: bool = False,
     ) -> SearchResult:
-        """Search driven by an understood request (Week 5) instead of raw text.
+        """Search driven by an understood request instead of raw text.
 
         quote  → phrase cascade over speech (exact word times)
         topic  → keyword search over speech
@@ -135,6 +135,38 @@ class SearchService:
             fallback.strategy = f"{intent.type}_none→visual_{fallback.strategy}"
             return fallback
         return result
+
+    # ---- image query ------------------------------------------------------------------------------------
+    def search_image(
+        self, image: bytes, video_id: str | None = None, source: str | None = None, size: int = 1, group_by_video: bool = True
+    ) -> SearchResult:
+        """Keyframes that look like `image`: CLIP image vector vs keyframe vectors (same model, same space).
+
+        Photo-to-frame similarities run much higher than text-to-frame ones, so this has its own cut-off
+        (search_image_min_similarity, chosen by make eval-images).
+        """
+        if self.embedder is None:
+            raise SearchUnavailable("no embedding service configured")
+        parsed = ParsedQuery(raw="<image>", phrase=None, text="")
+        filters = qb.build_filters(video_id=video_id, kind="visual", source=source)
+        fetch = min(size * OVERFETCH, self.settings.search_max_size * OVERFETCH)
+        with span("search.embed_image"):
+            vector = self.embedder.embed_images([image])[0]
+        with span("search.image", video_id=video_id) as step:
+            raw = self.opensearch.search(qb.vector_query(vector, filters, fetch))["hits"]["hits"]
+            hits = []
+            for r in raw:
+                similarity = _cosine(float(r["_score"]))
+                if similarity < self.settings.search_image_min_similarity:
+                    continue
+                hit = self._to_hit(r, parsed)
+                hit.score = round(similarity, 4)
+                hit.scores = {"image": round(similarity, 4)}
+                hits.append(hit)
+            step.set(candidates=len(raw), hits=len(hits), best=hits[0].score if hits else None)
+        if not hits:
+            return SearchResult(parsed=parsed, strategy="none")
+        return SearchResult(parsed=parsed, strategy="image", hits=self._dedupe(hits, size, group_by_video))
 
     # ---- quotes ----------------------------------------------------------------------------------------
     def _phrase_search(self, parsed, video_id, kind, source, size, fetch, group_by_video, exclude=()) -> SearchResult:

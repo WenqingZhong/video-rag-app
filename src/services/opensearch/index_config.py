@@ -6,7 +6,7 @@ from Postgres and switches the alias to it atomically (blue/green), keeping the 
 
 import copy
 
-INDEX_VERSION = 2  # v1: Week 3 (text only) · v2: Week 4 (+ caption, CLIP image embedding)
+INDEX_VERSION = 2  # v1: text only · v2: + caption, CLIP image embedding
 
 
 def versioned_index_name(alias: str, version: int = INDEX_VERSION) -> str:
@@ -49,7 +49,7 @@ _BASE_BODY = {
             "words": {"type": "object", "enabled": False},  # stored for exact timings, not searchable
             "frame_key": {"type": "keyword", "index": False},
             "frame_time_sec": {"type": "float", "index": False},
-            # Week 4: what the keyframe shows, as words (keyword search) and as a vector (semantic search)
+            # What the keyframe shows, as words (keyword search) and as a vector (semantic search)
             "caption": {"type": "text", "analyzer": "english"},
             "image_embedding": None,  # filled in by build_index_body (dimension comes from settings)
             "embedding_model": {"type": "keyword"},

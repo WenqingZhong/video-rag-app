@@ -48,3 +48,17 @@
   ffmpeg could read just the needed range from a signed S3 URL.
 - **Timestamps in answers always come from search results,** never from a model.
 - **Cached clips accumulate under `clips/`.** They're derived data, so an S3 lifecycle rule can expire them.
+
+## Update: a clip is a moment, not a scene
+
+In use, whole shots (up to 10–15 s) and whole answer excerpts (~15–20 s) felt like short videos rather than clips.
+
+| Clip | Before | Now |
+|---|---|---|
+| quote | the words ± 0.75 s | unchanged |
+| visual | the whole shot, ≤ 15 s | **5 s** centred on the matched keyframe (`CLIP_VISUAL_SEC`) |
+| topic in speech | the 15 s transcript window | **the sentence about the topic** ± 0.75 s (from Whisper's word times), ≤ 8 s |
+| an answer's evidence | the cited ~20 s excerpt | **the sentence that answers** ± 0.75 s, ≤ 8 s |
+
+Measured live: "a dog in the snow" 5.0 s, "the part where she talks about caffeine" 5.3 s, "how long is a sleep cycle?"
+4.9 s (was ~15 s).

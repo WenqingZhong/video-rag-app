@@ -1,4 +1,7 @@
+import io
 from unittest.mock import MagicMock
+
+from PIL import Image
 
 from src.services.opensearch import OpenSearchService, build_index_body, parse_version
 from src.services.processing.visual import VisualEnricher
@@ -45,9 +48,30 @@ def test_new_fields_are_dropped_when_writing_to_an_older_index(monkeypatch):
     assert sent[0]["_source"] == {"segment_id": "s1", "video_id": "v1", "text": "hi"}  # v1 would reject image_embedding
 
 
+def test_blank_frames_get_no_caption_or_vector():
+    embedder, captioner = MagicMock(), MagicMock()
+    embedder.embed_images.return_value = [[0.3]]
+    embedder.model = "clip"
+    captioner.caption_with_usage.return_value = ("a dog", MagicMock())
+    captioner.model = "qwen"
+    fields = VisualEnricher(embedder, captioner).enrich([frame(blank=True), frame()])
+    assert fields[0] == {"image_embedding": None, "embedding_model": None, "caption": None, "caption_model": None}
+    assert fields[1]["caption"] == "a dog" and fields[1]["image_embedding"] == [0.3]
+    assert len(embedder.embed_images.call_args.args[0]) == 1  # only the real frame was embedded
+    assert captioner.caption_with_usage.call_count == 1  # and captioned
+
+
 def test_mapping_has_knn_vector_with_configured_dimension():
     field = build_index_body(512)["mappings"]["properties"]["image_embedding"]
     assert field["type"] == "knn_vector" and field["dimension"] == 512 and field["method"]["space_type"] == "cosinesimil"
+
+
+def frame(blank: bool = False) -> bytes:
+    """A small JPEG: noise (a real frame) or flat grey (a blank one)."""
+    image = Image.new("L", (32, 32), 90) if blank else Image.effect_noise((32, 32), 60)
+    buffer = io.BytesIO()
+    image.convert("RGB").save(buffer, format="JPEG")
+    return buffer.getvalue()
 
 
 def test_visual_enricher_adds_vectors_and_captions():
@@ -57,6 +81,6 @@ def test_visual_enricher_adds_vectors_and_captions():
     captioner.caption_with_usage.side_effect = [("a dog", MagicMock()), ("a cat", MagicMock())]
     captioner.model = "qwen"
     stages = []
-    fields = VisualEnricher(embedder, captioner).enrich([b"1", b"2"], on_stage=stages.append)
-    assert stages == ["embedding_frames", "captioning"]
+    fields = VisualEnricher(embedder, captioner).enrich([frame(), frame()], on_stage=stages.append)
+    assert stages == ["embedding_frames", "captioning", "captioning 2/2"]  # progress per frame, for people waiting
     assert fields[1] == {"image_embedding": [0.2], "embedding_model": "clip", "caption": "a cat", "caption_model": "qwen"}

@@ -1,21 +1,26 @@
 import logging
 import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from botocore.exceptions import BotoCoreError, ClientError
 from fastapi import FastAPI, Response
+from fastapi.responses import FileResponse
 from opensearchpy.exceptions import OpenSearchException
 
 from src.config import get_settings
 from src.db.factory import make_database
-from src.routers import admin, ask, clips, ping, search, traces, videos
+from src.routers import admin, ask, chat, clips, ping, search, traces, videos
+from src.services.agent import ConversationStore, LLMRouter
 from src.services.answering.cache import AnswerCache
 from src.services.cache import IndexVersion, make_cache_client
 from src.services.captioning import make_captioner
 from src.services.embeddings import make_embedding_client
+from src.services.llm import make_chat_model
 from src.services.metrics import render as render_metrics
 from src.services.opensearch import make_opensearch_service
 from src.services.pexels import make_pexels_client
+from src.services.qa import LLMAnswerer
 from src.services.storage import make_storage_client
 from src.services.tracing import TraceStore
 from src.services.tracing.logs import LOG_FORMAT, add_trace_ids
@@ -65,6 +70,17 @@ async def lifespan(app: FastAPI):
     # LLM client only: no call at startup. Each call's tokens go to the llm_calls table.
     # Each model call's tokens go to llm_calls; understood requests are cached in Redis.
     recorder = make_usage_recorder(settings, app.state.database, origin="api")
+    app.state.usage_recorder = recorder
+    # Question answering: same local model, answers only from transcript/caption excerpts.
+    app.state.router = (
+        LLMRouter(make_chat_model(settings, "text", timeout=settings.agent_router_timeout))
+        if settings.agent_router_enabled
+        else None
+    )
+    app.state.conversations = ConversationStore(app.state.cache_client, settings.chat_memory_ttl_sec)
+    app.state.answerer = (
+        LLMAnswerer(make_chat_model(settings, "text", timeout=settings.qa_timeout)) if settings.qa_enabled else None
+    )
     app.state.understanding = make_query_understanding(settings, recorder, cache=app.state.cache_client)
     # Whole answers, per index version (bumped by the workers on every index write).
     app.state.answer_cache = (
@@ -82,6 +98,10 @@ async def lifespan(app: FastAPI):
     app.state.opensearch_service.close()
     app.state.embedding_client.close()
     app.state.captioner.close()
+    if app.state.answerer is not None:
+        app.state.answerer.close()
+    if app.state.router is not None:
+        app.state.router.close()
     if app.state.understanding.llm is not None:
         app.state.understanding.llm.close()
     if app.state.pexels_client is not None:
@@ -106,6 +126,7 @@ app.include_router(admin.router, prefix=API_PREFIX)
 app.include_router(clips.router, prefix=API_PREFIX)
 app.include_router(ask.router, prefix=API_PREFIX)
 app.include_router(traces.router, prefix=API_PREFIX)
+app.include_router(chat.router, prefix=API_PREFIX)
 
 
 @app.get("/metrics", include_in_schema=False)
@@ -113,6 +134,12 @@ def metrics() -> Response:
     """Prometheus scrape endpoint (request rates, latency, /ask results, cache hits)."""
     body, content_type = render_metrics()
     return Response(body, media_type=content_type)
+
+
+@app.get("/app", include_in_schema=False)
+def chat_page() -> FileResponse:
+    """The web chat: one static page calling /api/v1/chat."""
+    return FileResponse(Path(__file__).parent / "web" / "chat.html", media_type="text/html")
 
 
 @app.get("/", include_in_schema=False)

@@ -91,7 +91,7 @@ def dashboard(uid: str, title: str, description: str, panels: list[dict], variab
         "uid": uid,
         "title": title,
         "description": description,
-        "tags": ["video-rag", "week6"],
+        "tags": ["video-rag"],
         "timezone": "browser",
         "schemaVersion": 41,
         "time": {"from": time_from, "to": "now"},
@@ -231,7 +231,7 @@ def tokens_and_cost() -> dict:
     return dashboard(
         "video-rag-tokens",
         "Tokens & cost",
-        "Model calls recorded in llm_calls (Week 6). Cost is an estimate at a hosted model's list price.",
+        "Model calls recorded in llm_calls. Cost is an estimate at a hosted model's list price.",
         panels,
         [ORIGIN],
         "now-7d",
@@ -338,9 +338,25 @@ def requests_and_latency() -> dict:
             "reqps",
             stacked=True,
         ),
+        timeseries(
+            "Chat turns by action",
+            (0, 20, 12, 8),
+            [prom("sum by (action) (rate(chat_turns_total[$__rate_interval]))", "{{action}}")],
+            "reqps",
+            "What the agent did per turn: find_clip, answer_question, find_by_image, fetch_from_pexels, list_videos, reply.",
+            stacked=True,
+        ),
+        timeseries(
+            "Chat turns: who decided",
+            (12, 20, 12, 8),
+            [prom("sum by (decided_by) (rate(chat_turns_total[$__rate_interval]))", "{{decided_by}}")],
+            "reqps",
+            "rules: a clear pattern (instant), or the model's choice was rejected by a guard · llm: the model's choice, checked.",
+            stacked=True,
+        ),
         table(
             "Time per step (from traces)",
-            (0, 20, 12, 12),
+            (0, 28, 12, 12),
             sql("""SELECT service, name AS step, count(*) AS count,
                        round(percentile_cont(0.5) WITHIN GROUP (ORDER BY duration_ms)::numeric) AS "p50 ms",
                        round(percentile_cont(0.95) WITHIN GROUP (ORDER BY duration_ms)::numeric) AS "p95 ms",
@@ -352,7 +368,7 @@ def requests_and_latency() -> dict:
         ),
         table(
             "Slowest requests and tasks",
-            (12, 20, 12, 12),
+            (12, 28, 12, 12),
             sql("""SELECT started_at AS time, name, service, round(duration_ms::numeric) AS "ms", status, trace_id AS trace
                    FROM trace_spans WHERE $__timeFilter(started_at) AND parent_id IS NULL
                    ORDER BY duration_ms DESC LIMIT 25"""),
@@ -361,7 +377,7 @@ def requests_and_latency() -> dict:
         ),
         table(
             "Recent errors",
-            (0, 32, 24, 7),
+            (0, 40, 24, 7),
             sql("""SELECT started_at AS time, name, service, error, trace_id AS trace
                    FROM trace_spans WHERE $__timeFilter(started_at) AND status = 'error'
                    ORDER BY started_at DESC LIMIT 25"""),
@@ -371,7 +387,7 @@ def requests_and_latency() -> dict:
     return dashboard(
         "video-rag-requests",
         "Requests & latency",
-        "Live request behaviour (Prometheus) and time per step (traces in Postgres), Week 6.",
+        "Live request behaviour (Prometheus) and time per step (traces in Postgres).",
         panels,
         [],
         "now-6h",

@@ -1,0 +1,1347 @@
+{
+  "rules only": {
+    "action": 0.8,
+    "all": 0.75,
+    "unsafe": 0,
+    "model_calls": 0,
+    "p50_seconds": 0.0,
+    "tokens_per_turn": 0,
+    "by_category": {
+      "held_out_2": 0.75
+    },
+    "rows": [
+      {
+        "category": "held_out_2",
+        "message": "got any clips of a parrot on a branch?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "parrot"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "got any clips of a parrot on a branch?",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "I'd love to see the moment she says sleep well",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "sleep well"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "I'd love to see the moment she says sleep well",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "take me to the bit about screens and light",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "screen"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "take me to the bit about screens and light",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "a sunny forest, nothing with people",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "forest"
+          ],
+          "exclude": [
+            "people"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a sunny forest, nothing with people",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "what time of day should I stop drinking coffee, per the talk?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "coffee"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what time of day should I stop drinking coffee, per the talk?",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "according to the video, when does dreaming happen",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "dream"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "according to the video, when does dreaming happen",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out_2",
+        "message": "tell me what deep sleep is good for",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "deep sleep"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "tell me what deep sleep is good for",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out_2",
+        "message": "what bird is that?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "bird"
+          ],
+          "same_video": true
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what bird is that?",
+          "about_last_video": true
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "try it with fog",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "forest",
+            "fog"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a forest try it with fog",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [
+          "follow-up of the last request"
+        ],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "something similar but with vegetables being chopped",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "vegetable"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "something similar but with vegetables being chopped",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "and a different cat?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "cat"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a different cat",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [
+          "same kind of request, new subject"
+        ],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "yes, get two",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "zebra"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "zebra",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "nah",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "forget zebras, show me the ocean",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "ocean"
+          ],
+          "text_not": [
+            "zebra"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "forget zebras, show me the ocean",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out_2",
+        "message": "please download a few mountain videos from pexels",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "mountain"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "a few mountain",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "ok",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "where is this from?",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "what do you have about sleep?",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what do you have about sleep?",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out_2",
+        "message": "thank you so much!",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "write me a poem about cats",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "write me a poem about cats",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": false,
+        "text": false,
+        "all": false
+      }
+    ]
+  },
+  "model only": {
+    "action": 0.85,
+    "all": 0.8,
+    "unsafe": 0,
+    "model_calls": 1,
+    "p50_seconds": 2.67,
+    "tokens_per_turn": 401,
+    "by_category": {
+      "held_out_2": 0.8
+    },
+    "rows": [
+      {
+        "category": "held_out_2",
+        "message": "got any clips of a parrot on a branch?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "parrot"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a parrot on a branch",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 395,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "I'd love to see the moment she says sleep well",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "sleep well"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "sleep well",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 393,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "take me to the bit about screens and light",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "screen"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "screens and light",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 386,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "a sunny forest, nothing with people",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "forest"
+          ],
+          "exclude": [
+            "people"
+          ]
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": "a sunny forest, nothing with people",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 396,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out_2",
+        "message": "what time of day should I stop drinking coffee, per the talk?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "coffee"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "What time of day should I stop drinking coffee, per the talk?",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 406,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "according to the video, when does dreaming happen",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "dream"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "According to the video, dreaming happens during sleep.",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 398,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "tell me what deep sleep is good for",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "deep sleep"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "Deep sleep is good for rest, memory consolidation, and physical recovery.",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 401,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "what bird is that?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "bird"
+          ],
+          "same_video": true
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "It's a parrot.",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 420,
+        "action": true,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out_2",
+        "message": "try it with fog",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "forest",
+            "fog"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a forest without fog",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 401,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "something similar but with vegetables being chopped",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "vegetable"
+          ]
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": "vegetables being chopped",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 410,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out_2",
+        "message": "and a different cat?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "cat"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a cat without a different cat?",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 403,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "yes, get two",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "zebra"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "zebra",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 424,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "nah",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "I'm sorry, but I couldn't find a video clip with 'zebra' in it. Would you like to try searching for something else?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 443,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "forget zebras, show me the ocean",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "ocean"
+          ],
+          "text_not": [
+            "zebra"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "the ocean",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 425,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "please download a few mountain videos from pexels",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "mountain"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "mountain videos",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 395,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "ok",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "ok",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 380,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "where is this from?",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": "where is this from?",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 384,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "what do you have about sleep?",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what do you have about sleep?",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 392,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out_2",
+        "message": "thank you so much!",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "You're welcome!",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 385,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "write me a poem about cats",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "Sure, here's a poem about cats:",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 392,
+        "action": true,
+        "text": true,
+        "all": true
+      }
+    ]
+  },
+  "rules first + model": {
+    "action": 0.95,
+    "all": 0.95,
+    "unsafe": 0,
+    "model_calls": 0.65,
+    "p50_seconds": 2.2,
+    "tokens_per_turn": 261,
+    "by_category": {
+      "held_out_2": 0.95
+    },
+    "rows": [
+      {
+        "category": "held_out_2",
+        "message": "got any clips of a parrot on a branch?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "parrot"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a parrot on a branch",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 395,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "I'd love to see the moment she says sleep well",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "sleep well"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "sleep well",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 393,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "take me to the bit about screens and light",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "screen"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "screens and light",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 386,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "a sunny forest, nothing with people",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "forest"
+          ],
+          "exclude": [
+            "people"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a sunny forest, nothing with people",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [
+          "model chose find_by_image 'a sunny forest, nothing with people': no image attached \u2192 rules"
+        ],
+        "unsafe": false,
+        "tokens": 396,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "what time of day should I stop drinking coffee, per the talk?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "coffee"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "What time of day should I stop drinking coffee, per the talk?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 406,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "according to the video, when does dreaming happen",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "dream"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "according to the video, when does dreaming happen",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [
+          "model wrote 'According to the video, dreaming happens during sleep.' as the question: asking the user's words instead"
+        ],
+        "unsafe": false,
+        "tokens": 398,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "tell me what deep sleep is good for",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "deep sleep"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "tell me what deep sleep is good for",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [
+          "model wrote 'Deep sleep is good for rest, memory consolidation, and physical recovery.' as the question: asking the user's words instead"
+        ],
+        "unsafe": false,
+        "tokens": 401,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "what bird is that?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "bird"
+          ],
+          "same_video": true
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what bird is that?",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [
+          "model wrote \"It's a parrot.\" as the question: asking the user's words instead"
+        ],
+        "unsafe": false,
+        "tokens": 420,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "try it with fog",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "forest",
+            "fog"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a forest without fog",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 401,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "something similar but with vegetables being chopped",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "vegetable"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "something similar but with vegetables being chopped",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [
+          "model chose find_by_image 'vegetables being chopped': no image attached \u2192 rules"
+        ],
+        "unsafe": false,
+        "tokens": 410,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "and a different cat?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "cat"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a different cat",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [
+          "same kind of request, new subject"
+        ],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "yes, get two",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "zebra"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "zebra",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "nah",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "forget zebras, show me the ocean",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "ocean"
+          ],
+          "text_not": [
+            "zebra"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "the ocean",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 425,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "please download a few mountain videos from pexels",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "mountain"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "a few mountain",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "ok",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "where is this from?",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "what do you have about sleep?",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what do you have about sleep?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 392,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out_2",
+        "message": "thank you so much!",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out_2",
+        "message": "write me a poem about cats",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 392,
+        "action": true,
+        "text": true,
+        "all": true
+      }
+    ]
+  }
+}

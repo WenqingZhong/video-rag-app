@@ -1,10 +1,9 @@
 {
   "uid": "video-rag-requests",
   "title": "Requests & latency",
-  "description": "Live request behaviour (Prometheus) and time per step (traces in Postgres), Week 6.",
+  "description": "Live request behaviour (Prometheus) and time per step (traces in Postgres).",
   "tags": [
-    "video-rag",
-    "week6"
+    "video-rag"
   ],
   "timezone": "browser",
   "schemaVersion": 41,
@@ -544,12 +543,120 @@
       "id": 10
     },
     {
+      "type": "timeseries",
+      "title": "Chat turns by action",
+      "description": "What the agent did per turn: find_clip, answer_question, find_by_image, fetch_from_pexels, list_videos, reply.",
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "video-rag-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "video-rag-prometheus"
+          },
+          "expr": "sum by (action) (rate(chat_turns_total[$__rate_interval]))",
+          "legendFormat": "{{action}}",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 1,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "id": 11
+    },
+    {
+      "type": "timeseries",
+      "title": "Chat turns: who decided",
+      "description": "rules: a clear pattern (instant), or the model's choice was rejected by a guard \u00b7 llm: the model's choice, checked.",
+      "gridPos": {
+        "x": 12,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "video-rag-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "video-rag-prometheus"
+          },
+          "expr": "sum by (decided_by) (rate(chat_turns_total[$__rate_interval]))",
+          "legendFormat": "{{decided_by}}",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 1,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "id": 12
+    },
+    {
       "type": "table",
       "title": "Time per step (from traces)",
       "description": "Every timed step of API requests and worker tasks (stage.* = ingestion, llm.* = model calls).",
       "gridPos": {
         "x": 0,
-        "y": 20,
+        "y": 28,
         "w": 12,
         "h": 12
       },
@@ -577,7 +684,7 @@
       "options": {
         "showHeader": true
       },
-      "id": 11
+      "id": 13
     },
     {
       "type": "table",
@@ -585,7 +692,7 @@
       "description": "Click a trace id to open its timeline (GET /api/v1/traces/{id}).",
       "gridPos": {
         "x": 12,
-        "y": 20,
+        "y": 28,
         "w": 12,
         "h": 12
       },
@@ -632,7 +739,7 @@
       "options": {
         "showHeader": true
       },
-      "id": 12
+      "id": 14
     },
     {
       "type": "table",
@@ -640,7 +747,7 @@
       "description": "",
       "gridPos": {
         "x": 0,
-        "y": 32,
+        "y": 40,
         "w": 24,
         "h": 7
       },
@@ -687,7 +794,7 @@
       "options": {
         "showHeader": true
       },
-      "id": 13
+      "id": 15
     }
   ],
   "links": [

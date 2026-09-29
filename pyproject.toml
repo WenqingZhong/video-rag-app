@@ -1,7 +1,7 @@
 [project]
 name = "video-rag-app"
 version = "0.1.0"
-description = "Video RAG app built following the Week 1 production RAG foundation structure"
+description = "Find the exact moment in a video: multimodal retrieval over speech and frames, with word-accurate clips"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "fastapi[standard]>=0.115.12",
@@ -20,6 +20,7 @@ dependencies = [
     "pillow>=11",
     "alembic>=1.14",
     "prometheus-client>=0.21",
+    "langgraph>=0.6",
 ]
 readme = "README.md"
 

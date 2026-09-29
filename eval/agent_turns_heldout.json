@@ -1,0 +1,25 @@
+{
+  "description": "Held out: free phrasing, written and labelled before any system was run on them, after the one round of changes made on eval/agent_turns.json. Same format.",
+  "turns": [
+    {"category": "held_out", "context": {}, "message": "could I see some footage of a kitten sleeping", "expect": {"action": "find_clip", "text_has": ["kitten"]}},
+    {"category": "held_out", "context": {}, "message": "I need a shot of waves crashing for my edit", "expect": {"action": "find_clip", "text_has": ["wave"]}},
+    {"category": "held_out", "context": {}, "message": "jump to when she explains why naps should be short", "expect": {"action": "find_clip", "text_has": ["nap"]}},
+    {"category": "held_out", "context": {}, "message": "is it true that teenagers need more sleep than adults?", "expect": {"action": "answer_question", "text_has": ["teenager"]}},
+    {"category": "held_out", "context": {}, "message": "remind me how many hours of sleep she recommends", "expect": {"action": "answer_question", "text_has": ["hour"]}},
+    {"category": "held_out", "context": {}, "message": "explain what melatonin does according to the talk", "expect": {"action": "answer_question", "text_has": ["melatonin"]}},
+    {"category": "held_out", "context": {"last_request": "a kitten", "last_status": "answered"}, "message": "can I get a puppy instead", "expect": {"action": "find_clip", "text_has": ["pupp"], "text_not": ["kitten"]}},
+    {"category": "held_out", "context": {"last_request": "cars on a road", "last_status": "answered"}, "message": "only ones driving at night please", "expect": {"action": "find_clip", "text_has": ["car", "night"]}},
+    {"category": "held_out", "context": {"last_request": "a beach", "last_status": "answered"}, "message": "hmm, without anyone in it", "expect": {"action": "find_clip", "text_has": ["beach"]}},
+    {"category": "held_out", "context": {"last_request": "a giraffe", "last_status": "no_match", "offered_fetch": "giraffe"}, "message": "yeah grab a few", "expect": {"action": "fetch_from_pexels", "text_has": ["giraffe"]}},
+    {"category": "held_out", "context": {"last_request": "a giraffe", "last_status": "no_match", "offered_fetch": "giraffe"}, "message": "don't bother", "expect": {"action": "reply"}},
+    {"category": "held_out", "context": {"last_request": "a giraffe", "last_status": "no_match", "offered_fetch": "giraffe"}, "message": "never mind, what about a parrot?", "expect": {"action": "find_clip", "text_has": ["parrot"], "text_not": ["giraffe"]}},
+    {"category": "held_out", "context": {}, "message": "can you pull some violin clips off pexels", "expect": {"action": "fetch_from_pexels", "text_has": ["violin"]}},
+    {"category": "held_out", "context": {"last_request": "a dog", "last_status": "answered"}, "message": "sounds good", "expect": {"action": "reply"}},
+    {"category": "held_out", "context": {"image_attached": true}, "message": "anything similar to my picture?", "expect": {"action": "find_by_image"}},
+    {"category": "held_out", "context": {"image_attached": true}, "message": "match this please", "expect": {"action": "find_by_image"}},
+    {"category": "held_out", "context": {}, "message": "how many clips are in your collection?", "expect": {"action": "list_videos"}},
+    {"category": "held_out", "context": {}, "message": "good morning!", "expect": {"action": "reply"}},
+    {"category": "held_out", "context": {}, "message": "can you upload my holiday video to youtube", "expect": {"action": "reply"}},
+    {"category": "held_out", "context": {"last_request": "people in a meeting", "last_status": "answered", "last_video": "Colleagues talking at a business conference"}, "message": "how many people are in that clip?", "expect": {"action": "answer_question", "text_has": ["people"], "same_video": true}}
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "description": "Search relevance labels. Relevance is per video, by Pexels id (stable across databases), set from each video's keyframes and captions (checked visually), not only its title. Categories: basic (Week 4 baseline), style (camera/look, not in captions), count, detail, color, synonym, negation.",
+  "description": "Search relevance labels. Relevance is per video, by Pexels id (stable across databases), set from each video's keyframes and captions (checked visually), not only its title. Categories: basic (the baseline), style (camera/look, not in captions), count, detail, color, synonym, negation.",
   "queries": [
     {
       "query": "give me a clip of a dog",

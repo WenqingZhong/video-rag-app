@@ -10,7 +10,7 @@ def segment_documents(video: Video, segments: list[Segment]) -> list[dict[str, A
     now = datetime.now(UTC).isoformat()
     video_fields = {
         "video_id": video.id,
-        # Visual segments have no text until Week 4 captions; the title makes them findable by keyword meanwhile.
+        # A visual segment without a caption has no text; the title makes it findable by keyword.
         "video_title": video.title,
         "video_source": video.source,
         "video_source_id": video.source_id,

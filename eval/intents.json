@@ -1,5 +1,5 @@
 {
-  "description": "Labelled requests for request understanding (Week 5). 'text' is the phrase (quote), topic or visual description, compared after lowercasing and dropping articles, punctuation and plural s; '' means no subject (ask back). Categories: quote_marked, quote_unmarked, topic, visual, visual_exclude = phrasings the rule parser was designed for; free_phrasing = written to avoid the rule patterns (some were used in Phase 1 spot checks, so not unseen); held_out = written for the rebuild with labels fixed before any system ran on them; no_subject = only exclusions, placeholders or greetings.",
+  "description": "Labelled requests for request understanding. 'text' is the phrase (quote), topic or visual description, compared after lowercasing and dropping articles, punctuation and plural s; '' means no subject (ask back). Categories: quote_marked, quote_unmarked, topic, visual, visual_exclude = phrasings the rule parser was designed for; free_phrasing = written to avoid the rule patterns (some were used in early spot checks, so not unseen); held_out = written with labels fixed before any system ran on them; no_subject = only exclusions, placeholders or greetings.",
   "requests": [
     {
       "request": "Give me the part where the host says ‘AI is changing everything’",

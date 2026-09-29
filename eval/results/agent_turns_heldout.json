@@ -1,0 +1,1330 @@
+{
+  "rules only": {
+    "action": 0.7,
+    "all": 0.6,
+    "unsafe": 0,
+    "model_calls": 0,
+    "p50_seconds": 0.0,
+    "tokens_per_turn": 0,
+    "by_category": {
+      "held_out": 0.6
+    },
+    "rows": [
+      {
+        "category": "held_out",
+        "message": "could I see some footage of a kitten sleeping",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "kitten"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "could I see some footage of a kitten sleeping",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "I need a shot of waves crashing for my edit",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "wave"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "I need a shot of waves crashing for my edit",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "jump to when she explains why naps should be short",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "nap"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "jump to when she explains why naps should be short",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "is it true that teenagers need more sleep than adults?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "teenager"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "is it true that teenagers need more sleep than adults?",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "remind me how many hours of sleep she recommends",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "hour"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "remind me how many hours of sleep she recommends",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out",
+        "message": "explain what melatonin does according to the talk",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "melatonin"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "explain what melatonin does according to the talk",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out",
+        "message": "can I get a puppy instead",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "pupp"
+          ],
+          "text_not": [
+            "kitten"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "can I get a puppy instead",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out",
+        "message": "only ones driving at night please",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "car",
+            "night"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "only ones driving at night please",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out",
+        "message": "hmm, without anyone in it",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "beach"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "hmm, without anyone in it",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out",
+        "message": "yeah grab a few",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "giraffe"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "giraffe",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "don't bother",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "never mind, what about a parrot?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "parrot"
+          ],
+          "text_not": [
+            "giraffe"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "never mind, what about a parrot?",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "can you pull some violin clips off pexels",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "violin"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "pull violin off",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "sounds good",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "anything similar to my picture?",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "match this please",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "how many clips are in your collection?",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "how many clips are in your collection?",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out",
+        "message": "good morning!",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "good morning!",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out",
+        "message": "can you upload my holiday video to youtube",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "can you upload my holiday video to youtube",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out",
+        "message": "how many people are in that clip?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "people"
+          ],
+          "same_video": true
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "how many people are in that clip?",
+          "about_last_video": true
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      }
+    ]
+  },
+  "model only": {
+    "action": 0.9,
+    "all": 0.85,
+    "unsafe": 0,
+    "model_calls": 1,
+    "p50_seconds": 2.92,
+    "tokens_per_turn": 405,
+    "by_category": {
+      "held_out": 0.85
+    },
+    "rows": [
+      {
+        "category": "held_out",
+        "message": "could I see some footage of a kitten sleeping",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "kitten"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "kitten sleeping",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 391,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "I need a shot of waves crashing for my edit",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "wave"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "waves crashing",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 391,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "jump to when she explains why naps should be short",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "nap"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "jump to when she explains why naps should be short",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 402,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "is it true that teenagers need more sleep than adults?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "teenager"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "Is it true that teenagers need more sleep than adults?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 400,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "remind me how many hours of sleep she recommends",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "hour"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "How many hours of sleep does she recommend?",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 399,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "explain what melatonin does according to the talk",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "melatonin"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "Melatonin is a hormone produced by the pineal gland in the brain. It helps regulate the body's sleep-wake cycle and plays a role in maintaining a healthy sleep pattern.",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 424,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "can I get a puppy instead",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "pupp"
+          ],
+          "text_not": [
+            "kitten"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "A puppy is a cute and cuddly pet, often with fluffy fur and a playful nature.",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 417,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out",
+        "message": "only ones driving at night please",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "car",
+            "night"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "only ones driving at night please",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 407,
+        "action": true,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out",
+        "message": "hmm, without anyone in it",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "beach"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a beach without anyone in it",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 400,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "yeah grab a few",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "giraffe"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "giraffe",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 426,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "don't bother",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "Understood.",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 419,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "never mind, what about a parrot?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "parrot"
+          ],
+          "text_not": [
+            "giraffe"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a parrot",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 428,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "can you pull some violin clips off pexels",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "violin"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "can you pull some violin clips off pexels",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 394,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "sounds good",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "I'm glad you liked it!",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 399,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "anything similar to my picture?",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": "anything similar to my picture?",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 391,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "match this please",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": "match this please",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 388,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "how many clips are in your collection?",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "list_videos",
+          "text": "how many clips are in your collection?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 393,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "good morning!",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "What does she say about good morning?",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 390,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out",
+        "message": "can you upload my holiday video to youtube",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "I'm sorry, but I can't upload videos to YouTube. I can help you with other tasks related to video clips.",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 410,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "how many people are in that clip?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "people"
+          ],
+          "same_video": true
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "There are 5 people in the clip.",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 425,
+        "action": true,
+        "text": true,
+        "all": true
+      }
+    ]
+  },
+  "rules first + model": {
+    "action": 0.9,
+    "all": 0.85,
+    "unsafe": 0,
+    "model_calls": 0.7,
+    "p50_seconds": 2.74,
+    "tokens_per_turn": 284,
+    "by_category": {
+      "held_out": 0.85
+    },
+    "rows": [
+      {
+        "category": "held_out",
+        "message": "could I see some footage of a kitten sleeping",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "kitten"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "kitten sleeping",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 391,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "I need a shot of waves crashing for my edit",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "wave"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "waves crashing",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 391,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "jump to when she explains why naps should be short",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "nap"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "jump to when she explains why naps should be short",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 402,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "is it true that teenagers need more sleep than adults?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "teenager"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "Is it true that teenagers need more sleep than adults?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 400,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "remind me how many hours of sleep she recommends",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "hour"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "How many hours of sleep does she recommend?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 399,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "explain what melatonin does according to the talk",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "melatonin"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "explain what melatonin does according to the talk",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [
+          "model wrote \"Melatonin is a hormone produced by the pineal gland in the brain. It helps regulate the body's sleep-wake cycle and plays a role in maintaining a healthy sleep pattern.\" as the question: asking the user's words instead"
+        ],
+        "unsafe": false,
+        "tokens": 424,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "can I get a puppy instead",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "pupp"
+          ],
+          "text_not": [
+            "kitten"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "can I get a puppy instead",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [
+          "model wrote 'A puppy is a cute and cuddly pet, often with fluffy fur and a playful nature.' as the question: asking the user's words instead"
+        ],
+        "unsafe": false,
+        "tokens": 417,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out",
+        "message": "only ones driving at night please",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "car",
+            "night"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "only ones driving at night please",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 407,
+        "action": true,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out",
+        "message": "hmm, without anyone in it",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "beach"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a beach without anyone in it",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 400,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "yeah grab a few",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "giraffe"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "giraffe",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "don't bother",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "never mind, what about a parrot?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "parrot"
+          ],
+          "text_not": [
+            "giraffe"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a parrot",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 428,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "can you pull some violin clips off pexels",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "violin"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "pull violin off",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "sounds good",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "anything similar to my picture?",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "match this please",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "how many clips are in your collection?",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "list_videos",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 393,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "good morning!",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "good morning!",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [
+          "model wrote 'What does she say about good morning?' as the question: asking the user's words instead"
+        ],
+        "unsafe": false,
+        "tokens": 390,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "held_out",
+        "message": "can you upload my holiday video to youtube",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 410,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "held_out",
+        "message": "how many people are in that clip?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "people"
+          ],
+          "same_video": true
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "how many people are in that clip?",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [
+          "model wrote 'There are 5 people in the clip.' as the question: asking the user's words instead"
+        ],
+        "unsafe": false,
+        "tokens": 425,
+        "action": true,
+        "text": true,
+        "all": true
+      }
+    ]
+  }
+}

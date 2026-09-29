@@ -3,6 +3,7 @@ import json
 import httpx
 import pytest
 
+from src.services.llm import OllamaChat
 from src.services.understanding import LLMIntentParser, QueryUnderstanding, find_exclusions, parse_with_rules
 
 
@@ -31,7 +32,7 @@ def test_find_exclusions():
 
 def understanding(reply) -> QueryUnderstanding:
     """QueryUnderstanding whose LLM returns `reply` (a dict, raw text, or an exception to raise)."""
-    llm = LLMIntentParser("http://ollama", model="qwen2.5vl:3b")
+    llm = LLMIntentParser(OllamaChat("http://ollama", "qwen2.5vl:3b"))
 
     def handler(request):
         if isinstance(reply, Exception):
@@ -39,7 +40,7 @@ def understanding(reply) -> QueryUnderstanding:
         content = json.dumps(reply) if isinstance(reply, dict) else reply
         return httpx.Response(200, json={"message": {"content": content}})
 
-    llm.http = httpx.Client(base_url="http://ollama", transport=httpx.MockTransport(handler))
+    llm.chat.http = httpx.Client(base_url="http://ollama", transport=httpx.MockTransport(handler))
     return QueryUnderstanding(llm)
 
 
