@@ -51,3 +51,12 @@ worker: processing a video acts for its owner, so captioning counts against the 
 - **A new cookie per request is possible for scripts**; the per-address limits bound them. Behind a proxy, the API
   must trust its `X-Forwarded-For` (uvicorn `--proxy-headers`), or every user shares the proxy's address.
 - Limits are settings (`LIMIT_*`), so they can be tuned from the dashboards' real usage.
+
+## Update (2026-09-30): with Claude in production
+
+Claude Haiku 4.5 uses about **1,800 tokens per chat turn**, against ~400 for qwen2.5vl:3b: forcing a JSON reply
+through a tool call adds a fixed few hundred tokens to every call (`eval/results/claude/conversations.json`). The cost
+ceiling was kept rather than the number of requests:
+- global budget **500k tokens/day** in production (≈ $0.70/day at most);
+- **50k tokens per user** unchanged, which is now a few dozen chat turns rather than ~100; the greeting and the web
+  page say "a few dozen requests".

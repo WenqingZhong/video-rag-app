@@ -1,6 +1,6 @@
 # The app's settings, in SSM Parameter Store under /video-rag/. deploy.sh writes them to the server's .env.
-# Generated secrets live in the Terraform state too (keep it local and private). The two third-party secrets are
-# NOT managed here, so they never touch the state or a file: put them in yourself (see infra/aws/README.md).
+# Generated secrets live in the Terraform state too (keep it local and private). The third-party secrets (Pexels,
+# Telegram, Anthropic) are NOT managed here, so they never touch the state or a file: put them in yourself (see infra/aws/README.md).
 
 resource "random_password" "secret" {
   for_each = toset(["SESSION_SECRET", "SERVICE_TOKEN", "ADMIN_TOKEN", "POSTGRES_PASSWORD", "GRAFANA_ADMIN_PASSWORD"])
@@ -17,6 +17,7 @@ resource "aws_ssm_parameter" "secret" {
 
 resource "aws_ssm_parameter" "setting" {
   for_each = {
+    LLM_PROVIDER                = var.llm_provider
     SITE_ADDRESS                = local.site_address
     IMAGE_REGISTRY              = local.registry
     S3_BUCKET                   = aws_s3_bucket.app.bucket

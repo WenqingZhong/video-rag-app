@@ -35,7 +35,7 @@ HELP = (
     "answers it and send you that clip. If none of them does, I'll tell you.\n\n"
     "🖼 Send me a photo and I'll find the scene that looks most like it.\n\n"
     "🔒 Videos you send are private to you and deleted after 7 days. Type /delete to remove yours sooner.\n\n"
-    "⚖️ To keep this free for everyone, each person gets a daily allowance of AI tokens: plenty for about a hundred "
+    "⚖️ To keep this free for everyone, each person gets a daily allowance of AI tokens: enough for a few dozen "
     "requests or a few videos. It resets every day, and /usage shows how much you have left.\n\n"
     "Type /new to start over."
 )

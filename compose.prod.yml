@@ -2,8 +2,8 @@
 #
 # Differences from compose.yml (local development):
 # - images come from ECR (built by GitHub Actions), not built here;
-# - models run on Amazon Bedrock and files live in Amazon S3: no Ollama, no SeaweedFS. Both are reached with the
-#   instance's IAM role, so no AWS keys exist on the machine;
+# - the model is Claude through the Anthropic API, and files live in Amazon S3: no Ollama, no SeaweedFS. S3 is
+#   reached with the instance's IAM role, so no AWS keys exist on the machine;
 # - Caddy is the only service with public ports (80/443, automatic HTTPS). It forwards the chat page and the chat
 #   API only; admin endpoints, API docs, Grafana and Prometheus are reachable through an SSM tunnel only;
 # - no Airflow: the two nightly jobs (and the database backup) run in the small `ops` container;
@@ -32,7 +32,7 @@ x-app-env: &app-env
   S3_SECRET_KEY: ""
   OPENSEARCH_HOST: http://opensearch:9200
   EMBEDDER_URL: http://embedder:8000
-  LLM_PROVIDER: bedrock
+  LLM_PROVIDER: ${LLM_PROVIDER:-anthropic}  # anthropic (API key from SSM) or bedrock (the instance role)
 
 services:
   caddy:

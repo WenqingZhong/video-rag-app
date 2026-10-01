@@ -19,6 +19,9 @@ echo "IMAGE_TAG=$TAG" >> .env.new
 for required in SITE_ADDRESS IMAGE_REGISTRY S3_BUCKET SESSION_SECRET ADMIN_TOKEN POSTGRES_PASSWORD PEXELS_API_KEY TELEGRAM_BOT_TOKEN; do
   grep -q "^$required=" .env.new || { echo "missing SSM parameter /$PROJECT/$required" >&2; exit 1; }
 done
+if grep -q '^LLM_PROVIDER=anthropic' .env.new && ! grep -q '^ANTHROPIC_API_KEY=' .env.new; then
+  echo "missing SSM parameter /$PROJECT/ANTHROPIC_API_KEY (LLM_PROVIDER=anthropic)" >&2; exit 1
+fi
 mv .env.new .env
 REGISTRY=$(grep '^IMAGE_REGISTRY=' .env | cut -d= -f2)
 

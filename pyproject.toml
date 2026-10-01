@@ -21,6 +21,7 @@ dependencies = [
     "alembic>=1.14",
     "prometheus-client>=0.21",
     "langgraph>=0.6",
+    "anthropic>=0.69",
 ]
 readme = "README.md"
 

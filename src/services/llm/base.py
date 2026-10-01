@@ -1,5 +1,6 @@
 """The one interface every model call goes through, so where the model runs is a setting:
-local development → Ollama (a container); production on AWS → Amazon Bedrock (or a GPU server running Ollama).
+local development → Ollama (a container); production → Claude through the Anthropic API, or Amazon Bedrock, or a
+GPU server running Ollama.
 
 Two operations cover everything the app asks a model:
   json_reply      fill a form given as a JSON schema (request understanding, question answering, chat routing)
@@ -25,7 +26,7 @@ class ModelRejected(ModelError):
 
 
 class ChatModel(Protocol):
-    provider: str  # "ollama" | "bedrock"
+    provider: str  # "ollama" | "anthropic" | "bedrock"
     name: str  # the model id, recorded with every call
 
     def json_reply(

@@ -123,7 +123,7 @@ class Settings(DefaultSettings):
     # Limits per user (src/services/limits.py), counted in Redis per UTC day. A hosted model bills per token, so the
     # allowance is in tokens: every model call a user causes counts, including captioning their uploads.
     limits_enabled: bool = True
-    limit_tokens_per_day: int = 50_000  # ~100 requests, or a few videos
+    limit_tokens_per_day: int = 50_000  # a few dozen chat turns with Claude (~1,800 tokens each), or a few videos
     limit_ip_tokens_per_day: int = 200_000  # one address, however many anonymous sessions it opens
     limit_global_tokens_per_day: int = 2_000_000  # the whole app: a ceiling on the model bill
     limit_requests_per_min: int = 20
@@ -180,10 +180,13 @@ class Settings(DefaultSettings):
     # unrelated photo 0.550, weakest found match above it 0.584); 0.57 sits in the middle of that plateau.
     search_image_min_similarity: float = 0.57
 
-    # Where the models run: "ollama" locally (the models above, by name) or "bedrock" on AWS.
-    # Bedrock model ids come from the Bedrock console (Model catalog → the model's "Model ID", or an inference
+    # Where the models run: "ollama" locally (the models above, by name); "anthropic" in production (Claude through
+    # the Anthropic API); or "bedrock" (Claude on AWS). Bedrock model ids come from the Bedrock console (Model catalog → the model's "Model ID", or an inference
     # profile id like "us.<model id>"); the account must have access to them. Credentials: the usual AWS chain.
-    llm_provider: Literal["ollama", "bedrock"] = "ollama"
+    llm_provider: Literal["ollama", "anthropic", "bedrock"] = "ollama"
+    anthropic_api_key: str | None = None  # .env locally, SSM Parameter Store in production; never committed
+    anthropic_text_model: str = "claude-haiku-4-5-20251001"  # understanding, answers, chat routing
+    anthropic_vision_model: str = "claude-haiku-4-5-20251001"  # keyframe captions
     bedrock_region: str = "us-east-1"
     bedrock_text_model_id: str | None = None  # understanding, answers, chat routing
     bedrock_vision_model_id: str | None = None  # keyframe captions (must accept images)
@@ -214,6 +217,8 @@ def unsafe_for_production(settings: Settings) -> list[str]:
         problems.append("COOKIE_SECURE must be true (the site is served over HTTPS)")
     if settings.debug:
         problems.append("DEBUG must be false")
+    if settings.llm_provider == "anthropic" and not settings.anthropic_api_key:
+        problems.append("ANTHROPIC_API_KEY must be set (LLM_PROVIDER=anthropic)")
     return problems
 
 

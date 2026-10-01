@@ -17,3 +17,5 @@ eval/images/
 *.tfvars
 crash.log
 bundle.tgz
+tfplan
+infra/aws/terraform/plan.txt

@@ -31,6 +31,12 @@ variable "site_address" {
   default     = ""
 }
 
+variable "llm_provider" {
+  description = "anthropic (the Anthropic API; key put in SSM by hand) or bedrock (needs Bedrock model access)"
+  type        = string
+  default     = "anthropic"
+}
+
 variable "bedrock_text_model_id" {
   description = "Claude Haiku 4.5 through the US cross-region inference profile"
   type        = string

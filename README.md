@@ -15,7 +15,7 @@ citing where it heard it.
 | "a hot air balloon" → "yes please" | nothing in the library → offers to fetch from Pexels → downloads, processes, sends the clip |
 
 You can use it as a **web chat**, a **Telegram bot**, or through the **REST API**. Everything runs locally in Docker,
-including the language model, and the model backend can be switched to Amazon Bedrock for AWS.
+including the language model, and in production the model is Claude through the Anthropic API (a setting).
 
 ---
 
@@ -116,7 +116,7 @@ Each decision is written up with the experiment behind it in [`docs/decisions/`]
   - schema changes go through Alembic migrations;
   - health checks report each dependency;
   - uploads and downloads are asynchronous, with progress reporting;
-  - where the model runs is a setting (`LLM_PROVIDER=ollama | bedrock`).
+  - where the model runs is a setting (`LLM_PROVIDER=ollama | anthropic | bedrock`).
 
 ## Running it
 
@@ -196,7 +196,7 @@ Labelled sets live in [`eval/`](eval/), and saved results in [`eval/results/`](e
 
 ## Deploying to AWS
 
-One ARM EC2 instance runs [`compose.prod.yml`](compose.prod.yml): models on **Amazon Bedrock** (Claude Haiku 4.5),
+One ARM EC2 instance runs [`compose.prod.yml`](compose.prod.yml): **Claude Haiku 4.5** through the Anthropic API,
 files in **S3**, HTTPS by **Caddy**, which exposes only the chat page and the chat API. Everything is **Terraform**
 ([`infra/aws/terraform`](infra/aws/terraform)), and every push to `main` is tested, built into ARM images and
 deployed by **GitHub Actions** through SSM, with short-lived OIDC credentials: no AWS keys in GitHub or on the server.
@@ -205,7 +205,7 @@ RDS yet, is [ADR 0008](docs/decisions/0008-aws-hosting.md).
 
 | Local | On AWS |
 |---|---|
-| Ollama (qwen2.5vl:3b) | Bedrock, Claude Haiku 4.5 (`LLM_PROVIDER=bedrock`) |
+| Ollama (qwen2.5vl:3b) | Claude Haiku 4.5, Anthropic API (`LLM_PROVIDER=anthropic`; `bedrock` also supported) |
 | SeaweedFS | S3, through the instance's IAM role |
 | Airflow | a small cron container calling the same admin endpoints, plus nightly Postgres backups to S3 |
 | `.env` | SSM Parameter Store; the app refuses to start in production with development secrets |
@@ -213,11 +213,12 @@ RDS yet, is [ADR 0008](docs/decisions/0008-aws-hosting.md).
 
 ## Limitations
 
-- **Latency:** the local model runs on the CPU; 8–15 s per turn when it's used. A GPU or Bedrock removes most of it.
+- **Latency:** the local model runs on the CPU; 8–15 s per turn when it's used. A hosted model (Claude in production) removes most of it.
 - **Accuracy:** chat routing is about 0.85 accurate on free phrasing; each reply shows how the turn was decided.
 - **Test data:** the evaluation sets were written by the author, and the spoken test material is synthetic speech.
   Real user conversations would be the next test.
-- **Bedrock:** the client is unit-tested but hasn't been run against real Bedrock.
+- **Bedrock:** the client is unit-tested but hasn't been run against real Bedrock (the account used had no Bedrock
+  model access; production uses the Anthropic API).
 
 ## Project layout
 
@@ -230,7 +231,7 @@ src/
   services/qa/        question answering from transcript and caption excerpts, with citations
   services/clips/     clip boundaries (words, sentences, keyframes) and get-or-cut
   services/processing/  the ingestion pipeline: ffmpeg, scenes, keyframes, Whisper, captions, vectors
-  services/llm/       model client: Ollama or Bedrock
+  services/llm/       model client: Ollama, the Anthropic API or Bedrock
   services/tracing/, usage/, metrics/  traces, token ledger, Prometheus metrics
   worker/             Celery app and tasks (processing, clip cutting, indexing)
   web/chat.html       the web chat

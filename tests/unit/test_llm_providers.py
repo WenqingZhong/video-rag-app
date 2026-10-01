@@ -1,13 +1,15 @@
 import json
+from types import SimpleNamespace
 from unittest.mock import MagicMock
 
+import anthropic
 import httpx
 import pytest
 from botocore.exceptions import ClientError, EndpointConnectionError
 
 from src.config import Settings
 from src.services.captioning import Captioner, CaptionError
-from src.services.llm import BedrockChat, ModelRejected, ModelUnavailable, OllamaChat, make_chat_model
+from src.services.llm import AnthropicChat, BedrockChat, ModelRejected, ModelUnavailable, OllamaChat, make_chat_model
 from src.services.understanding import LLMIntentParser
 from tests.unit.test_index_lifecycle import frame
 
@@ -121,3 +123,61 @@ def test_provider_is_a_setting():
         make_chat_model(Settings(_env_file=None, llm_provider="bedrock"))
     bedrock = make_chat_model(Settings(_env_file=None, llm_provider="bedrock", bedrock_text_model_id="m"), "text")
     assert isinstance(bedrock, BedrockChat) and bedrock.name == "m"
+
+
+# ---- Anthropic API --------------------------------------------------------------------------------------------------
+def anthropic_response(blocks, input_tokens=420, output_tokens=25):
+    return SimpleNamespace(content=blocks, usage=SimpleNamespace(input_tokens=input_tokens, output_tokens=output_tokens))
+
+
+def test_anthropic_forces_a_tool_call_to_get_the_schema():
+    client = MagicMock()
+    client.messages.create.return_value = anthropic_response(
+        [SimpleNamespace(type="tool_use", input={"kind": "visual", "text": "a dog"})]
+    )
+    text, call = AnthropicChat("claude-haiku-4-5-20251001", "key", client=client).json_reply(
+        "sys", "a dog", SCHEMA, "understand", 60
+    )
+    request = client.messages.create.call_args.kwargs
+    assert request["tool_choice"] == {"type": "tool", "name": "reply"} and request["tools"][0]["input_schema"] == SCHEMA
+    assert request["system"] == "sys" and request["max_tokens"] == 60 and request["model"] == "claude-haiku-4-5-20251001"
+    assert json.loads(text) == {"kind": "visual", "text": "a dog"}
+    assert (call.prompt_tokens, call.output_tokens, call.operation) == (420, 25, "understand")
+
+
+def test_anthropic_image_is_sent_as_base64():
+    client = MagicMock()
+    client.messages.create.return_value = anthropic_response([SimpleNamespace(type="text", text="A dog.")], 300, 8)
+    text, call = AnthropicChat("m", "key", client=client).describe_image("Describe.", b"jpeg", "caption", 80)
+    image = client.messages.create.call_args.kwargs["messages"][0]["content"][0]
+    assert image["source"] == {"type": "base64", "media_type": "image/jpeg", "data": "anBlZw=="}
+    assert text == "A dog." and call.images == 1
+
+
+def _status_error(cls, code):
+    request = httpx.Request("POST", "https://api.anthropic.com/v1/messages")
+    return cls("error", response=httpx.Response(code, request=request), body=None)
+
+
+@pytest.mark.parametrize(
+    ("error", "expected"),
+    [
+        (lambda: _status_error(anthropic.RateLimitError, 429), ModelUnavailable),
+        (lambda: _status_error(anthropic.InternalServerError, 500), ModelUnavailable),
+        (lambda: anthropic.APIConnectionError(request=httpx.Request("POST", "https://api.anthropic.com")), ModelUnavailable),
+        (lambda: _status_error(anthropic.AuthenticationError, 401), ModelRejected),
+        (lambda: _status_error(anthropic.BadRequestError, 400), ModelRejected),
+    ],
+)
+def test_anthropic_errors_say_whether_to_retry(error, expected):
+    client = MagicMock()
+    client.messages.create.side_effect = error()
+    with pytest.raises(expected):
+        AnthropicChat("m", "key", client=client).json_reply("s", "u", SCHEMA, "route")
+
+
+def test_anthropic_needs_a_key():
+    with pytest.raises(ValueError, match="ANTHROPIC_API_KEY"):
+        make_chat_model(Settings(_env_file=None, llm_provider="anthropic"))
+    chat = make_chat_model(Settings(_env_file=None, llm_provider="anthropic", anthropic_api_key="k"), "vision")
+    assert isinstance(chat, AnthropicChat) and chat.name == "claude-haiku-4-5-20251001"

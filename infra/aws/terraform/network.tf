@@ -3,6 +3,15 @@ data "aws_vpc" "default" {
   default = true
 }
 
+# Not every zone offers every instance type (us-east-1e has no t4g): only subnets in zones that offer ours.
+data "aws_ec2_instance_type_offerings" "here" {
+  location_type = "availability-zone"
+  filter {
+    name   = "instance-type"
+    values = [var.instance_type]
+  }
+}
+
 data "aws_subnets" "default" {
   filter {
     name   = "vpc-id"
@@ -11,6 +20,10 @@ data "aws_subnets" "default" {
   filter {
     name   = "default-for-az"
     values = ["true"]
+  }
+  filter {
+    name   = "availability-zone"
+    values = data.aws_ec2_instance_type_offerings.here.locations
   }
 }
 

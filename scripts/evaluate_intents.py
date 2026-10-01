@@ -20,6 +20,7 @@ sys.path.insert(0, str(ROOT))
 
 from src.config import Settings
 from src.db.factory import make_database
+from src.services.llm import make_chat_model
 from src.services.understanding import QueryUnderstanding, make_query_understanding
 from src.services.usage import make_usage_recorder
 
@@ -109,7 +110,7 @@ def main() -> None:
             print(f"  [{r['category']}] {r['request'][:46]:<46} → {g['type']}: {text!r} exclude={g['exclude']} ({r['source']})")
 
     if args.save:
-        report = {"model": settings.understanding_model, "requests": len(requests), "systems": reports}
+        report = {"model": make_chat_model(settings, "text").name, "requests": len(requests), "systems": reports}
         Path(args.save).parent.mkdir(parents=True, exist_ok=True)
         Path(args.save).write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n")
         print(f"\nsaved → {args.save}")

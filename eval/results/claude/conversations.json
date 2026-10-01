@@ -1,0 +1,432 @@
+{
+  "summary": {
+    "conversations": 12,
+    "conversations_ok": 11,
+    "turns": 28,
+    "turns_ok": 27,
+    "p50_seconds": 1.91,
+    "p95_seconds": 2.38,
+    "tokens_per_turn": 1816,
+    "decided_by_rules": 9
+  },
+  "conversations": [
+    {
+      "name": "dog, another, question about it",
+      "ok": false,
+      "turns": [
+        {
+          "message": "give me a clip of a dog",
+          "action": "find_clip",
+          "decided_by": "llm",
+          "reply": "\"Dogs with their tongues out\" (Pexels, by Dimitri Baret), 0:08\u20130:13: The video shows two dogs, one brown and one black, sitting under a blue and red structure, with the brown dog looking at the camera",
+          "clip": "Dogs with their tongues out",
+          "ok": true,
+          "problems": [],
+          "seconds": 3.05,
+          "tokens": 2461,
+          "notes": []
+        },
+        {
+          "message": "another one",
+          "action": "find_clip",
+          "decided_by": "llm",
+          "reply": "\"Dogs with their tongues out\" (Pexels, by Dimitri Baret), 0:08\u20130:13: The video shows two dogs, one brown and one black, sitting under a blue and red structure, with the brown dog looking at the camera",
+          "clip": "Dogs with their tongues out",
+          "ok": false,
+          "problems": [
+            "same video as the previous turn"
+          ],
+          "seconds": 1.94,
+          "tokens": 2478,
+          "notes": []
+        },
+        {
+          "message": "what colour is the dog in that clip?",
+          "action": "answer_question",
+          "decided_by": "llm",
+          "reply": "There are two dogs in the clip: one brown dog and one black dog. (from \"Dogs with their tongues out\" 0:00\u20130:07; \"Dogs with their tongues out\" 0:07\u20130:14)",
+          "clip": "Dogs with their tongues out",
+          "ok": true,
+          "problems": [],
+          "seconds": 2.86,
+          "tokens": 2214,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "beach, refined",
+      "ok": true,
+      "turns": [
+        {
+          "message": "a beach",
+          "action": "find_clip",
+          "decided_by": "llm",
+          "reply": "\"Serene beach waves on a sunny day\" (Pexels, by \uc815\uaddc\uc1a1 Nui MALAMA), 0:09\u20130:14: The video frame shows a serene beach scene with calm, gentle waves lapping against the sandy shore under a clear sky.",
+          "clip": "Serene beach waves on a sunny day",
+          "ok": true,
+          "problems": [],
+          "seconds": 2.25,
+          "tokens": 2446,
+          "notes": []
+        },
+        {
+          "message": "now without people",
+          "action": "find_clip",
+          "decided_by": "llm",
+          "reply": "\"Serene beach waves on a sunny day\" (Pexels, by \uc815\uaddc\uc1a1 Nui MALAMA), 0:09\u20130:14: The video frame shows a serene beach scene with calm, gentle waves lapping against the sandy shore under a clear sky.",
+          "clip": "Serene beach waves on a sunny day",
+          "ok": true,
+          "problems": [],
+          "seconds": 2.06,
+          "tokens": 2483,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "the sleep talk",
+      "ok": true,
+      "turns": [
+        {
+          "message": "the part where she talks about caffeine",
+          "action": "find_clip",
+          "decided_by": "llm",
+          "reply": "At 0:54\u20131:00 in \"sleep_talk\": \"The first is caffeine. Caffeine has a half-life of about 5 hours.\"",
+          "clip": "sleep_talk",
+          "ok": true,
+          "problems": [],
+          "seconds": 1.74,
+          "tokens": 2464,
+          "notes": []
+        },
+        {
+          "message": "how long does caffeine stay half active?",
+          "action": "answer_question",
+          "decided_by": "llm",
+          "reply": "Caffeine has a half-life of about 5 hours, meaning it remains half-active for that duration. (from \"sleep_talk\" 0:51\u20131:06)",
+          "clip": "sleep_talk",
+          "ok": true,
+          "problems": [],
+          "seconds": 2.38,
+          "tokens": 2342,
+          "notes": []
+        },
+        {
+          "message": "and how long should a nap be?",
+          "action": "answer_question",
+          "decided_by": "llm",
+          "reply": "A short nap of about 20 minutes can improve alertness without making you groggy, while longer naps can reach deep sleep and cause grogginess upon waking. (from \"sleep_talk\" 1:12\u20131:26)",
+          "clip": "sleep_talk",
+          "ok": true,
+          "problems": [],
+          "seconds": 2.06,
+          "tokens": 2360,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "missing subject, declined, switch",
+      "ok": true,
+      "turns": [
+        {
+          "message": "a unicorn",
+          "action": "find_clip",
+          "decided_by": "llm",
+          "reply": "No moment matched footage of \"a unicorn\". Want me to download some \u201ca unicorn\u201d videos from Pexels? It takes a minute or two.",
+          "clip": null,
+          "ok": true,
+          "problems": [],
+          "seconds": 1.9,
+          "tokens": 2450,
+          "notes": []
+        },
+        {
+          "message": "no thanks",
+          "action": "reply",
+          "decided_by": "rules",
+          "reply": "Okay, I won't download anything. What else would you like to see?",
+          "clip": null,
+          "ok": true,
+          "problems": [],
+          "seconds": 0.01,
+          "tokens": 0,
+          "notes": []
+        },
+        {
+          "message": "show me cats instead",
+          "action": "find_clip",
+          "decided_by": "llm",
+          "reply": "\"Close up footage of a pet cat\" (Pexels, by Francesco Ungaro), 0:01\u20130:06: A gray and white cat is lying on a white blanket, looking relaxed and comfortable in a cozy indoor setting.",
+          "clip": "Close up footage of a pet cat",
+          "ok": true,
+          "problems": [],
+          "seconds": 2.17,
+          "tokens": 2468,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "photo, then a question about it",
+      "ok": true,
+      "turns": [
+        {
+          "message": "find this",
+          "action": "find_by_image",
+          "decided_by": "rules",
+          "reply": "Closest match to your image: \"Close up footage of a pet cat\" (Pexels, by Francesco Ungaro), 0:01\u20130:06 (similarity 0.71): A gray and white cat is lying on a white blanket, looking relaxed and comfortab",
+          "clip": "Close up footage of a pet cat",
+          "ok": true,
+          "problems": [],
+          "seconds": 0.87,
+          "tokens": 0,
+          "notes": []
+        },
+        {
+          "message": "what is the cat doing in that clip?",
+          "action": "answer_question",
+          "decided_by": "llm",
+          "reply": "The cat is lying on a white blanket in a cozy indoor setting. In the later part of the clip, it grooms itself with its front paws. (from \"Close up footage of a pet cat\" 0:00\u20130:08; \"Close up footage of",
+          "clip": "Close up footage of a pet cat",
+          "ok": true,
+          "problems": [],
+          "seconds": 1.82,
+          "tokens": 2329,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "small talk and the library",
+      "ok": true,
+      "turns": [
+        {
+          "message": "hi",
+          "action": "reply",
+          "decided_by": "rules",
+          "reply": "Hi! I find moments in videos. Try \u201ca dog on a beach\u201d, \u201cthe part where she talks about caffeine\u201d, \u201chow long is a sleep cycle?\u201d, or send me a photo. Videos you upload are private to you, deleted after 7",
+          "clip": null,
+          "ok": true,
+          "problems": [],
+          "seconds": 0.02,
+          "tokens": 0,
+          "notes": []
+        },
+        {
+          "message": "what videos do you have?",
+          "action": "list_videos",
+          "decided_by": "rules",
+          "reply": "35 videos:\n- IMG_3365 (21 s)\n- host_talk (17 s, speech)\n- my_talk (17 s, speech)\n- IMG_3365 (21 s)\n- host_talk (17 s, speech)\n- host_talk (17 s, speech)\n- A hot air balloon is flying over a large hill",
+          "clip": null,
+          "ok": true,
+          "problems": [],
+          "seconds": 0.03,
+          "tokens": 0,
+          "notes": []
+        },
+        {
+          "message": "what does the host say about AI?",
+          "action": "answer_question",
+          "decided_by": "llm",
+          "reply": "According to the host, AI is changing everything and is the biggest trend right now. It changes how people write, code, and learn. (from \"host_talk\" 0:00\u20130:14)",
+          "clip": "host_talk",
+          "ok": true,
+          "problems": [],
+          "seconds": 1.78,
+          "tokens": 2527,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "yes with nothing offered",
+      "ok": true,
+      "turns": [
+        {
+          "message": "yes",
+          "action": "reply",
+          "decided_by": "rules",
+          "reply": "Sure. What would you like to see?",
+          "clip": null,
+          "ok": true,
+          "problems": [],
+          "seconds": 0.02,
+          "tokens": 0,
+          "notes": []
+        },
+        {
+          "message": "exclude people",
+          "action": "reply",
+          "decided_by": "llm",
+          "reply": "What would you like to see or hear?",
+          "clip": null,
+          "ok": true,
+          "problems": [],
+          "seconds": 1.31,
+          "tokens": 1217,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "kitchen, switch dish",
+      "ok": true,
+      "turns": [
+        {
+          "message": "someone chopping vegetables",
+          "action": "find_clip",
+          "decided_by": "llm",
+          "reply": "\"Preparing fresh vegetables in home kitchen\" (Pexels, by Ardina Setiorini), 0:09\u20130:14: The video shows a person's hands chopping vegetables on a wooden cutting board in a kitchen setting.",
+          "clip": "Preparing fresh vegetables in home kitchen",
+          "ok": true,
+          "problems": [],
+          "seconds": 2.15,
+          "tokens": 2454,
+          "notes": []
+        },
+        {
+          "message": "what about frying?",
+          "action": "find_clip",
+          "decided_by": "rules",
+          "reply": "\"Frying traditional home cooked snacks\" (Pexels, by Ardina Setiorini), 0:02\u20130:07: The video shows a close-up of a black frying pan on a gas stove, with several pieces of food sizzling in oil, indicati",
+          "clip": "Frying traditional home cooked snacks",
+          "ok": true,
+          "problems": [],
+          "seconds": 1.15,
+          "tokens": 1264,
+          "notes": [
+            "same kind of request, new subject"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "city at night, then daylight",
+      "ok": true,
+      "turns": [
+        {
+          "message": "busy city streets at night",
+          "action": "find_clip",
+          "decided_by": "rules",
+          "reply": "\"Night traffic on junction in city\" (Pexels, by Ming Z), 0:00\u20130:05: The video captures a nighttime aerial view of a busy urban intersection with multiple lanes of traffic, including cars and a yellow ",
+          "clip": "Night traffic on junction in city",
+          "ok": true,
+          "problems": [],
+          "seconds": 2.22,
+          "tokens": 2462,
+          "notes": [
+            "model chose fetch_from_pexels 'busy city streets at night': no consent to download \u2192 rules"
+          ]
+        },
+        {
+          "message": "same but in daylight",
+          "action": "find_clip",
+          "decided_by": "llm",
+          "reply": "\"Night traffic on junction in city\" (Pexels, by Ming Z), 0:00\u20130:05: The video captures a nighttime aerial view of a busy urban intersection with multiple lanes of traffic, including cars and a yellow ",
+          "clip": "Night traffic on junction in city",
+          "ok": true,
+          "problems": [],
+          "seconds": 1.94,
+          "tokens": 2491,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "REM",
+      "ok": true,
+      "turns": [
+        {
+          "message": "where does she explain REM sleep?",
+          "action": "find_clip",
+          "decided_by": "llm",
+          "reply": "At 0:20\u20130:26 in \"sleep_talk\": \"then deep sleep, and then REM sleep, which stands for rapid eye movement.\"",
+          "clip": "sleep_talk",
+          "ok": true,
+          "problems": [],
+          "seconds": 1.88,
+          "tokens": 2465,
+          "notes": []
+        },
+        {
+          "message": "what does REM stand for?",
+          "action": "answer_question",
+          "decided_by": "llm",
+          "reply": "REM stands for rapid eye movement. Most vivid dreaming happens during REM sleep. (from \"sleep_talk\" 0:21\u20130:36)",
+          "clip": "sleep_talk",
+          "ok": true,
+          "problems": [],
+          "seconds": 1.92,
+          "tokens": 2292,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "birds and balloons",
+      "ok": true,
+      "turns": [
+        {
+          "message": "a colourful parrot",
+          "action": "find_clip",
+          "decided_by": "llm",
+          "reply": "\"Vibrant green turaco perched in jungle setting\" (Pexels, by Magda Ehlers), 0:01\u20130:06: The video shows a green bird perched on a branch near a metal bowl, with lush green foliage in the background.",
+          "clip": "Vibrant green turaco perched in jungle setting",
+          "ok": true,
+          "problems": [],
+          "seconds": 2.17,
+          "tokens": 2462,
+          "notes": []
+        },
+        {
+          "message": "and a hot air balloon",
+          "action": "find_clip",
+          "decided_by": "rules",
+          "reply": "\"A hot air balloon is flying over a large hill\" (Pexels, by Mehmet Turgut  Kirkgoz), 0:01\u20130:06: A hot air balloon with red and white stripes is flying over a rocky landscape with greenery in the backg",
+          "clip": "A hot air balloon is flying over a large hill",
+          "ok": true,
+          "problems": [],
+          "seconds": 1.6,
+          "tokens": 1268,
+          "notes": [
+            "same kind of request, new subject"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "answer, then show it",
+      "ok": true,
+      "turns": [
+        {
+          "message": "tell me what melatonin does",
+          "action": "answer_question",
+          "decided_by": "llm",
+          "reply": "Melatonin is a hormone that tells your body it is time to rest. Bright light in the evening delays the release of melatonin. (from \"sleep_talk\" 1:01\u20131:16)",
+          "clip": "sleep_talk",
+          "ok": true,
+          "problems": [],
+          "seconds": 2.16,
+          "tokens": 2175,
+          "notes": []
+        },
+        {
+          "message": "show me that part",
+          "action": "find_clip",
+          "decided_by": "rules",
+          "reply": "At 1:05\u20131:12 in \"sleep_talk\": \"Bright light in the evening delays the release of melatonin, the hormone that tells your body it is time to rest.\"",
+          "clip": "sleep_talk",
+          "ok": true,
+          "problems": [],
+          "seconds": 1.24,
+          "tokens": 1274,
+          "notes": [
+            "follow-up of the last request"
+          ]
+        }
+      ]
+    }
+  ]
+}

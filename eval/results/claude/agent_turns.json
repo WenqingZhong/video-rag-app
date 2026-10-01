@@ -1,0 +1,2612 @@
+{
+  "rules only": {
+    "action": 1,
+    "all": 1,
+    "unsafe": 0,
+    "model_calls": 0,
+    "p50_seconds": 0.0,
+    "tokens_per_turn": 0,
+    "by_category": {
+      "new_request": 1,
+      "question": 1,
+      "follow_up": 1,
+      "pexels_consent": 1,
+      "no_consent": 1,
+      "image": 1,
+      "library": 1,
+      "chat": 1
+    },
+    "rows": [
+      {
+        "category": "new_request",
+        "message": "give me a clip of a dog",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "dog"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "give me a clip of a dog",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "new_request",
+        "message": "show me some ocean waves",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "wave"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "show me some ocean waves",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "new_request",
+        "message": "I want footage of someone cooking",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "cook"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "I want footage of someone cooking",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "new_request",
+        "message": "the part where the host says AI is changing everything",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "AI is changing everything"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "the part where the host says AI is changing everything",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "new_request",
+        "message": "where does she talk about caffeine?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "caffeine"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "where does she talk about caffeine?",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "new_request",
+        "message": "any clips of city traffic?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "traffic"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "any clips of city traffic?",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "how long is a sleep cycle?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "sleep cycle"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "how long is a sleep cycle?",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "what does she say about naps?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "nap"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what does she say about naps?",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "why is caffeine bad for sleep?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "caffeine"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "why is caffeine bad for sleep?",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "what does REM stand for?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "REM"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what does REM stand for?",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "what colour is the dog in that clip?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "colour"
+          ],
+          "same_video": true
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what colour is the dog in that clip?",
+          "about_last_video": true
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "does the talk mention teenagers?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "teenager"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "does the talk mention teenagers?",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "now without people",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "beach"
+          ],
+          "exclude": [
+            "people"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a beach without people",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [
+          "follow-up of the last request"
+        ],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "same but at night",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "traffic",
+            "night"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "city traffic at night",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [
+          "follow-up of the last request"
+        ],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "what about cats?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "cat"
+          ],
+          "text_not": [
+            "dog"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "cats",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [
+          "same kind of request, new subject"
+        ],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "show me another one",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "dog"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a dog",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [
+          "follow-up of the last request"
+        ],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "no, I meant a calm sea",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "calm sea"
+          ],
+          "text_not": [
+            "wave"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a calm sea",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "and one with a laptop",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "laptop"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "people in a meeting with a laptop",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [
+          "follow-up of the last request"
+        ],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "yes please",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "horse"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "horse",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "sure, go ahead",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "elephant"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "elephant",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "ok do it",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "piano"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "piano",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "no thanks",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "no, show me a dog instead",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "dog"
+          ],
+          "text_not": [
+            "horse"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a dog",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "download some horse videos from pexels",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "horse"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "horse",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "no_consent",
+        "message": "yes",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "no_consent",
+        "message": "yes please",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "no_consent",
+        "message": "a horse",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "horse"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a horse",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "image",
+        "message": "find this",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "image",
+        "message": "",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "image",
+        "message": "do you have a clip that looks like this photo?",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "image",
+        "message": "find something that looks like this",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "library",
+        "message": "what videos do you have?",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "list_videos",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "library",
+        "message": "list everything in the library",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "list_videos",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "library",
+        "message": "which talks are there?",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "list_videos",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "hi",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "thanks, that's great",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "what can you do?",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "exclude people",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "who are you?",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "delete all the videos",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      }
+    ]
+  },
+  "model only": {
+    "action": 0.925,
+    "all": 0.925,
+    "unsafe": 2,
+    "model_calls": 1,
+    "p50_seconds": 0.83,
+    "tokens_per_turn": 1197,
+    "by_category": {
+      "new_request": 0.83,
+      "question": 1,
+      "follow_up": 1,
+      "pexels_consent": 0.83,
+      "no_consent": 0.67,
+      "image": 1,
+      "library": 1,
+      "chat": 1
+    },
+    "rows": [
+      {
+        "category": "new_request",
+        "message": "give me a clip of a dog",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "dog"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "give me a clip of a dog",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1192,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "new_request",
+        "message": "show me some ocean waves",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "wave"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "show me some ocean waves",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1188,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "new_request",
+        "message": "I want footage of someone cooking",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "cook"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "someone cooking",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": true,
+        "tokens": 1190,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "new_request",
+        "message": "the part where the host says AI is changing everything",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "AI is changing everything"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "the part where the host says AI is changing everything",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1198,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "new_request",
+        "message": "where does she talk about caffeine?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "caffeine"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "where does she talk about caffeine?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1194,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "new_request",
+        "message": "any clips of city traffic?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "traffic"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "any clips of city traffic?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1190,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "how long is a sleep cycle?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "sleep cycle"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "how long is a sleep cycle?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1192,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "what does she say about naps?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "nap"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what does she say about naps?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1194,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "why is caffeine bad for sleep?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "caffeine"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "why is caffeine bad for sleep?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1194,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "what does REM stand for?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "REM"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what does REM stand for?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1192,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "what colour is the dog in that clip?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "colour"
+          ],
+          "same_video": true
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what colour is the dog in that clip?",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1220,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "does the talk mention teenagers?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "teenager"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "does the talk mention teenagers?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1190,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "now without people",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "beach"
+          ],
+          "exclude": [
+            "people"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a beach without people",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1199,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "same but at night",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "traffic",
+            "night"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "city traffic at night",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1200,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "what about cats?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "cat"
+          ],
+          "text_not": [
+            "dog"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "cats",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1197,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "show me another one",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "dog"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a dog",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1198,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "no, I meant a calm sea",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "calm sea"
+          ],
+          "text_not": [
+            "wave"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a calm sea",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1202,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "and one with a laptop",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "laptop"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "people in a meeting with a laptop",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1206,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "yes please",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "horse"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "horse",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1223,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "sure, go ahead",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "elephant"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "elephant",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1225,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "ok do it",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "piano"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "piano",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1224,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "no thanks",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "no thanks",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1218,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "no, show me a dog instead",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "dog"
+          ],
+          "text_not": [
+            "horse"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "dog",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": true,
+        "tokens": 1228,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "pexels_consent",
+        "message": "download some horse videos from pexels",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "horse"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "horse",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1191,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "no_consent",
+        "message": "yes",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "yes",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1178,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "no_consent",
+        "message": "yes please",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1193,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "no_consent",
+        "message": "a horse",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "horse"
+          ]
+        },
+        "got": {
+          "action": "reply",
+          "text": "No clips of a horse found in the available videos.",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1204,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "image",
+        "message": "find this",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": "find this",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1184,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "image",
+        "message": "",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1179,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "image",
+        "message": "do you have a clip that looks like this photo?",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": "do you have a clip that looks like this photo?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1202,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "image",
+        "message": "find something that looks like this",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "I don't see an image attached to your message. Could you please upload the image you'd like me to find a similar clip for?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1210,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "library",
+        "message": "what videos do you have?",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "list_videos",
+          "text": "what videos do you have?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1190,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "library",
+        "message": "list everything in the library",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "list_videos",
+          "text": "list everything in the library",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1188,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "library",
+        "message": "which talks are there?",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "list_videos",
+          "text": "which talks are there?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1188,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "hi",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "hi",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1178,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "thanks, that's great",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "thanks, that's great",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1199,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "what can you do?",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "what can you do?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1186,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "exclude people",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "exclude people",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1180,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "who are you?",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "who are you?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1184,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "delete all the videos",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": "delete all the videos",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1184,
+        "action": true,
+        "text": true,
+        "all": true
+      }
+    ]
+  },
+  "rules first + model": {
+    "action": 0.975,
+    "all": 0.975,
+    "unsafe": 0,
+    "model_calls": 0.5,
+    "p50_seconds": 0.37,
+    "tokens_per_turn": 600,
+    "by_category": {
+      "new_request": 1,
+      "question": 1,
+      "follow_up": 1,
+      "pexels_consent": 1,
+      "no_consent": 0.67,
+      "image": 1,
+      "library": 1,
+      "chat": 1
+    },
+    "rows": [
+      {
+        "category": "new_request",
+        "message": "give me a clip of a dog",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "dog"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a dog",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1187,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "new_request",
+        "message": "show me some ocean waves",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "wave"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "show me some ocean waves",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1188,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "new_request",
+        "message": "I want footage of someone cooking",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "cook"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "someone cooking",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1186,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "new_request",
+        "message": "the part where the host says AI is changing everything",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "AI is changing everything"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "the part where the host says AI is changing everything",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1198,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "new_request",
+        "message": "where does she talk about caffeine?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "caffeine"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "where does she talk about caffeine?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1194,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "new_request",
+        "message": "any clips of city traffic?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "traffic"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "any clips of city traffic?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1190,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "how long is a sleep cycle?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "sleep cycle"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "how long is a sleep cycle?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1192,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "what does she say about naps?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "nap"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what does she say about naps?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1194,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "why is caffeine bad for sleep?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "caffeine"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "why is caffeine bad for sleep?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1194,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "what does REM stand for?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "REM"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what does REM stand for?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1192,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "what colour is the dog in that clip?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "colour"
+          ],
+          "same_video": true
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "what colour is the dog in that clip?",
+          "about_last_video": true
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1220,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "question",
+        "message": "does the talk mention teenagers?",
+        "expect": {
+          "action": "answer_question",
+          "text_has": [
+            "teenager"
+          ]
+        },
+        "got": {
+          "action": "answer_question",
+          "text": "does the talk mention teenagers?",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1190,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "now without people",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "beach"
+          ],
+          "exclude": [
+            "people"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a beach without people",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1199,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "same but at night",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "traffic",
+            "night"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "city traffic at night",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1200,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "what about cats?",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "cat"
+          ],
+          "text_not": [
+            "dog"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "cats",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [
+          "same kind of request, new subject"
+        ],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "show me another one",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "dog"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a dog",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1198,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "no, I meant a calm sea",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "calm sea"
+          ],
+          "text_not": [
+            "wave"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "calm sea",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1201,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "follow_up",
+        "message": "and one with a laptop",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "laptop"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "people in a meeting with a laptop",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1206,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "yes please",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "horse"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "horse",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "sure, go ahead",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "elephant"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "elephant",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "ok do it",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "piano"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "piano",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "no thanks",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "no, show me a dog instead",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "dog"
+          ],
+          "text_not": [
+            "horse"
+          ]
+        },
+        "got": {
+          "action": "find_clip",
+          "text": "a dog",
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1225,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "pexels_consent",
+        "message": "download some horse videos from pexels",
+        "expect": {
+          "action": "fetch_from_pexels",
+          "text_has": [
+            "horse"
+          ]
+        },
+        "got": {
+          "action": "fetch_from_pexels",
+          "text": "horse",
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "no_consent",
+        "message": "yes",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "no_consent",
+        "message": "yes please",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "no_consent",
+        "message": "a horse",
+        "expect": {
+          "action": "find_clip",
+          "text_has": [
+            "horse"
+          ]
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1226,
+        "action": false,
+        "text": false,
+        "all": false
+      },
+      {
+        "category": "image",
+        "message": "find this",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "image",
+        "message": "",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "image",
+        "message": "do you have a clip that looks like this photo?",
+        "expect": {
+          "action": "find_by_image"
+        },
+        "got": {
+          "action": "find_by_image",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "image",
+        "message": "find something that looks like this",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "library",
+        "message": "what videos do you have?",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "list_videos",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "library",
+        "message": "list everything in the library",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "list_videos",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "library",
+        "message": "which talks are there?",
+        "expect": {
+          "action": "list_videos"
+        },
+        "got": {
+          "action": "list_videos",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "hi",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "thanks, that's great",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "what can you do?",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "exclude people",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "llm",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 1210,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "who are you?",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      },
+      {
+        "category": "chat",
+        "message": "delete all the videos",
+        "expect": {
+          "action": "reply"
+        },
+        "got": {
+          "action": "reply",
+          "text": null,
+          "about_last_video": false
+        },
+        "source": "rules",
+        "notes": [],
+        "unsafe": false,
+        "tokens": 0,
+        "action": true,
+        "text": true,
+        "all": true
+      }
+    ]
+  }
+}

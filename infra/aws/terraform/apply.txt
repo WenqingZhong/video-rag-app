@@ -1,0 +1,44 @@
+aws_instance.server: Creating...
+aws_instance.server: Still creating... [00m10s elapsed]
+aws_instance.server: Creation complete after 13s [id=i-0d6529201ec6c4d71]
+aws_eip.server: Creating...
+aws_iam_role_policy.deploy: Creating...
+aws_iam_role_policy.deploy: Creation complete after 1s [id=video-rag-github-deploy:deploy]
+aws_eip.server: Creation complete after 4s [id=eipalloc-070ab11e40da2a7ac]
+aws_ssm_parameter.setting["LLM_PROVIDER"]: Creating...
+aws_ssm_parameter.setting["SITE_ADDRESS"]: Creating...
+aws_ssm_parameter.setting["UPLOAD_MAX_MB"]: Creating...
+aws_ssm_parameter.setting["IMAGE_REGISTRY"]: Creating...
+aws_ssm_parameter.setting["S3_BUCKET"]: Creating...
+aws_ssm_parameter.setting["BEDROCK_VISION_MODEL_ID"]: Creating...
+aws_ssm_parameter.setting["LIMIT_GLOBAL_TOKENS_PER_DAY"]: Creating...
+aws_ssm_parameter.setting["S3_REGION"]: Creating...
+aws_ssm_parameter.setting["BEDROCK_TEXT_MODEL_ID"]: Creating...
+aws_ssm_parameter.setting["BEDROCK_REGION"]: Creating...
+aws_ssm_parameter.setting["BEDROCK_TEXT_MODEL_ID"]: Creation complete after 0s [id=/video-rag/BEDROCK_TEXT_MODEL_ID]
+aws_ssm_parameter.setting["SITE_ADDRESS"]: Creation complete after 0s [id=/video-rag/SITE_ADDRESS]
+aws_ssm_parameter.setting["UPLOAD_MAX_MB"]: Creation complete after 0s [id=/video-rag/UPLOAD_MAX_MB]
+aws_ssm_parameter.setting["S3_REGION"]: Creation complete after 0s [id=/video-rag/S3_REGION]
+aws_ssm_parameter.setting["S3_BUCKET"]: Creation complete after 0s [id=/video-rag/S3_BUCKET]
+aws_ssm_parameter.setting["IMAGE_REGISTRY"]: Creation complete after 0s [id=/video-rag/IMAGE_REGISTRY]
+aws_ssm_parameter.setting["BEDROCK_VISION_MODEL_ID"]: Creation complete after 0s [id=/video-rag/BEDROCK_VISION_MODEL_ID]
+aws_ssm_parameter.setting["BEDROCK_REGION"]: Creation complete after 0s [id=/video-rag/BEDROCK_REGION]
+aws_ssm_parameter.setting["LLM_PROVIDER"]: Creation complete after 0s [id=/video-rag/LLM_PROVIDER]
+aws_ssm_parameter.setting["LIMIT_GLOBAL_TOKENS_PER_DAY"]: Creation complete after 0s [id=/video-rag/LIMIT_GLOBAL_TOKENS_PER_DAY]
+
+Apply complete! Resources: 13 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+bucket = "video-rag-116fa73a33b99e402c535d5313"
+github_variables = {
+  "AWS_DEPLOY_ROLE" = "arn:aws:iam::045483031963:role/video-rag-github-deploy"
+  "AWS_REGION" = "us-east-1"
+  "BUCKET" = "video-rag-116fa73a33b99e402c535d5313"
+  "INSTANCE_ID" = "i-0d6529201ec6c4d71"
+  "REGISTRY" = "045483031963.dkr.ecr.us-east-1.amazonaws.com"
+}
+instance_id = "i-0d6529201ec6c4d71"
+public_ip = "100.60.139.21"
+registry = "045483031963.dkr.ecr.us-east-1.amazonaws.com"
+site_url = "https://100-60-139-21.sslip.io/app"

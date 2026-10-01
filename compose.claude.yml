@@ -1,0 +1,10 @@
+# Local stack with Claude (the Anthropic API) instead of Ollama, to evaluate it before deploying (make eval-claude).
+# The key is read from .env (ANTHROPIC_API_KEY), like the other secrets.
+#   docker compose -f compose.yml -f compose.claude.yml up -d api worker
+services:
+  api:
+    environment:
+      LLM_PROVIDER: anthropic
+  worker:
+    environment:
+      LLM_PROVIDER: anthropic

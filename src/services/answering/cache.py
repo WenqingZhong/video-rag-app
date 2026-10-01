@@ -22,7 +22,15 @@ logger = logging.getLogger(__name__)
 # The code an answer depends on. Settings: thresholds, clip lengths, anything that changes results.
 _PACKAGES = ("services/understanding", "services/search", "services/answering", "services/clips")
 # Includes where the model runs: answers from one model are never served for another
-_SETTING_PREFIXES = ("search_", "clip_", "understanding_model", "opensearch_index", "llm_provider", "bedrock_text_model")
+_SETTING_PREFIXES = (
+    "search_",
+    "clip_",
+    "understanding_model",
+    "opensearch_index",
+    "llm_provider",
+    "bedrock_text_model",
+    "anthropic_text_model",
+)
 
 
 class AnswerCache:
