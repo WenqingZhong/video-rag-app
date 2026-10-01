@@ -25,6 +25,15 @@ variable "github_repo" {
   default     = "WenqingZhong/video-rag-app"
 }
 
+variable "github_repo_ids" {
+  description = <<-EOT
+    owner@<owner id>/<repo>@<repo id>: GitHub now puts these permanent ids in its OIDC subject, so a renamed or
+    re-created repository with the same name can't deploy. Seen in CloudTrail (AssumeRoleWithWebIdentity).
+  EOT
+  type        = string
+  default     = "WenqingZhong@43304977/video-rag-app@1386285310"
+}
+
 variable "site_address" {
   description = "Hostname for HTTPS. Empty: a free <ip>.sslip.io name that resolves to the server's Elastic IP"
   type        = string

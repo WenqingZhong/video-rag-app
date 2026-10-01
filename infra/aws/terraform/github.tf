@@ -16,7 +16,12 @@ resource "aws_iam_role" "deploy" {
       Condition = {
         StringEquals = {
           "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
-          "token.actions.githubusercontent.com:sub" = "repo:${var.github_repo}:ref:refs/heads/main"
+          # main only (a list means any of them). Current GitHub tokens name the repository by its permanent ids;
+          # older ones by name
+          "token.actions.githubusercontent.com:sub" = [
+            "repo:${var.github_repo_ids}:ref:refs/heads/main",
+            "repo:${var.github_repo}:ref:refs/heads/main",
+          ]
         }
       }
     }]

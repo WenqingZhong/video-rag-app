@@ -52,7 +52,7 @@ jobs:
   deploy:
     needs: images
     runs-on: ubuntu-24.04
-    environment: production
+    # No GitHub environment here: it would change the token's subject, which the AWS role pins to main
     steps:
       - uses: actions/checkout@v4
       - uses: aws-actions/configure-aws-credentials@v4

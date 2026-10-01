@@ -75,7 +75,6 @@ Or in the AWS console: **Systems Manager → Parameter Store → Create paramete
 In the repository: **Settings → Secrets and variables → Actions → Variables**, add each entry of
 `terraform output github_variables` (AWS_REGION, AWS_DEPLOY_ROLE, INSTANCE_ID, BUCKET, REGISTRY). None is secret: the
 deploy role can only be assumed by this repository's `main` branch.
-Optionally, **Settings → Environments → production → Required reviewers** to approve each deploy.
 
 The image build uses GitHub's ARM runners (`ubuntu-24.04-arm`), free for public repositories.
 
