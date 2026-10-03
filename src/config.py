@@ -173,7 +173,7 @@ class Settings(DefaultSettings):
     search_rrf_k: int = 60  # Reciprocal Rank Fusion constant (standard value; damps the weight of top ranks)
     search_vector_min_similarity: float = 0.15  # CLIP cosine below this is treated as "not a match"
     # Hybrid: a result found ONLY by vector search (no keyword support) must be at least this similar.
-    # 0.20 chosen by a sweep (ADR 0002): false answers 5 → 2 of 12, MRR unchanged, one relevant video lost.
+    # 0.20 chosen by a sweep: false answers 5 → 2 of 12, MRR unchanged, one relevant video lost.
     search_vector_only_min_similarity: float = 0.20
     # Image queries (photo → keyframes). Photo-to-frame cosine runs far higher than text-to-frame: its own cut-off.
     # 0.57 chosen by make eval-images: 0.55–0.58 all give semantic hit@1 0.90 and 0/15 false answers (strongest

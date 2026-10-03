@@ -42,7 +42,7 @@ lint: ## Lint code
 eval: ## Measure search quality (keyword vs vector vs hybrid) on eval/queries.json
 	uv run python scripts/evaluate_search.py --save eval/results/search.json
 
-experiment-captions: ## Re-run the caption-embedding experiment (see docs/decisions/0001-no-caption-embeddings.md)
+experiment-captions: ## Re-run the caption-embedding experiment
 	uv run --with sentence-transformers python scripts/experiment_caption_embeddings.py --save eval/results/caption_embeddings.json
 
 eval-intents: ## Request-understanding accuracy (LLM vs rules) on eval/intents.json

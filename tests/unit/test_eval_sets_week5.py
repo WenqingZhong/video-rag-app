@@ -1,4 +1,4 @@
-"""eval/intents.json and eval/no_answer.json back ADR 0002: keep them well-formed and in sync with saved results."""
+"""eval/intents.json and eval/no_answer.json back the request-understanding evaluation: keep them well-formed and in sync with saved results."""
 
 import json
 from pathlib import Path

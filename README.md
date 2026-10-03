@@ -74,12 +74,9 @@ reported separately from sets that informed a fix.
 
 ## Engineering decisions
 
-Each decision is written up with the experiment behind it in [`docs/decisions/`](docs/decisions/):
-
 - **An LLM that proposes, and plain code that checks.** A 3B local model is fast and private, but on its own it invents
   details, copies examples from its prompt and once downloaded videos without being asked. Guards compare its output
   with the user's own words (grounding, consent, scope) and fall back to rules. Clear patterns skip the model entirely.
-  [ADR 0002](docs/decisions/0002-query-understanding.md), [ADR 0005](docs/decisions/0005-chat-agent.md)
 - **Answers only from the videos.** Question answering sees numbered, timed excerpts. It must cite one, and every
   number in its answer must appear in the cited text; otherwise the reply is "not found". It never uses general
   knowledge.
@@ -87,22 +84,19 @@ Each decision is written up with the experiment behind it in [`docs/decisions/`]
   is the sentence that answers, found using Whisper's word timings. Cutting re-encodes the video (a plain stream copy
   can only start at a video keyframe: asked for 8.73 s, it started at 7.96 s) and runs on a **dedicated queue**, so a
   user never waits behind video processing.
-  [ADR 0003](docs/decisions/0003-clip-delivery.md)
 - **Hybrid retrieval, measured.** BM25 and CLIP complement each other (keyword search misses synonyms, CLIP misses
   details), fused with Reciprocal Rank Fusion. Adding caption embeddings as a third retriever was tested and rejected.
-  [ADR 0001](docs/decisions/0001-no-caption-embeddings.md)
 - **Caches that can't serve stale answers.** Answer keys include an index version that every index write bumps, plus a
   fingerprint of the code and settings they depend on, so a new video or a prompt change invalidates exactly what it
-  should. [ADR 0004](docs/decisions/0004-observability-and-caching.md)
+  should.
 - **Private uploads, no sign-up.** A web visitor gets a signed anonymous cookie; the Telegram bot vouches for its
   users with a service token. Uploads carry their owner, and every search (kNN included) filters to the shared
   library plus the viewer's own videos. Uploads are deleted after 7 days, or on request ("delete my video", always
-  confirmed first): search index, files and rows. [ADR 0006](docs/decisions/0006-private-uploads.md)
+  confirmed first): search index, files and rows.
 - **A daily token allowance per user.** A hosted model bills per token, so each user's limit is in tokens: every
   model call they cause counts, including captioning their uploads (checked against the token ledger: exact match).
   Also per-minute request limits by user and by address, uploads and stock downloads per day, and a global daily
   budget as a ceiling on the bill. Limits come back as a sentence the chat shows as-is.
-  [ADR 0007](docs/decisions/0007-usage-limits.md)
 - **Observability built in:**
   - every request and background task is a trace, with the trace ID carried through Celery message headers;
   - every model call is recorded with its tokens and cost;
@@ -200,8 +194,7 @@ One ARM EC2 instance runs [`compose.prod.yml`](compose.prod.yml): **Claude Haiku
 files in **S3**, HTTPS by **Caddy**, which exposes only the chat page and the chat API. Everything is **Terraform**
 ([`infra/aws/terraform`](infra/aws/terraform)), and every push to `main` is tested, built into ARM images and
 deployed by **GitHub Actions** through SSM, with short-lived OIDC credentials: no AWS keys in GitHub or on the server.
-The step-by-step runbook is [`infra/aws/README.md`](infra/aws/README.md); the reasoning, including why not ECS and
-RDS yet, is [ADR 0008](docs/decisions/0008-aws-hosting.md).
+The step-by-step runbook is [`infra/aws/README.md`](infra/aws/README.md).
 
 | Local | On AWS |
 |---|---|
@@ -238,7 +231,6 @@ src/
   bot/telegram.py     the Telegram bot
 embedder/             CLIP embedding service
 eval/                 labelled evaluation sets and saved results
-docs/decisions/       architecture decision records
 infra/                Prometheus, Grafana (provisioned dashboards), Airflow, SeaweedFS config
 scripts/              evaluations, reports, dashboard generation, test-material builders
 tests/                unit and API tests

@@ -5,7 +5,6 @@ Runs offline against the live data, without changing the system:
     uv run --with sentence-transformers python scripts/experiment_caption_embeddings.py [--save eval/results/x.json]
     make experiment-captions      # same, saving to eval/results/caption_embeddings.json
 
-Decision and discussion: docs/decisions/0001-no-caption-embeddings.md
 
 Retrievers (each returns its top 30 segments, like the API's over-fetch):
     keyword       BM25 over transcript + caption + title      (live API, mode=keyword)
@@ -158,7 +157,7 @@ def main() -> None:
     if args.save:
         clip_model = httpx.get(f"{settings.embedder_url}/health").json()["model"]
         report = {
-            "experiment": "caption embeddings as a third retriever (docs/decisions/0001-no-caption-embeddings.md)",
+            "experiment": "caption embeddings as a third retriever",
             "run_at": datetime.now(UTC).isoformat(timespec="seconds"),
             "library": {"pexels_videos": len({src for _, src, _ in rows}), "captioned_keyframes": len(captions)},
             "models": {"clip": clip_model, "caption": settings.caption_model, "caption_text_embedding": "BAAI/bge-small-en-v1.5"},

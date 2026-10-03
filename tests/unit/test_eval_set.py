@@ -1,4 +1,4 @@
-"""The labelled evaluation set is data that decisions rest on (docs/decisions/): keep it well-formed."""
+"""The labelled evaluation set is data that design decisions rest on: keep it well-formed."""
 
 import json
 from collections import Counter
@@ -30,7 +30,7 @@ def test_queries_are_unique(queries):
 
 
 def test_hard_queries_cover_each_weakness(queries):
-    """The caption-embedding decision (ADR 0001) depends on these categories being represented."""
+    """The caption-embedding experiment depends on these categories being represented."""
     present = Counter(q.get("category", "basic") for q in queries)
     assert CATEGORIES <= set(present)
     assert present["basic"] >= 10 and sum(n for c, n in present.items() if c != "basic") >= 20

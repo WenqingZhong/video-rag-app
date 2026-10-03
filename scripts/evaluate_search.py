@@ -19,7 +19,7 @@ from pathlib import Path
 import httpx
 
 ROOT = Path(__file__).resolve().parents[1]
-MODES = ["keyword", "vector", "hybrid", "understood"]  # understood = the LLM parses the request first (ADR 0002)
+MODES = ["keyword", "vector", "hybrid", "understood"]  # understood = the LLM parses the request first
 
 
 def search(api: str, query: str, mode: str, size: int) -> list[str]:

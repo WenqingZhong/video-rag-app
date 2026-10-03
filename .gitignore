@@ -19,3 +19,5 @@ crash.log
 bundle.tgz
 tfplan
 infra/aws/terraform/plan.txt
+docs/decisions/
+docs/DEEP_DIVE.md

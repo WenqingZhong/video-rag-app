@@ -1,4 +1,4 @@
-# Production on one EC2 instance (see infra/aws/ and docs/decisions/0008-aws-hosting.md).
+# Production on one EC2 instance (see infra/aws/).
 #
 # Differences from compose.yml (local development):
 # - images come from ECR (built by GitHub Actions), not built here;

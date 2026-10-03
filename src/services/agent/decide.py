@@ -1,7 +1,7 @@
 """Each chat turn → one action. The model fills a small form (Ollama JSON schema: qwen2.5vl has no native tool
 calling); plain-code guards check it against the message and the conversation; rules are the fallback.
 
-The same design as request understanding (ADR 0002), one level up: there the model chose quote/topic/visual,
+The same design as request understanding (services/understanding), one level up: there the model chose quote/topic/visual,
 here it chooses which tool to use and rewrites follow-ups ("now without people") into a full request.
 """
 

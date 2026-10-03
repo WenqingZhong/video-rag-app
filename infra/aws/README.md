@@ -2,7 +2,6 @@
 
 One ARM EC2 instance running `compose.prod.yml`, with Claude Haiku 4.5 through the Anthropic API and files in
 Amazon S3.
-Design and trade-offs: [ADR 0008](../../docs/decisions/0008-aws-hosting.md).
 
 ```text
 GitHub (push to main) ── tests ── ARM images → ECR ── SSM Run Command ──▶ EC2 t4g.large (Docker Compose)
